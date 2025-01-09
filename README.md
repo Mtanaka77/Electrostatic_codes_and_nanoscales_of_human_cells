@@ -1,7 +1,9 @@
 ## Simulation of charge inversion for living cells ##
 
 A simple model of giant charge inversion is created for living cells, and 
-molecular dynamics simulation is execcuted (Refs. 1-5).
+molecular dynamics simulations are execcuted (Refs. 1-5).
+"DNA in nanopores" is simulated where counterion condensation and coion depletion
+are the key of the human cells.
 
 ## References ##
 
