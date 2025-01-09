@@ -6,7 +6,7 @@ living cells, and molecular dynamics simulations are execcuted (Refs. 1-4).
 coion depletion are the key of the nanoscale pores in human cells (Ref. 5).
 
 The molecular dynamics simulations are made by several models, and they are
-written in each of the articles. The figures are used which are partly 
+written in each of the articles. The figures are illustrated, partly 
 in color pictures.  
 
 
