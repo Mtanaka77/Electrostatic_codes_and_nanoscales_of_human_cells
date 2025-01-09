@@ -3,7 +3,7 @@
 A simple model of giant charge inversion is created for living cells, and 
 molecular dynamics simulations are execcuted (Refs. 1-4).
 "DNA in nanopores" is simulated where counterion condensation and coion depletion
-are the key of the human cells (Ref. 5).
+are the key of the nanoscale pores in human cells (Ref. 5).
 
 ## References ##
 
