@@ -1,7 +1,7 @@
 ## Simulation of charge inversion for living cells ##
 
 A simple model of giant charge inversion is created for living cells, and 
-molecular dynamics simulation is execcuted (Refs. 1-4).
+molecular dynamics simulation is execcuted (Refs. 1-5).
 
 ## References ##
 
@@ -9,6 +9,6 @@ molecular dynamics simulation is execcuted (Refs. 1-4).
 2. M. Tanaka and A.Yu Grosberg, Euro.Phys.J., E7, 371-379 (2002).
 3. M. Tanaka, Phys.Reviews., E68, 061501 (2003).
 4. M. Tanaka, J. Physics: Condensed Matter, vol.16, S2127-2134 (2004).
-5. 22.	Y.Rabin and M.Tanaka, Phys.Rev.Lett., vol.94, 148103 (2005).
+5. Y.Rabin and M.Tanaka, Phys.Rev.Lett., vol.94, 148103 (2005).
 
 
