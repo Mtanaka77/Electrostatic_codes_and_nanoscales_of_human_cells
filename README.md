@@ -9,7 +9,10 @@ The molecular dynamics simulations are made in several settings, and they are
 discussed in the articles. Gaint charge inversion in this case is about macroions 
 surrounded by the electrolyte of multivalent counterions and monovalent coions.
 The simulation code @chginv3.f03 with parminv3.h and CIMV3_config.START3 is used.
-The run is done by MPI and FFTW3, and PDF's are shown with figures.
+Description of the code is given, and main subroutines are moldyn, realteil and 
+p3m_perform, 
+
+The run is utilized by MPI and FFTW3 packages, and PDF's are shown with figures.
 In the articles (Ref. 1), the figures are illustrated partly in color pictures.  
 
 
