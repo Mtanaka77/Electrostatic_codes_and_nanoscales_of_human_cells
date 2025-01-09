@@ -5,6 +5,10 @@ living cells, and molecular dynamics simulations are execcuted (Refs. 1-4).
 "DNA in nanopores" is simulated for DNA where counterion condensation and 
 coion depletion are the key of the nanoscale pores in human cells (Ref. 5).
 
+The molecular dynamics simulations are made by several models, and they are
+written in each of the articles. The figures are used which are partly in color.  
+
+
 ## References ##
 
 1. M. Tanaka and A.Yu Grosberg, J.Chem.Phys., vol.115, 567-574 (2001).
