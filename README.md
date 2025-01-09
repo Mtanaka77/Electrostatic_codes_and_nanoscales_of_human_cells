@@ -1,13 +1,12 @@
 ## Charge inversion and nanoscale phenomena for living cells ##
 
-Simple models of giant charge inversion and nanoscale phenomena are created for 
-living cells, and molecular dynamics simulations are execcuted (Refs. 1-4).
-"DNA in nanopores" is simulated for DNA where counterion condensation and 
-coion depletion are the key of the nanoscale pores in human cells (Ref. 5).
+Simple models of giant charge inversion or nanoscale phenomena are created 
+for living cells, and molecular dynamics simulations are execcuted (Refs. 1-4).
+"DNA in nanopores" is simulated for DNA transportation where counterion condensation 
+and coion depletion are the key in the nanoscale pores of human cells (Ref. 5).
 
-The molecular dynamics simulations are made by several models, and they are
-written in each of the articles. The figures are illustrated, partly 
-in color pictures.  
+The molecular dynamics simulations are made in several settings, and they are
+discussed in the articles. The figures are illustrated, partly in color pictures.  
 
 
 ## References ##
