@@ -1,14 +1,14 @@
-!*----------------------------------------------- Update: 2024/12 --*
+!*----------------------------------------------- Update: 2025/01 --*
 !*                                                                  *
 !*   ## Giant charge inversion of macroions by counter/co-ions ##   *
 !*                                                                  *
 !*   Author: Motohiko Tanaka, PhD, Nagoya, Japan.                   *
 !*                                                                  *
 !*  References                                                      *
-!*  1. M.Tanaka and A.Yu Grosberg, J.Chem.Phys., vol.115, 567 (2001).*
-!*  2. M.Tanaka and A.Yu Grosberg, Euro.Phys.J., E7, 371-379 (2002).*
+!*  1. M.Tanaka and A.Yu Grosberg, J.Chem.Phys., vol.115,567 (2001).*
+!*  2. M.Tanaka and A.Yu Grosberg, Euro.Phys.J., E7, 371 (2002).    *
 !*                                                                  *
-!*  Equation of motion                                              *
+!*  Equation of motion:                                             *
 !*     ^  dv    (t*e)^2 qq'R   t^2  48*eps'R   r0       1 r0        *
 !*     m ---- = -------*---- + ----*-------- [(--)^12 - -(--)^6]    * 
 !*        dt     ma^3   r^3    ma^2   r*r      r        2 r         *
@@ -18,8 +18,8 @@
 !*                  ma     300                                      *
 !*                                                                  * 
 !*    ccel = 48.d0*pref_eps*epsav*snt*(snt-0.5d0)*sqrt(rsi/r2)      *
-!*    forceV = prefactor*ch(i)*ch(j)*                            &  *
-!*                         (erfc/r +2*alpha/sqrtpi)*exp(-ar**2)/r2  *
+!*    forceV = prefactor*ch(i)*ch(j)* &                             *
+!*                      (erfc/r +2*alpha/sqrtpi)*exp(-ar**2)/r2     *
 !*                                                                  *  
 !*  Main subroutines:                                               *
 !*    program charge_inv                                            *
@@ -151,7 +151,7 @@
       integer(C_int) ipar,igrp,size,io_pe,num_proc
       common/sub_proc/ io_pe,num_proc
 !
-      real(C_DOUBLE),dimension(npqr0) :: &  !! count all atoms
+      real(C_DOUBLE),dimension(npqr0) :: &  !! include all atoms
                     xg,yg,zg,vx,vy,vz,ch,am,ag,ep
 !
       real(C_DOUBLE) t_unit,a_unit,w_unit,e_unit,  &
@@ -213,7 +213,7 @@
 !
 !   cptot (in min.)
 !     cptot= 570.0  <--- 10 H
-!     dtwr=    10.
+!     dtwr=    50.
 !     dtwr2=  500.
 !     rmax =   50.  <--- Initial size of Polymer.
 !
@@ -224,10 +224,10 @@
 !*********************
 !     ifqq= 1
 !     qfrac= 0.30
-!     Qcore= -28.d0
-!     Rmac = 3.d0
-!     Wmac = 200.d0
-!     Zcp=   1.
+!     Qcore= -30.d0
+!     Rmac = 5.d0
+!     Wmac = 300.d0
+!     Zcp=   3.
 !     Zcn=  -1.
 !*********************
 !*  rbmax: Maximum bond length for /sprmul/.
