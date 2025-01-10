@@ -1,12 +1,13 @@
 !*----------------------------------------------- Update: 2025/01 --*
 !*                                                                  *
-!*   ## Giant charge inversion of macroions by counter/co-ions ##   *
+!*   ## Giant Charge Inversion of Macroions by Counter/Co-Ions ##   *
 !*                                                                  *
 !*   Author: Motohiko Tanaka, PhD, Nagoya, Japan.                   *
 !*                                                                  *
 !*  References                                                      *
 !*  1. M.Tanaka and A.Yu Grosberg, J.Chem.Phys., vol.115,567 (2001).*
 !*  2. M.Tanaka and A.Yu Grosberg, Euro.Phys.J., E7, 371 (2002).    *
+!*  3. M.Tanaka, Phys.Reviews., E68, 061501 (2003).                 *
 !*                                                                  *
 !*  Equation of motion:                                             *
 !*     ^  dv    (t*e)^2 qq'R   t^2  48*eps'R   r0       1 r0        *
@@ -21,13 +22,16 @@
 !*    forceV = prefactor*ch(i)*ch(j)* &                             *
 !*                      (erfc/r +2*alpha/sqrtpi)*exp(-ar**2)/r2     *
 !*                                                                  *  
-!*  Main subroutines:                                               *
+!*------------------------------------------------------------------*
+!*  Main and subroutines (5000 lines):                              *
+!*                                                                  *  
 !*    program charge_inv                                            *
 !*    RUN_MD                                                        *
 !*    moldyn                                                        *
 !*    realteil_s                                                    *
 !*    p3m_perform, p3m_init, perform_aliasing_sums,...              *
 !*    init                                                          *
+!*    LPLOT1/HPLOT1
 !*    gopen graphic package                                         *
 !*                                                                  *
 !********************************************************************
@@ -743,9 +747,9 @@
 !
         if(if_write06) then
           write(11,600)
-  600     format(/,' time:     E_kin    E_kin(cou+co)  E_kin(wat)  ', &
+  600     format(/,' time:      E_kin    E_kin(cou+co)  E_kin(wat)  ', &
                    'E_pot       e_c_r       e_LJ        e_p3m      ', &
-                   ' e_tot')
+                   ' e_tot       cpu_123')
           if_write06= .false.
         end if
 !
@@ -4660,16 +4664,16 @@
 !      Modified to conform GSIPP commands
 !        Motohiko Tanaka (NIFS)       November 23, 1993
 !
-!----------------------------------------------- 5/27/96 -------
-!     This PS-Adobe-2.0 header allows us full paging features in
-!     the Ghostview.  To scroll up the page (backward), click the 
-!     page number and press two buttons of mouse simultaneously.
+!----------------------------------------------- 5/27/1996 -----
+!   This PS-Adobe-2.0 header allows us full paging features in
+!   the Ghostview. To scroll up the page (backward), click the 
+!   page number and press two buttons of mouse simultaneously.
 !
-!     Consult: A.Saitou (Kyoto U.)  The definition of /@eop  
-!    needs stroke for line drawings (not in the TeX header).
+!   Consult: A.Saitou (Kyoto U.)  The definition of "@eop"  
+!   needs stroke for line drawings (not in the TeX header).
 !---------------------------------------------------------------
        subroutine gopen (nframe)
-!----------------------------------------------------------
+!---------------------------------------------------------------
        common/convsn/ fmag,x0,y0,h0,n0
        common/pages/  ipage,nfrm
 !
