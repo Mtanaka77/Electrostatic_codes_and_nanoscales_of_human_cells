@@ -2,7 +2,7 @@
 !*                                                                  *
 !*   ## Giant Charge Inversion of Macroions by Counter/Co-Ions ##   *
 !*                                                                  *
-!*   Author: Motohiko Tanaka, PhD, Nagoya, Japan.                   *
+!*     Author: Motohiko Tanaka, PhD, Nagoya, Japan.                 *
 !*                                                                  *
 !*  References                                                      *
 !*  1. M.Tanaka and A.Yu Grosberg, J.Chem.Phys., vol.115,567 (2001).*
