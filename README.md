@@ -8,12 +8,13 @@ and coion depletion are the key in the nanoscale pores of human cells (Ref. 5).
 The molecular dynamics simulations are made in several settings, and they are
 discussed in the articles. Gaint charge inversion in this case is about macroions 
 surrounded by the electrolyte of multivalent counterions and monovalent coions.
-The simulation code @chginv3.f03 with parminv3.h and CIMV3_config.START3 is used.
-Description of the code is given, and main subroutines are moldyn, realteil and 
-p3m_perform, 
+The simulation code @chginv3.f03 with parm_inv3.h and CIMV3_config.START3 is used.
+The description of the code is explained in important lines on top of first 50 lines.
+Main subroutines are moldyn, realteil, p3m_perform, and Gopen graphic packages.
 
-The run is utilized by MPI and FFTW3 packages, and PDF's are shown with figures.
-In the articles (Ref. 1), the figures are illustrated partly in color pictures.  
+The simulation run is utilized in terms of MPI and FFTW3 packages, and PDF's 
+of Ref. 1 are shown with figures. In the articles (Refs. 1-5), the figures 
+are illustrated partly in color pictures.  
 
 
 ## References ##
