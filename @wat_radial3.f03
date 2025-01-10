@@ -27,9 +27,9 @@
 !
       real(C_float),dimension(npq0) :: &
                     x4,y4,z4,vx4,vy4,vz4,ch4,am4,ag4
-      real(C_float) t_unit,a_unit,w_unit,e_unit,pi2,tequil,econv,    &
-                    gamma,Qcore4,Rmac4,Wmac4,Zcp4,Zcn4,qfrac4,alpha4,edc4, &
-                    tau_wave4,xmax4,ymax4,zmax4,t0(100),tmax,tmin,   &
+      real(C_float) t_unit,a_unit,w_unit,e_unit,pi2,tequil,econv,gamma, &
+                    Qcore4,Rmac4,Wmac4,Zcp4,Zcn4,qfrac4,alpha4,edc4,    &
+                    tau_wave4,xmax4,ymax4,zmax4,t0(100),tmax,tmin,      &
                     hh,exc,a1,a2,t,xleng,tau_wave,bjerrum4,ep4,dd
 !
       integer(C_int)  np,nq,npio,nq1,nq2,nseg,nps,ic,icmax,nplot,npq, &
@@ -261,7 +261,7 @@
                     f1min,f2min,f3min,f4min,chmac,        &
                     pi,dd,Rmac4,dx,dy,dz,rr,f7max,f7min
 !
-      integer(C_int) np,nq,nq1,nq2,npq,iffig,iffig2,      &
+      integer(C_int) np,nq,nq1,nq2,npq,iffig,iffig2,imx,  &
                      i,j,k,ir,nxmax,ILN,ILG,nxtick,nytick
 !
       real(C_float) xmax,ymax,zmax,time,xleng,Edc4,tau_wave
@@ -277,25 +277,26 @@
       pi= 4.*atan(1.0)
 !
       do k= 1,kmax
-      hmpn(k) = 0
       hmp(k) = 0
       hmn(k) = 0
+      hmpn(k)= 0
 !
       hh(k)= dd*(k-1)
       end do
 !
-!*  gfortran @wat_radial3.f03
+!* gfortran @wat_radial3.f03
       chmac= 0
       do i= 1,np
       chmac= chmac +ch(i)
       end do
-      chmac= chmac/np     ! to one macroion
+      chmac= chmac/np     ! per macroion
 !
-      do i= 1,15
-      hmpn(i)= chmac/15   ! macroion is scattered at i=1,15
+      imx= Rmac4/dd
+      do i= 1,imx
+      hmpn(i)= chmac/imx  ! macroion is scattered at i=1,imx
       end do
 !
-      accum(1)= chmac  ! for one macroion
+      accum(1)= chmac     ! macroion stands at r= 0
 !
 !* Disribution of counterions and coions
       do i= 1,np
@@ -310,8 +311,8 @@
       dz = dz - nint(dz/zmax)*zmax
       rr= sqrt(dx**2 +dy**2 +dz**2) 
 !
-!   max number= dd*50= 20. -> dd=20./50
-      ir= (50/20.)*rr +1.001
+!   max number 20= dd*50 -> dd=20./50
+      ir= rr/dd +1.001
 !
       if(ir.ge.1 .and. ir.le.kmax) then
         if(ch(j).gt.0.d0) then
@@ -331,7 +332,6 @@
       accum(i)= accum(i-1) +hmpn(i)
       end do
 !
-!*   gfortran @wat_radial3.f03 
       CALL SYMBOL ( 8.0,18.0,0.7,'@radial3.f03',0.,12)
       CALL SYMBOL (13.5,18.0,0.7,'date: ',0.,6)
       CALL SYMBOL (15.1,18.0,0.7,cdate,0.,10)

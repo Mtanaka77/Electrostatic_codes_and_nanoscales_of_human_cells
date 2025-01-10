@@ -1,11 +1,33 @@
-!*----------------------------------------------- 07/24/2001 ----*
-!*****************************************************************
-!  To get a free format (f90, f03), do the following: :%s/^c/!/
-!  use, intrinsic :: iso_c_binding
-!  The @ character is not permitted in the Intel (LX) system
-!*****************************************************************
-!*--- 12/1999 -------------------------------------- 7/07/2024 --*
-!$ mpif90 -fopenmp -mcmodel=medium -fPIC @chginv3.f03  -I/opt/fftw3/include -L/opt/fftw3/lib -lfftw3 &> log
+!*----------------------------------------------- Update: 2024/12 --*
+!*                                                                  *
+!*  ## Giant charge inversion of macroions by counter/coi-ions ##   *
+!*                                                                  *
+!*   Author and maintainer: Motohiko Tanaka, PhD, Nagoya, Japan.    *
+!*                                                                  *
+!*   Reference                                                      *
+!*   M.Tanaka and A.Yu Grosberg, J.Chem.Phys., vol.115, 567 (2001). *
+!*                                                                  *
+!*     ^  dv    (t*e)^2 qq'R   t^2  48*eps'R   r0       1 r0        *
+!*     m ---- = -------*---- + ----*-------- [(--)^12 - -(--)^6]    * 
+!*        dt     ma^3   r^3    ma^2   r*r      r        2 r         *
+!*                                                                  *
+!*                t^2*e  Edc0(V/cm)                                 *
+!*              + ------ ----------                                 *
+!*                  ma     300                                      *
+!*                                                                  * 
+!*    ccel = 48.d0*pref_eps*epsav*snt*(snt-0.5d0)*sqrt(rsi/r2)      *
+!*    forceV = prefactor*ch(i)*ch(j)*                            &  *
+!*                         (erfc/r +2*alpha/sqrtpi)*exp(-ar**2)/r2  *
+!*                                                                  *  
+!********************************************************************
+!*  To get a free format (f90, f03), do the following: :%s/^c/!/    *
+!*  use, intrinsic :: iso_c_binding                                 *
+!*  The @ character is not permitted in the Intel (LX) system       *
+!*                                                                  *
+!$ mpif90 -fopenmp -mcmodel=medium -fPIC @chginv3.f03 -I/opt/fftw3/ *
+!* include -L/opt/fftw3/lib -lfftw3 &> log                          * 
+!********************************************************************
+!*-- 12/23/1999 ------------------------------------------ 7/2001 --*
 !
       program  charge_inv
 !
