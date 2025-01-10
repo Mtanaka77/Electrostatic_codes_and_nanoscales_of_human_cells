@@ -1,12 +1,14 @@
 !*----------------------------------------------- Update: 2024/12 --*
 !*                                                                  *
-!*  ## Giant charge inversion of macroions by counter/coi-ions ##   *
+!*   ## Giant charge inversion of macroions by counter/co-ions ##   *
 !*                                                                  *
-!*   Author and maintainer: Motohiko Tanaka, PhD, Nagoya, Japan.    *
+!*   Author: Motohiko Tanaka, PhD, Nagoya, Japan.                   *
 !*                                                                  *
-!*   Reference                                                      *
-!*   M.Tanaka and A.Yu Grosberg, J.Chem.Phys., vol.115, 567 (2001). *
+!*  References                                                      *
+!*  1. M.Tanaka and A.Yu Grosberg, J.Chem.Phys., vol.115, 567 (2001).*
+!*  2. M.Tanaka and A.Yu Grosberg, Euro.Phys.J., E7, 371-379 (2002).*
 !*                                                                  *
+!*  Equation of motion                                              *
 !*     ^  dv    (t*e)^2 qq'R   t^2  48*eps'R   r0       1 r0        *
 !*     m ---- = -------*---- + ----*-------- [(--)^12 - -(--)^6]    * 
 !*        dt     ma^3   r^3    ma^2   r*r      r        2 r         *
@@ -19,6 +21,15 @@
 !*    forceV = prefactor*ch(i)*ch(j)*                            &  *
 !*                         (erfc/r +2*alpha/sqrtpi)*exp(-ar**2)/r2  *
 !*                                                                  *  
+!*  Main subroutines:                                               *
+!*    program charge_inv                                            *
+!*    RUN_MD                                                        *
+!*    moldyn                                                        *
+!*    realteil_s                                                    *
+!*    p3m_perform, p3m_init, perform_aliasing_sums,...              *
+!*    init                                                          *
+!*    gopen graphic package                                         *
+!*                                                                  *
 !********************************************************************
 !*  To get a free format (f90, f03), do the following: :%s/^c/!/    *
 !*  use, intrinsic :: iso_c_binding                                 *
@@ -27,7 +38,7 @@
 !$ mpif90 -fopenmp -mcmodel=medium -fPIC @chginv3.f03 -I/opt/fftw3/ *
 !* include -L/opt/fftw3/lib -lfftw3 &> log                          * 
 !********************************************************************
-!*-- 12/23/1999 ------------------------------------------ 7/2001 --*
+!*-- 12/23/1999 --------------------------------------- 7/07/2001 --*
 !
       program  charge_inv
 !
