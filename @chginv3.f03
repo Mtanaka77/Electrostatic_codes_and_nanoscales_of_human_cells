@@ -15,7 +15,7 @@
 !*        dt     ma^3   r^3    ma^2   r*r      r        2 r         *
 !*                                                                  *
 !*                t^2*e  Edc0(V/cm)                                 *
-!*              + ------ ----------                                 *
+!*              + ------ ----------  -mue*m_i*v                                *
 !*                  ma     300                                      *
 !*                                                                  * 
 !*    ccel = 48.d0*pref_eps*epsav*snt*(snt-0.5d0)*sqrt(rsi/r2)      *
@@ -39,7 +39,7 @@
 !*  use, intrinsic :: iso_c_binding                                 *
 !*  The @ character is not permitted in the Intel (LX) system       *
 !*                                                                  *
-!$ mpif90 -fopenmp -mcmodel=medium -fPIC @chginv3.f03 -I/opt/fftw3/ *
+!*% mpif90 -fopenmp -mcmodel=medium -fPIC @chginv3.f03 -I/opt/fftw3/*
 !* include -L/opt/fftw3/lib -lfftw3 &> log                          * 
 !********************************************************************
 !*-- 12/23/1999 --------------------------------------- 7/07/2001 --*
@@ -163,12 +163,13 @@
       common/units/ t_unit,a_unit,w_unit,e_unit
       common/unit2/ kjoule,kcal,mol,kbT
 !
-      integer(C_int) np,nq,nr,npqr
+      integer(C_int) np,nq,nCLp,nr,npqr
 !*
 !  Single precision for the diagnostic routines.
       real(C_DOUBLE) pi,dt,rbmax,vth,vth1,vth2,vth3,tmax,    &
-                     xmax,ymax,zmax,                         &
+                     xmax,ymax,zmax,t8,                      &
                      tmax0,qfrac,Qcore,Rmac,Wmac,Zcp,Zcn,Edc
+      common/time3/  t8
       integer(C_int) it,is,nsg,nseg,istop,iwa,iwb,iwc
 !
       character(len=8) label,cdate*10,ctime*8
@@ -228,8 +229,8 @@
 !*********************
 !     ifqq= 1
 !     qfrac= 0.30
-!     Qcore= -30.d0
-!     Rmac = 5.d0
+!     Qcore= -28.d0
+!     Rmac = 3.d0
 !     Wmac = 300.d0
 !     Zcp=   3.
 !     Zcn=  -1.
@@ -280,7 +281,7 @@
 !*        dt     ma^3   r^3    ma^2   r*r      r        2 r         *
 !
 !                 t^2*e  Edc0(V/cm)
-!               + ------ ----------
+!               + ------ ---------- -mue*m_i*v
 !                   ma     300
 !
 !       ccel = 48.d0*pref_eps*epsav*snt*(snt-0.5d0)*sqrt(rsi/r2)
@@ -300,7 +301,7 @@
       surreps  = 78.d0
 !
       gamma= scale_c /surreps 
-      prefactor = gamma 
+      prefactor = gamma  !<- include surreps
 !
       dmesh= mesh
       xleng= length     
@@ -312,7 +313,7 @@
                       Edc
   230   format('*length =',1pd12.5,/,          &
                ' scale_c (in vacuum)     =',d12.5,/, &
-               ' prefactor (surround=78) =',d12.5,/, &
+               ' prefactor (surreps=78)  =',d12.5,/, &
                ' pref_eps (LJ force)     =',d12.5,/, &
                '   prefactor*ch(i)*ch(j) =',d12.5,/, &
                '   pref_eps*3.19d-14/3.2 =',d12.5,/, &
@@ -384,7 +385,7 @@
 !
         read(12) it,is,size,np,nq,nr,npqr
         read(12) xg,yg,zg,vx,vy,vz,ch,am,ag,ep
-        read(12) pi,dt,rbmax,vth,vth1,vth2,vth3,tmax0  !*added
+        read(12) pi,dt,rbmax,vth,vth1,vth2,vth3,tmax0,t8 
         read(12) t,phi,tht,dtwr,dtwr2 
         read(12) ekin,ekn2,ekn3,ecr,elj,ep3m,pot,time,           &
                  vxio,vxco,vxct,vxmc,vxtot,xmcc,vxwat,etot,      &
@@ -423,7 +424,7 @@
                                          form='unformatted')
         write(12) it,is,size,np,nq,nr,npqr
         write(12) xg,yg,zg,vx,vy,vz,ch,am,ag,ep
-        write(12) pi,dt,rbmax,vth,vth1,vth2,vth3,tmax
+        write(12) pi,dt,rbmax,vth,vth1,vth2,vth3,tmax,t8 
         write(12) t,phi,tht,dtwr,dtwr2
         write(12) ekin,ekn2,ekn3,ecr,elj,ep3m,pot,time,           &
                   vxio,vxco,vxct,vxmc,vxtot,xmcc,vxwat,etot,      &
@@ -507,17 +508,19 @@
       include    'param_inv3.h'
       include    'mpif.h'
 !
-      real(C_DOUBLE),dimension(npqr0) ::             &
+      real(C_DOUBLE),dimension(npqr0) :: &
                      xg,yg,zg,vx,vy,vz,ch,am,ag,ep,  &
                      frx,fry,frz,fsx,fsy,fsz
-      integer(C_int) np,nq,nr,npqr,ipar,igrp,size,   &
+      integer(C_int) np,nq,nCLp,nr,npqr,ipar,igrp,size,   &
                      io_pe,num_proc,npq
 !
       common/sub_proc/ io_pe,num_proc
 ! 
       real(C_DOUBLE) pi,dt,rbmax,vth,vth1,vth2,vth3,tmax, &
-                     xmax,ymax,zmax,E_Coulomb_P3M,        &
-                     e_c_s,e_c_pme,e_c_r,e_LJ,e_fene
+                     xmax,ymax,zmax,t8,E_Coulomb_P3M,mue, &
+                     e_c_s,e_c_pme,e_c_r,e_LJ,e_fene,     &
+                     red,vcn,vss0
+      common/time3/  t8
       common/Energy/ e_c_s,e_c_pme,e_c_r,e_LJ,e_fene
 !
       real(C_float),dimension(npio) :: &  !! Plot: charged only
@@ -539,7 +542,7 @@
                     xwat,ywat,zwat,dmcc
 !
       integer(C_int) it,is,iwa,iwb,iwc,iwrt1,iwrt2,iwrt3, &
-                     nsg,nseg,istop,nclp,i,k
+                     nsg,nseg,istop,i,k
       real(C_float)  phi,tht,dtwr,dtwr2,cptot
 !
       common/parm1/ it,is
@@ -587,9 +590,11 @@
 !--------------------------
 !*  Initial condition.
 !--------------------------
+      nCLp= np + nq
 !
       if(kstart.le.0) then
-        t= 0.d0
+        t8= 0.d0
+        t = t8
 !
         is= 0
         it= 0
@@ -633,7 +638,8 @@
       end if
 !-------------------------------------------------------
 !
- 1000 t= t +dt
+ 1000 t8= t8 +dt
+      t=  t8
       it= it +1
 !
 !-------------------------------
@@ -647,11 +653,12 @@
       cl_first= 2
       call clocks (cpu1,cl_first)
 !
-      if(t.gt.tmax) go to 2000
+      if(t8.gt.tmax) go to 2000
       if((cpu1/60.).gt.cptot) go to 2000
+!
       if(istop.ge.1) then
         write(6,*) 'Abnormal termination (istop=1)... '
-        write(6,*) '  ipar,t=',ipar,t
+        write(6,*) '  ipar,t8=',ipar,t8
         go to 2000
       end if
 !
@@ -659,7 +666,7 @@
 !*  Free relaxation in the initial stage.       *
 !************************************************
 !
-      if(t.lt.10.d0) then
+      if(t8.lt.10.d0) then
         exc= 0.d0
       else
         exc= Edc
@@ -697,12 +704,66 @@
       frz(i)= frz(i) +fsz(i)
       end do
 !
+!************************************************
+!*  Free relaxation in the initial stage.       *
+!************************************************
+!  Temp below is relative to the initial one.
+!     Temp= 1.d0/2.d0**(t/2500.d0)
+!
+!*   <(1/2)*m v**2>= (3/2) kT, n a**3=1. in /init/
+!--------------------------------------------
+!     vth  = sqrt(2.d0*kbT/(Wmac*w_unit)) /(a_unit/t_unit)
+!     vth1 = sqrt(2.d0*kbT/(am(np+nq1)*w_unit)) /(a_unit/t_unit)
+!     vth2 = sqrt(2.d0*kbT/(am(np+nq2)*w_unit)) /(a_unit/t_unit)
+!     vth3 = sqrt(2.d0*kbT/(am(np+nq+1)*w_unit))/(a_unit/t_unit)
+!--------------------------------------------
+!
+!     epsilj= epsilj0/Temp
+!     gamma= Bjerrum0 /(aLJ*Temp)
+!
+!     gamma= scale_c /surreps   include in L.300
+!     prefactor = gamma 
+!
+      if(t8.lt.10.d0) then
+        Exc= 0.d0
+      else
+        Exc= Edc
+      end if
+!
+!************************************************
+!*  Rescale the kinetic energy of neutrals.     *
+!************************************************
+!
+      if(.false.) then
+!     if((t8.gt.10.d0).and.(iwrt3.eq.0)) then
+        vcn= 0.d0
+!
+        do i= nCLp+1,npqr
+        vcn= vcn +vx(i)**2 +vy(i)**2 +vz(i)**2
+        end do
+!
+        vss0= (3.d0/2.d0)*vth3**2
+        red= sqrt(vss0/ (0.5d0*vcn/nr))
+!
+        do i= nCLp+1,npqr
+        vx(i)= red*vx(i)
+        vy(i)= red*vy(i)
+        vz(i)= red*vz(i)
+        end do
+      end if
+!
+!-------------------------
+!*   Velocity update.
+!-------------------------
+!  the Langevin thermostat
+!     mue= 1/100.d0
+!
       do i= 1,npqr
       dtm= dt/am(i)
 !
-      vx(i)= vx(i) +(frx(i) +ch(i)*exc)*dtm 
-      vy(i)= vy(i) +(fry(i)           )*dtm
-      vz(i)= vz(i) +(frz(i)           )*dtm
+      vx(i)= vx(i) +(frx(i) +ch(i)*exc)*dtm !-mue*am(i)*vx(i)
+      vy(i)= vy(i) +(fry(i)           )*dtm !-mue*am(i)*vy(i)
+      vz(i)= vz(i) +(frz(i)           )*dtm !-mue*am(i)*vz(i)
 !
       xg(i)= xg(i) +dt*vx(i)
       yg(i)= yg(i) +dt*vy(i)
@@ -768,7 +829,7 @@
         s2= s2 +0.5d0*am(i)*(vx(i)**2 +vy(i)**2 +vz(i)**2)
         end do
 !
-        do i= np+nq+1,npqr
+        do i= nCLp+1,npqr
         s3= s3 +0.5d0*am(i)*(vx(i)**2 +vy(i)**2 +vz(i)**2)
         end do
 !
@@ -831,7 +892,7 @@
         end if
         end do
 !
-        do i= np+nq+1,npqr
+        do i= nCLp+1,npqr
         svx4= svx4 +am(i)*vx(i)
         svy4= svy4 +am(i)*vy(i)
         svz4= svz4 +am(i)*vz(i)
@@ -948,7 +1009,7 @@
         spc(i)= 'B ' ! 'Me'
         end do
 !
-        do i= np+1,np+nq
+        do i= np+1,nCLp  !np+nq
         if(ch4(i).gt.0.) then
           x4(i) = xg(i) 
           y4(i) = yg(i)
@@ -971,7 +1032,7 @@
         write(23,371) np+nq
   371   format(i5,/)
 
-        do i= 1,np+nq
+        do i= 1,nCLp !np+nq
         write(23,372) spc(i),x4(i),y4(i),z4(i)
   372   format(a2,3f12.6)
         end do
@@ -989,7 +1050,7 @@
 !
         i1= 0
 !
-        do i= 1,np+nq  !! charged only
+        do i= 1,nCLp  !!np+nq, charged only
         i1= i1 +1
 !
         x4(i1)= xg(i1) -nint(xg(i1)/xmax)*xmax
@@ -1004,7 +1065,7 @@
         call ppl3da (x4,y4,z4,ch4,ag4,np,nq) 
 !
 !
-!       do j= 1,np+nq
+!       do j= 1,nCLp  !np+nq
 !       vx4(j)= vx(j)
 !       vy4(j)= vy(j)
 !       vz4(j)= vz(j)
@@ -1023,7 +1084,7 @@
                                          form='unformatted')
         write(12) it,is,size,np,nq,nr,npqr
         write(12) xg,yg,zg,vx,vy,vz,ch,am,ag,ep
-        write(12) pi,dt,rbmax,vth,vth1,vth2,vth3,tmax  !*added
+        write(12) pi,dt,rbmax,vth,vth1,vth2,vth3,tmax,t8  !*added
         write(12) t,phi,tht,dtwr,dtwr2
         write(12) ekin,ekn2,ekn3,ecr,elj,ep3m,pot,time,           &
                   vxio,vxco,vxct,vxmc,vxtot,xmcc,vxwat,etot,      &
@@ -1041,7 +1102,7 @@
 !
  2000 continue
       if(io_pe.eq.1) then
-        write(11,*) ' final: t, tmax=',t,tmax
+        write(11,*) ' final: t8, tmax=',t8,tmax
         write(11,*) ' final: cpu1/60., cptot=',cpu1/60.,cptot
       end if
 !
@@ -1405,7 +1466,7 @@
 !
       real(C_DOUBLE),dimension(npqr0) :: &
                     xg,yg,zg,ch,am,ag,ep,frx,fry,frz,ffx,ffy,ffz
-      integer(C_int) ipar,size,np,nq,npqr
+      integer(C_int) ipar,size,np,nq,nCLp,npqr
 !
       real(C_DOUBLE) t_unit,a_unit,w_unit,e_unit,  &
                      kjoule,kcal,mol,kbT
@@ -1447,6 +1508,7 @@
 !
 !*---------------------------------------------------------------
       pi = 4.d0*datan(1.d0)
+      nCLp= np +nq
 !
       driwu2 = 1.25992104989487316476721060728d0  ! 2**(1/3)
       driwu  = dsqrt(driwu2)                      ! 2**(1/6)
@@ -1467,9 +1529,10 @@
       end if
 !
 !$OMP PARALLEL DEFAULT(NONE)                        &
-!$OMP SHARED(ipar,np,nq,npqr,size,xg,yg,zg,ch,ep,length, &
-!$OMP        ag,alpha,prefactor,pref_eps,rcutlj,    &
-!$OMP        addpot,sqrtpi,rcutpme,rlj_m)           &
+!$OMP SHARED(ipar,np,nq,nCLp,npqr,size,xg,yg,zg,    &
+!$OMP        ch,ep,length,ag,alpha,prefactor,       &
+!$OMP        pref_eps,rcutlj,addpot,sqrtpi,         &
+!$OMP        rcutpme,rlj_m)                         &
 !$OMP PRIVATE(i,j,dx,dy,dz,r2,r,rr,ccel,e_lj,       &
 !$OMP        epsav,rlj,rsi,snt,ar,t,erfc,forceV,    &
 !$OMP        r_cut,rlj0,pref3)                      &
@@ -1498,7 +1561,7 @@
 !*        dt     ma^3   r^2 r   ma^2   r    r   r        2 r         *
 !                                            snt=1/rlj^6, rlj=r/(ag_i+ag_j)
 !                 t^2*e  Edc0(V/cm)
-!               + ------ ----------
+!               + ------ ---------- -mue*m_i*v
 !                   ma     300
 !
 !*  Coulomb force: 
@@ -1508,7 +1571,7 @@
       if(r.lt.r_cut) then
 !
 !  if (i or j) > np+nq
-        if(i.gt.np+nq .or. j.gt.np+nq) then
+        if(i.gt.nCLp .or. j.gt.nCLp) then
           forceV= 0
 !
         else
@@ -1608,9 +1671,9 @@
       implicit none
 !
       include    'param_inv3.h'
-!     include    'aslfftw3.f03'                 ! SX
+      include    'aslfftw3.f03'                 ! SX
 !     include    'fftw3.f03'                    ! LX
-      include    '/opt/fftw3/include/fftw3.f03' ! physique
+!     include    '/opt/fftw3/include/fftw3.f03' ! physique
 !
       real(C_DOUBLE),dimension(0:npqr0-1) :: xg,yg,zg,ch,fsx,fsy,fsz
       real(C_DOUBLE),dimension(0:npqr0-1,0:2) :: fek
@@ -2626,9 +2689,12 @@
 !
       real(C_DOUBLE),dimension(npqr0) :: &
                        x,y,z,vx,vy,vz,ch,am,ag,ep
-      integer(C_int) np,nq,nr,npqr,i,j,k,nq1,nq2
+      integer(C_int) np,nq,nCLp,nr,npqr,i,j,k,nq1,nq2
       integer(C_int) io_pe,num_proc
       common/sub_proc/ io_pe,num_proc
+!
+      real(C_DOUBLE) t8
+      common/time3/  t8
 !
       real(C_DOUBLE) t_unit,a_unit,w_unit,e_unit, &
                      kjoule,kcal,mol,kbT
@@ -2636,9 +2702,9 @@
       common/unit2/ kjoule,kcal,mol,kbT
 !
       real(C_DOUBLE) pi,dt,rbmax,vth,vth1,vth2,vth3,tmax, &
-                 xmax,ymax,zmax,pi2
+                     xmax,ymax,zmax,pi2
       real(C_float) ranff,vmax1,vmax2,dgaus2,s0,s1,s2, &
-                    phi,tht,dtwr,dtwr2
+                    phi,tht,dtwr,dtwr2,t
 !
       integer(C_INT) it,is,nsg,nseg
       common/parm1/ it,is
@@ -2754,6 +2820,7 @@
       nr= nr0      ! 8000 water molecules
 !
       npqr= np + nq + nr
+      nCLp= np + nq 
 !     ++++++++++++++++++
 !
 !* Macroions
@@ -2774,7 +2841,7 @@
       end do
 !
 !* Counter and co-ions
-      do i= np+1,np+nq
+      do i= np+1,nCLp
       x(i) = (-0.5d0 +ranff(0.))*xmax
       y(i) = (-0.5d0 +ranff(0.))*ymax 
       z(i) = (-0.5d0 +ranff(0.))*zmax
@@ -2800,7 +2867,7 @@
       end do
 !
 !* Water molecules
-      do i= np+nq+1,npqr
+      do i= nCLp+1,npqr
       x(i) = (-0.5d0 +ranff(0.))*xmax
       y(i) = (-0.5d0 +ranff(0.))*ymax 
       z(i) = (-0.5d0 +ranff(0.))*zmax
@@ -2811,7 +2878,7 @@
       ep(i)= epsil_w  !! for water, epsil_w
 !
       if(io_pe.eq.1) then
-        if(i.gt.np+nq .and. i.le.np+nq+5) then
+        if(i.gt.nCLp .and. i.le.nCLp+5) then
         write(11,330) i,ch(i),am(i),ag(i),ep(i)
         end if
       end if
@@ -2824,7 +2891,7 @@
 !    different valence for negative particles.
 !         ****
       Qmacro   =  Qcore*np 
-      Qpositive=  Zcp*nq1
+      Qpositive=  Zcp*nq1   !! Zcp > 0
       Qnegative=  Zcn*nq2   !! Zcn < 0
 !
       QQQ= Qmacro + Qnegative + Qpositive
@@ -2870,11 +2937,12 @@
 !***************
 !*   <(1/2)*m v**2>= (3/2) kT, n a**3=1.
 !--------------------------------------------
-      vth  = sqrt(2.d0*kbT/(Wmac*w_unit)) /(a_unit/t_unit)
+      t8   = 0.d0
+      t    = t8
 !
+      vth  = sqrt(2.d0*kbT/(Wmac*w_unit)) /(a_unit/t_unit)
       vth1 = sqrt(2.d0*kbT/(am(np+nq1)*w_unit)) /(a_unit/t_unit)
       vth2 = sqrt(2.d0*kbT/(am(np+nq2)*w_unit)) /(a_unit/t_unit)
-!
       vth3 = sqrt(2.d0*kbT/(am(np+nq+1)*w_unit))/(a_unit/t_unit)
 !--------------------------------------------
 !
@@ -2885,7 +2953,7 @@
       vz(i)= 0 !dgaus2(vmax1)
       end do
 !
-      do i= np+1,np+nq
+      do i= np+1,nCLp
       if(i.le.np+nq1) then
         vmax2= vth1
       else
@@ -2897,25 +2965,26 @@
       vz(i)= dgaus2(vmax2)
       end do
 !
-      do i= np+nq+1,npqr
+      do i= nCLp+1,npqr
       vmax2= vth3
       vx(i)= dgaus2(vmax2)
       vy(i)= dgaus2(vmax2)
       vz(i)= dgaus2(vmax2)
       end do
 !
-!* Nullify counter/coions
+!* Nullify counterions and coions
       svx1= 0
       svy1= 0
       svz1= 0
       ncti= 0
 !
-      do i= np+1,np+nq1  ! counterions
+      do i= np+1,np+nq1  ! Counterions
       svx1= svx1 +vx(i)
       svy1= svy1 +vy(i)
       svz1= svz1 +vz(i)
       ncti= ncti +1
       end do
+!
       svx1= svx1/ncti
       svy1= svy1/ncti
       svz1= svz1/ncti
@@ -2932,39 +3001,41 @@
       svz1= 0
       ncti= 0
 !
-      do i= np+nq1,np+nq
+      do i= np+nq1,npq0  !<-- Coions
       svx1= svx1 +vx(i)
       svy1= svy1 +vy(i)
       svz1= svz1 +vz(i)
       ncti= ncti +1
       end do
+!
       svx1= svx1/ncti
       svy1= svy1/ncti
       svz1= svz1/ncti
 !
-      do i= np+nq1,np+nq
+      do i= np+nq1,npq0  !<--
       vx(i)= vx(i) -svx1
       vy(i)= vy(i) -svy1
       vz(i)= vz(i) -svz1
       end do
 !
-!* Nulify water
+!* Nulify water molecules
       svx1= 0
       svy1= 0
       svz1= 0
       ncti= 0
 !
-      do i= np+nq+1,npqr
+      do i= nCLp+1,npqr
       svx1= svx1 +vx(i)
       svy1= svy1 +vy(i)
       svz1= svz1 +vz(i)
       ncti= ncti +1
       end do
+!
       svx1= svx1/ncti
       svy1= svy1/ncti
       svz1= svz1/ncti
 !
-      do i= np+nq+1,npqr
+      do i= nCLp+1,npqr
       vx(i)= vx(i) -svx1
       vy(i)= vy(i) -svy1
       vz(i)= vz(i) -svz1
@@ -2978,12 +3049,12 @@
         end do
 !
         s1= 0
-        do i= np+1,np+nq
+        do i= np+1,nCLp 
         s1= s1 +am(i)*(vx(i)**2 +vy(i)**2 +vz(i)**2)
         end do
 !
         s2= 0
-        do i= np+nq+1,npqr
+        do i= nCLp+1,npqr
         s2= s2 +am(i)*(vx(i)**2 +vy(i)**2 +vz(i)**2)
         end do
 !
@@ -3039,6 +3110,9 @@
       function dgaus2 (vmax)
 !---------------------------------------------------------------
       use, intrinsic :: iso_c_binding
+!
+      integer(C_INT) k,k2
+      real(C_float) dgaus2,vmax,fv,vv0,dv,eps,ranff
       common/gaus1/ fv(51),vv0,dv
 !
       eps= ranff(0.)
