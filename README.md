@@ -1,16 +1,16 @@
 ## Charge inversion and nanoscale phenomena for living cells ##
 
-Simple and good models of giant charge inversion or nanoscale phenomena are created 
-for living cells, and molecular dynamics simulations are execcuted (Refs. 1-5).
-"DNA in nanopores" in Ref. 5 is simulated for DNA transport where counterion condensation 
+Giant charge inversion and/or nanoscale phenomena for living cells are studied 
+using fortran 2003, and molecular dynamics simulations are execcuted (Refs. 1-5).
+"DNA in nanopores" in Ref. 5 is simulated for DNA transport, where counterion condensation 
 and coion depletion are the key in the nanoscale pores of human cells.
 
-The molecular dynamics simulations are made in several settings, and they are
-discussed in the articles. Gaint charge inversion in this case is about macroions 
+The molecular dynamics simulation codes are created in several settings, and they are
+discussed in the articles. Gaint charge inversion is about the macroions 
 surrounded by the electrolyte of multivalent counterions and monovalent coions.
 The simulation code @chginv3.f03 with parm_inv13.h and CIMV13_config.START3 is used.
-The first 40 lines are for the title, author, and structure of the code, and 
-other important things are explained thereafter.
+The first 40 lines are for the title, author, equation, and structure of the code, 
+while other important things are explained thereafter.
 Main subroutines are moldyn, realteil, p3m_perform, and Gopen graphic packages.
 
 The simulation run is utilized in terms of MPI and FFTW3 packages, and PDF's 
