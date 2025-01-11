@@ -2,14 +2,15 @@
 
 Simple and good models of giant charge inversion or nanoscale phenomena are created 
 for living cells, and molecular dynamics simulations are execcuted (Refs. 1-5).
-"DNA in nanopores" in Ref. 5 is simulated for DNA transportation where counterion condensation 
+"DNA in nanopores" in Ref. 5 is simulated for DNA transport where counterion condensation 
 and coion depletion are the key in the nanoscale pores of human cells.
 
 The molecular dynamics simulations are made in several settings, and they are
 discussed in the articles. Gaint charge inversion in this case is about macroions 
 surrounded by the electrolyte of multivalent counterions and monovalent coions.
-The simulation code @chginv3.f03 with parm_inv3.h and CIMV3_config.START3 is used.
-The description of the code is explained in important lines on top of first 50 lines.
+The simulation code @chginv3.f03 with parm_inv13.h and CIMV13_config.START3 is used.
+The first 40 lines are for the title, author, and structure of the code, and 
+other important things are explained thereafter.
 Main subroutines are moldyn, realteil, p3m_perform, and Gopen graphic packages.
 
 The simulation run is utilized in terms of MPI and FFTW3 packages, and PDF's 
