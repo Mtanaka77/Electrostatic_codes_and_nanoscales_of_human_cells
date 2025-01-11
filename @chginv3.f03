@@ -1,4 +1,4 @@
-!*----------------------------------------------- Update: 2025/01 --*
+!*-------------------------------------------- Update: 2025/01/11 --*
 !*                                                                  *
 !*   ## Giant Charge Inversion of Macroions by Counter/Co-Ions ##   *
 !*                                                                  *
@@ -15,7 +15,7 @@
 !*        dt     ma^3   r^3    ma^2   r*r      r        2 r         *
 !*                                                                  *
 !*                t^2*e  Edc0(V/cm)                                 *
-!*              + ------ ----------  -mue*m_i*v                                *
+!*              + ------ ----------                                 *                          *
 !*                  ma     300                                      *
 !*                                                                  * 
 !*    ccel = 48.d0*pref_eps*epsav*snt*(snt-0.5d0)*sqrt(rsi/r2)      *
@@ -49,7 +49,7 @@
       use, intrinsic :: iso_c_binding
       implicit none
 !
-      include 'param_inv3.h'
+      include 'param_inv13.h'
       include 'mpif.h'
 !
       real(C_DOUBLE) ctime1,ctime2,ctime
@@ -111,7 +111,7 @@
       use, intrinsic :: iso_c_binding
       implicit none
 !
-      include 'param_inv3.h'
+      include 'param_inv13.h'
       include 'mpif.h'
 !
       real(C_DOUBLE)  tt,unif1,unif2
@@ -149,7 +149,7 @@
       use, intrinsic :: iso_c_binding
       implicit none
 !
-      include    'param_inv3.h'
+      include    'param_inv13.h'
       include    'mpif.h'
 !
       integer(C_int) ipar,igrp,size,io_pe,num_proc
@@ -477,7 +477,7 @@
       use, intrinsic :: iso_c_binding
       implicit none
 !
-      include  'param_inv3.h'
+      include  'param_inv13.h'
 
       integer(C_int) nframe,igrp,io_pe,num_proc
       common/sub_proc/ io_pe,num_proc
@@ -505,7 +505,7 @@
       use, intrinsic :: iso_c_binding
       implicit none
 !
-      include    'param_inv3.h'
+      include    'param_inv13.h'
       include    'mpif.h'
 !
       real(C_DOUBLE),dimension(npqr0) :: &
@@ -718,9 +718,6 @@
 !     vth3 = sqrt(2.d0*kbT/(am(np+nq+1)*w_unit))/(a_unit/t_unit)
 !--------------------------------------------
 !
-!     epsilj= epsilj0/Temp
-!     gamma= Bjerrum0 /(aLJ*Temp)
-!
 !     gamma= scale_c /surreps   include in L.300
 !     prefactor = gamma 
 !
@@ -761,9 +758,9 @@
       do i= 1,npqr
       dtm= dt/am(i)
 !
-      vx(i)= vx(i) +(frx(i) +ch(i)*exc)*dtm !-mue*am(i)*vx(i)
-      vy(i)= vy(i) +(fry(i)           )*dtm !-mue*am(i)*vy(i)
-      vz(i)= vz(i) +(frz(i)           )*dtm !-mue*am(i)*vz(i)
+      vx(i)= vx(i) +(frx(i) +ch(i)*exc)*dtm 
+      vy(i)= vy(i) +(fry(i)           )*dtm 
+      vz(i)= vz(i) +(frz(i)           )*dtm 
 !
       xg(i)= xg(i) +dt*vx(i)
       yg(i)= yg(i) +dt*vy(i)
@@ -1115,7 +1112,7 @@
 !-------------------------------------------------------------
       use, intrinsic :: iso_c_binding
       implicit none
-      include   'param_inv3.h'
+      include   'param_inv13.h'
 !
       real(C_float)  x0(npio),y0(npio),z0(npio),ch(npio),ag(npio), &
                      xg(npio),yg(npio),zg(npio),phi,tht,dtwr,dtwr2
@@ -1461,7 +1458,7 @@
       use, intrinsic :: iso_c_binding
       implicit none
 !*
-      include    'param_inv3.h'
+      include    'param_inv13.h'
       include    'mpif.h'
 !
       real(C_DOUBLE),dimension(npqr0) :: &
@@ -1670,7 +1667,7 @@
       use omp_lib
       implicit none
 !
-      include    'param_inv3.h'
+      include    'param_inv13.h'
       include    'aslfftw3.f03'                 ! SX
 !     include    'fftw3.f03'                    ! LX
 !     include    '/opt/fftw3/include/fftw3.f03' ! physique
@@ -1947,7 +1944,7 @@
       use, intrinsic :: iso_c_binding
       implicit none
 !
-      include  'param_inv3.h'
+      include  'param_inv13.h'
 !
       real(C_DOUBLE) t_unit,a_unit,w_unit,e_unit,  &
                      kjoule,kcal,mol,kbT,Bjerrum
@@ -1955,7 +1952,7 @@
       common/unit2/ kjoule,kcal,mol,kbT
       common /elsta/ Bjerrum
 !
-!     integer*4   P_max,MINTPOL --> param_inv3.h
+!     integer*4   P_max,MINTPOL --> param_inv13.h
       integer(C_int) io_pe,num_proc
       common/sub_proc/ io_pe,num_proc
 !
@@ -2002,9 +1999,9 @@
       use, intrinsic :: iso_c_binding
       implicit none
 !
-      include  'param_inv3.h'
+      include  'param_inv13.h'
 !
-!  Brillouin --> param_inv3.h
+!  Brillouin --> param_inv13.h
       integer(C_int) io_pe,num_proc
       common/sub_proc/ io_pe,num_proc
 !
@@ -2068,9 +2065,9 @@
       use, intrinsic :: iso_c_binding
       implicit none
 !
-      include  'param_inv3.h'
+      include  'param_inv13.h'
 !
-!     integer*4   P_max,MINTPOL --> param_inv3.h
+!     integer*4   P_max,MINTPOL --> param_inv13.h
       integer(C_int) io_pe,num_proc,i
       common/sub_proc/ io_pe,num_proc
 !  
@@ -2100,9 +2097,9 @@
       use, intrinsic :: iso_c_binding
       implicit none
 !
-      include  'param_inv3.h'
+      include  'param_inv13.h'
 !
-!     integer*4   P_max,MINTPOL --> param_inv3.h
+!     integer*4   P_max,MINTPOL --> param_inv13.h
       real(C_DOUBLE) alpha,length,dmesh,prefactor,pref_eps,econv, &
                      meshift,Dn,Ghat,pi
       common/ewald1/ alpha,length,dmesh,prefactor,pref_eps,econv
@@ -2165,9 +2162,9 @@
       use, intrinsic :: iso_c_binding
       implicit none
 !
-      include  'param_inv3.h'
+      include  'param_inv13.h'
 !
-!     integer*4   P_max,MINTPOL --> param_inv3.h
+!     integer*4   P_max,MINTPOL --> param_inv13.h
       integer(C_int) io_pe,num_proc,i
       common/sub_proc/ io_pe,num_proc
 !
@@ -2303,9 +2300,9 @@
       use, intrinsic :: iso_c_binding
       implicit none
 !
-      include  'param_inv3.h'
+      include  'param_inv13.h'
 !
-!     integer*4   P_max,MINTPOL --> param_inv3.h
+!     integer*4   P_max,MINTPOL --> param_inv13.h
       integer(C_int) io_pe,num_proc,i
       common/sub_proc/ io_pe,num_proc
 !
@@ -2391,7 +2388,7 @@
       use, intrinsic :: iso_c_binding
       implicit none
 !
-      include    'param_inv3.h'
+      include    'param_inv13.h'
 !
       integer(C_int) io_pe,num_proc
       common/sub_proc/ io_pe,num_proc
@@ -2587,7 +2584,7 @@
       use, intrinsic :: iso_c_binding
       implicit none
 !
-      include  'param_inv3.h'
+      include  'param_inv13.h'
 !
       real(C_DOUBLE) alpha,length,dmesh,prefactor,pref_eps,econv
       integer(C_INT) npartcls
@@ -2685,7 +2682,7 @@
 !************************
       use, intrinsic :: iso_c_binding
       implicit none
-      include 'param_inv3.h'
+      include 'param_inv13.h'
 !
       real(C_DOUBLE),dimension(npqr0) :: &
                        x,y,z,vx,vy,vz,ch,am,ag,ep
@@ -3148,7 +3145,7 @@
 !-----------------------------------------------------------
       use, intrinsic :: iso_c_binding
       implicit none
-      include  'param_inv3.h'
+      include  'param_inv13.h'
 !
       real(C_DOUBLE) vx(npq0),vy(npq0),vz(npq0),am(npq0)
       real(C_float)  fvx(51),fvy(51),fvz(51),xsc(51)
@@ -3275,7 +3272,7 @@
       use, intrinsic :: iso_c_binding
       implicit none
 !
-      include 'param_inv3.h'
+      include 'param_inv13.h'
       real(C_float),dimension(nhist) :: &
                    ekin,ekn2,ekn3,ecr,elj,ep3m,pot,time,           &
                    vxio,vxco,vxct,vxmc,vxtot,xmcc,vxwat,etot,      &
@@ -3799,11 +3796,12 @@
 !*   CONTOUR PLOTS OF SCALAR QUANTITIES.                               *
 !***********************************************************************
       use, intrinsic :: iso_c_binding
-      include 'param_inv3.h'
+      include 'param_inv13.h'
 !
       character(len=8) label,cdate*10,ctime*8,char
       common/headr1/  label,cdate,ctime
       common/headr2/ time,xleng
+!
       integer(C_INT) pxr,pxc,pxl,pyr,pyc,pyl,pzr,pzc,pzl
       common/ptable/ pxr(mx1),pxc(mx1),pxl(mx1),pyr(my1),pyc(my1),&
                      pyl(my1),pzr(mz1),pzc(mz1),pzl(mz1)
