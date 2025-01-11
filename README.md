@@ -14,8 +14,10 @@ while other important things are explained thereafter.
 Main subroutines are moldyn, realteil, p3m_perform, and Gopen graphic packages.
 
 The simulation run is utilized in terms of MPI and FFTW3 packages, and PDF's 
-of Ref. 1 are shown with figures. In the articles (Refs. 1-5), the figures 
-are illustrated partly in color pictures.  
+of Ref. 1 are shown with figures. We can see the occurence of charge inversion 
+by looking at sharp peaks in charge distribution functions around the macroions. 
+
+In the articles (Refs. 1-5), the figures are best illustrated, partly in color pictures.  
 
 
 ## References ##
