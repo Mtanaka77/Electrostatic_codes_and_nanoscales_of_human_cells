@@ -24,10 +24,11 @@ From the figures, there are two requirements for the giant inversion, namely,
 (1) the multivalent counterions and monovalent coions exist around macroions, and 
 (2) the Coulomb energy is bigger than thermal energy of such macroions.
 
-In the articles (Refs. 1-5), the figures are best illustrated, partly 
+In the listed articles, the figures are best illustrated, partly 
 in color pictures. The PDF file cimv15_773a.pdf shows a stationary macroion,
-for which the first peak of counterions exists by cimv15_78.pdf close to the 
-macroion's surface.
+for which the first peak of counterions exists close to the macroion's surface
+of cimv15_78.pdf.
+
 
 ## References ##
 1. M. Tanaka and A.Yu Grosberg, J.Chem.Phys., vol.115, 567-574 (2001).
