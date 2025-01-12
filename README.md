@@ -14,13 +14,14 @@ while other important things are explained thereafter.
 Main subroutines are moldyn, realteil, p3m_perform, and Gopen graphic packages.
 
 The simulation run is utilized in terms of MPI and FFTW3 packages, and PDF's 
-of Ref. 1 are shown with figures. We can see the occurence of charge inversion 
+of Ref. 1 are shown with figures. We can see the occurrence of charge inversion 
 by looking at sharp peaks in charge distribution functions around the macroions. 
 From the figures, there are two requirements for the giant inversion, namely,
 (1) the multivalent counterions and monovalent coions exist around macroions, and 
-(2) the Coulomb energy is bigger than thermal energy of such ions.
+(2) the Coulomb energy is bigger than thermal energy of such macroions.
 
-In the articles (Refs. 1-5), the figures are best illustrated, partly in color pictures.  
+In the listed articles (Refs. 1-5), the figures are best illustrated, partly 
+in color pictures.  
 
 ## References ##
 1. M. Tanaka and A.Yu Grosberg, J.Chem.Phys., vol.115, 567-574 (2001).
