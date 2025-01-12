@@ -58,7 +58,7 @@
       tmax= 110001. !<--
       tequil=    0. !<--
 !
-      midfix='cimv23'  !<--
+      midfix='cimv13'  !<--
       icmax= 1         !<-- 3a
 !
       postfix(1)= '3a' !<--
@@ -80,7 +80,7 @@
 !--------------------------------------------------
 !
       fig_label= 'CHG_INV '
-      praefixs= midfix ! cimv23
+      praefixs= midfix ! cimv21
       praefixo= midfix ! 
 !
       it= 0
@@ -114,8 +114,7 @@
    50 format('np,nq1,nq2,npq=',4i7)
 !
 !  gfortran @wat_radial3.f03
-!     Maximum wave number= dd*50= 20. -> dd=20./50
-!     ir= (50/20.)*rr +1.001  L.300
+!     Maximum wave number 20= dd*50 -> dd=20./50
       dd=  20./50
 !
       if(ic.eq.1) then
