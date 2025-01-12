@@ -24,7 +24,7 @@ From the figures, there are two requirements for the giant inversion, namely,
 (2) the Coulomb energy is bigger than thermal energy of such macroions.
 
 In the articles (Refs. 1-5), the figures are best illustrated, partly 
-in color pictures.  
+in color pictures. The PDF file  
 
 ## References ##
 1. M. Tanaka and A.Yu Grosberg, J.Chem.Phys., vol.115, 567-574 (2001).
