@@ -9,9 +9,10 @@ of human cells.
 The molecular dynamics simulation codes are created in several settings, and they are
 discussed in the articles. Gaint charge inversion is about the macroions 
 surrounded by the electrolyte of multivalent counterions and monovalent coions.
-The simulation code @chginv3.f03 with parm_inv13.h and CIMV13_config.START3 is used.
-The first 40 lines are for the title, author, equation, and structure of the code, 
-while other important things are explained thereafter.
+The simulation code @chginv5.f03 with parm_inv15.h and CIMV15_config.START3 is used.
+The equation of motion has the Lengevin thermostat on top of Coulomb and Lennard-Jones
+forces, as are the first 40 lines of the title, author, equation of motion, and 
+structure of the code. Other important remarks are explained thereafter.
 Main subroutines are RUN_MD, moldyn, realteil, p3m_perform, and Gopen graphic packages.
 
 The simulation run is utilized in terms of MPI and FFTW3 packages, and PDF's 
@@ -21,7 +22,7 @@ From the figures, there are two requirements for the giant inversion, namely,
 (1) the multivalent counterions and monovalent coions exist around macroions, and 
 (2) the Coulomb energy is bigger than thermal energy of such macroions.
 
-In the listed articles (Refs. 1-5), the figures are best illustrated, partly 
+In the articles (Refs. 1-5), the figures are best illustrated, partly 
 in color pictures.  
 
 ## References ##
