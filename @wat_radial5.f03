@@ -164,8 +164,7 @@
       it= it +1
 !
       if(t.ge.tequil) then
-        exc = econv *Edc4 * sin(pi2*(t -tequil)/tau_wave) &
-                           *(1. -exp(-(t -tequil)/200.))
+        exc = Edc4 
       else
         exc= 0
       end if
@@ -331,16 +330,16 @@
       accum(i)= accum(i-1) +hmpn(i)
       end do
 !
-      CALL SYMBOL ( 8.0,18.0,0.7,'@radial5.f03',0.,12)
-      CALL SYMBOL (13.5,18.0,0.7,'date: ',0.,6)
-      CALL SYMBOL (15.1,18.0,0.7,cdate,0.,10)
-      CALL SYMBOL (20.0,18.0,0.7,'time: ',0.,6)
-      CALL SYMBOL (21.6,18.0,0.7,ctime,0.,8)
+      CALL SYMBOL ( 5.0,18.0,0.7,'@radial5.f03',0.,12)
+      CALL SYMBOL ( 9.0,18.0,0.7,'date: ',0.,6)
+      CALL SYMBOL (10.6,18.0,0.7,cdate,0.,10)
+      CALL SYMBOL (14.5,18.0,0.7,'time: ',0.,6)
+      CALL SYMBOL (16.1,18.0,0.7,ctime,0.,8)
 !
-      CALL SYMBOL (12.0,17.2,0.7,'Edc=',0.,4)
-      CALL VALUES (13.5,17.2,0.7,edc4,0.,101)
-      CALL SYMBOL (17.0,17.2,0.7,'tau=',0.,4)
-      CALL VALUES (18.5,17.2,0.7,tau_wave,0.,101)
+      CALL SYMBOL (11.0,17.2,0.7,'Edc=',0.,4)
+      CALL VALUES (12.5,17.2,0.7,edc4,0.,101)
+!     CALL SYMBOL (17.0,17.2,0.7,'tau=',0.,4)
+!     CALL VALUES (18.5,17.2,0.7,tau_wave,0.,101)
 !
       nxmax= kmax ! just cut
 !

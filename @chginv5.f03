@@ -1141,26 +1141,25 @@
       Zcp4  = Zcp
       Zcn4  = Zcn
       Edc4  = Edc
-      CALL SYMBOL (0.5,16.0,HH,'Qcore=  ', 0.,8)
-      CALL VALUES (3.5,16.0,HH,Qcore4,0.,101)
-      CALL SYMBOL (8.0,16.0,HH,'Zcp=', 0.,4)
-      CALL VALUES (9.8,16.0,HH,Zcp4,0.,101)
-      CALL SYMBOL (14.3,16.0,HH,'Zcn=', 0.,4)
-      CALL VALUES (16.5,16.0,HH,Zcn4,0.,101)
-      CALL SYMBOL (20.3,16.0,HH,'Edc=', 0.,4)
-      CALL VALUES (22.5,16.0,HH,Edc4,0.,101)
 !
-      Bjerrum4 = Bjerrum
+      CALL SYMBOL (0.5,16.0,HH,'Qcore=', 0.,6)
+      CALL VALUES (3.0,16.0,HH,Qcore4,0.,101)
+      CALL SYMBOL (7.5,16.0,HH,'Zcp=', 0.,4)
+      CALL VALUES (9.3,16.0,HH,Zcp4,0.,101)
+      CALL SYMBOL (13.8,16.0,HH,'Zcn=', 0.,4)
+      CALL VALUES (15.8,16.0,HH,Zcn4,0.,101)
+      CALL SYMBOL (19.8,16.0,HH,'Edc=', 0.,4)
+      CALL VALUES (21.8,16.0,HH,Edc4,0.,101)
+!
+!     Bjerrum4 = Bjerrum
       Rmac4    = Rmac
       Wmac4    = Wmac
-      CALL SYMBOL (0.5,15.0,HH,'Bjerr=', 0.,6)
-      CALL VALUES (3.5,15.0,HH,Bjerrum4,0.,101)
-      CALL SYMBOL (8.0,15.0,HH,'Rmac= ', 0.,6)
-      CALL VALUES (9.8,15.0,HH,Rmac4,0.,101)
-      CALL SYMBOL (14.3,15.0,HH,'npq= ', 0.,5)
-      CALL VALUES (16.5,15.0,HH,float(npio),0.,101)
-      CALL SYMBOL (20.3,15.0,HH,'Wmac= ', 0.,6)
-      CALL VALUES (23.5,15.0,HH,Wmac4,0.,101)
+      CALL SYMBOL ( 0.5,15.0,HH,'Rmac=', 0.,5)
+      CALL VALUES ( 2.8,15.0,HH,Rmac4,0.,101)
+      CALL SYMBOL ( 7.0,15.0,HH,'npq=', 0.,4)
+      CALL VALUES ( 9.1,15.0,HH,float(npio),0.,101)
+      CALL SYMBOL (13.8,15.0,HH,'Wmac=', 0.,5)
+      CALL VALUES (15.8,15.0,HH,Wmac4,0.,101)
 !
       fsize= 8.
       HL= 11.
