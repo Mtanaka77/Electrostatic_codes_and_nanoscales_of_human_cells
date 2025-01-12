@@ -2,8 +2,9 @@
 
 Giant charge inversion and/or nanoscale phenomena for living cells are studied 
 using fortran 2003, and molecular dynamics simulations are execcuted (Refs. 1-5).
-"DNA in nanopores" in Ref. 5 is simulated for DNA transport, where counterion condensation 
-and coion depletion are the key in the nanoscale pores of human cells.
+"DNA in nanopores" in Ref. 5 is simulated for DNA transportation, where 
+counterion condensation and coion depletion are the key of the nanoscale pores 
+of human cells.
 
 The molecular dynamics simulation codes are created in several settings, and they are
 discussed in the articles. Gaint charge inversion is about the macroions 
