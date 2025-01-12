@@ -11,7 +11,7 @@ surrounded by the electrolyte of multivalent counterions and monovalent coions.
 The simulation code @chginv3.f03 with parm_inv13.h and CIMV13_config.START3 is used.
 The first 40 lines are for the title, author, equation, and structure of the code, 
 while other important things are explained thereafter.
-Main subroutines are moldyn, realteil, p3m_perform, and Gopen graphic packages.
+Main subroutines are RUN_MD, moldyn, realteil, p3m_perform, and Gopen graphic packages.
 
 The simulation run is utilized in terms of MPI and FFTW3 packages, and PDF's 
 of Ref. 1 are shown with figures. We can see the occurrence of charge inversion 
