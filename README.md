@@ -22,9 +22,7 @@ From the figures, there are two requirements for the giant inversion, namely,
 
 In the articles (Refs. 1-5), the figures are best illustrated, partly in color pictures.  
 
-
 ## References ##
-
 1. M. Tanaka and A.Yu Grosberg, J.Chem.Phys., vol.115, 567-574 (2001).
 2. M. Tanaka and A.Yu Grosberg, Euro.Phys.J., E7, 371-379 (2002).
 3. M. Tanaka, Phys.Reviews., E68, 061501 (2003).
