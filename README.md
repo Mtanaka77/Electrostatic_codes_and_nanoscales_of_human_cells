@@ -12,7 +12,7 @@ surrounded by the electrolyte of multivalent counterions and monovalent coions.
 The simulation code is @chginv5.f03 with the paramer file parm_inv15.h and 
 the configure file CIMV15_config.START3.
 The equation of motion in Eq.(1) of Ref.1 has the Lengevin thermostat on top of 
-Coulomb and Lennard-Jones forces.
+Coulomb and Lennard-Jones forces of the righthand side.
 The first 40 lines of the code are the title, author, equation of motion, and 
 structure of the code. Other important remarks are explained thereafter.
 Main subroutines are RUN_MD, moldyn, realteil, p3m_perform, and Gopen graphic packages.
