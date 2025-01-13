@@ -26,8 +26,8 @@ From the figures, there are two requirements for the giant inversion, namely,
 
 In the listed articles, the figures are best illustrated, partly 
 in color pictures. The PDF file cimv15_773a.pdf in the Langevin thermostat 
-shows a rather stationary macroion. The first peak of counterions exists 
-very close to the macroion's surface at R= Rmac of cimv15_78.pdf.
+shows a rather stationary macroion. The first peak of counterions at the top-left 
+panel exists very close to the macroion's surface at R= Rmac of cimv15_78.pdf.
 
 
 ## References ##
