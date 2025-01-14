@@ -27,7 +27,7 @@ From the figures, there are two requirements for the giant inversion, namely,
 In the listed articles, the figures are best illustrated, partly 
 in color pictures. The PDF file cimv13_773a.pdf in the Langevin thermostat 
 shows a rather stationary macroion. The first peak of counterions at the top-left 
-panel exists very close to the macroion's surface at R= Rmac - (Rmac+5 Ang) of cimv13_78.pdf.
+panel exists very close to the macroion's surface at R= Rmac to (Rmac+5 Ang) of cimv13_78.pdf.
 We use K^+ counterions with the radius 2.0 Ang and Cl^- coions with 5.2 Ang 
 (t_unit= 0.01d-12 s, a_unit= 1.00d-08 cm, w_unit= 1.6605d-24 g, 
 e_unit= 4.803d-10 esu, and \epsilon=78).
