@@ -22,7 +22,7 @@ with figures. We can see the occurrence of giant charge inversion by looking at
 sharp peaks in charge distribution functions around the macroions. 
 From the figures, there are two requirements for the giant inversion, namely,
 (1) the multivalent counterions and monovalent coions exist around macroions, and 
-(2) the Coulomb energy is bigger than thermal energy of such macroions.
+(2) the Coulomb energy is larger than thermal energy of macroions and counterions.
 
 In the listed articles, the figures are best illustrated, partly 
 in color pictures. The PDF file cimv15_773a.pdf in the Langevin thermostat 
