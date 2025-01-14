@@ -9,8 +9,8 @@ of human cells.
 The molecular dynamics simulation codes are created in several settings, and they are
 discussed in the articles. Gaint charge inversion is about the macroions 
 surrounded by the electrolyte of multivalent counterions and monovalent coions.
-The simulation code is @chginv5.f03 with the paramer file parm_inv15.h and 
-the configure file CIMV15_config.START3.
+The simulation code is @chginv3.f03 with the paramer file parm_inv13.h and 
+the configure file CIMV13_config.START3.
 The equation of motion in Eq.(1) of Ref.1 has the Lengevin thermostat on top of 
 Coulomb and Lennard-Jones forces of the righthand side.
 The first 40 lines of the code are the title, author, equation of motion, and 
@@ -25,9 +25,9 @@ From the figures, there are two requirements for the giant inversion, namely,
 (2) the Coulomb energy is larger than thermal energy of macroions and counterions.
 
 In the listed articles, the figures are best illustrated, partly 
-in color pictures. The PDF file cimv15_773a.pdf in the Langevin thermostat 
+in color pictures. The PDF file cimv13_773a.pdf in the Langevin thermostat 
 shows a rather stationary macroion. The first peak of counterions at the top-left 
-panel exists very close to the macroion's surface at R= Rmac of cimv15_78.pdf
+panel exists very close to the macroion's surface at R= Rmac of cimv13_78.pdf
 (t_unit= 0.01d-12 s, a_unit= 1.00d-08 cm, w_unit= 1.6605d-24 g, 
 e_unit= 4.803d-10 esu, and \epsilon=78).
 
