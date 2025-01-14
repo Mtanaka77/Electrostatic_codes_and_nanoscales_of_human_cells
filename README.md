@@ -17,9 +17,9 @@ The first 40 lines of the code are the title, author, equation of motion, and
 structure of the code. Other important remarks are explained thereafter.
 Main subroutines are RUN_MD, moldyn, realteil, p3m_perform, and Gopen graphic packages.
 
-The simulation run is utilized in terms of MPI and FFTW3 packages, and PDF's 
-of Ref. 1 are shown with figures. We can see the occurrence of charge inversion 
-by looking at sharp peaks in charge distribution functions around the macroions. 
+The simulation code utilizes the MPI and FFTW3 packages, and PDF's of Ref. 1 are shown 
+with figures. We can see the occurrence of giant charge inversion by looking at 
+sharp peaks in charge distribution functions around the macroions. 
 From the figures, there are two requirements for the giant inversion, namely,
 (1) the multivalent counterions and monovalent coions exist around macroions, and 
 (2) the Coulomb energy is bigger than thermal energy of such macroions.
