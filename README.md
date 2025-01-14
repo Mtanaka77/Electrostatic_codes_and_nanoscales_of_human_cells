@@ -28,8 +28,8 @@ In the listed articles, the figures are best illustrated, partly
 in color pictures. The PDF file cimv15_773a.pdf in the Langevin thermostat 
 shows a rather stationary macroion. The first peak of counterions at the top-left 
 panel exists very close to the macroion's surface at R= Rmac of cimv15_78.pdf
-(t_unit= 0.01d-12 s, a_unit= 1.00d-08 cm, w_unit= 1.6605d-24, e_unit= 4.803d-10 esu,
-and epsilon=78).
+(t_unit= 0.01d-12 s, a_unit= 1.00d-08 cm, w_unit= 1.6605d-24 g, 
+e_unit= 4.803d-10 esu, and \epsilon=78).
 
 ## References ##
 1. M. Tanaka and A.Yu Grosberg, J.Chem.Phys., vol.115, 567-574 (2001).
