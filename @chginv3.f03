@@ -1,4 +1,4 @@
-!*-------------------------------------------- Update: 2025/01/14 --*
+!*-------------------------------------------- Update: 2025/01/15 --*
 !*                                                                  *
 !*   ## Giant Charge Inversion of Macroions by Counter/Co-Ions ##   *
 !*                                                                  *
@@ -15,8 +15,8 @@
 !*        dt     ma^3   r^3    ma^2   r*r      r        2 r         *
 !*                                                                  *
 !*                t^2*e  Edc0(V/cm)                                 *
-!*              + ------ ----------  -mue*ag(i)*v                   *
-!*                  ma     300        Langevin thermostat           *
+!*              + ------ ----------  -(mue0*a^2/t) mue*ag(i)*v      *
+!*                  ma     300         Langevin thermostat          *
 !*                                                                  * 
 !*    ccel = 48.d0*pref_eps*epsav*snt*(snt-0.5d0)*sqrt(rsi/r2)      *
 !*    forceV = prefactor*ch(i)*ch(j)* &                             *
@@ -272,6 +272,12 @@
       mol  = 6.0220d+23
       kbT  = 1.3807d-16 *temperat   ! READ_CONF, erg in Kelvin
 !
+!  Four basic quantities of one's in CGS
+!     t_unit = 1.0000d-15  ! 0.01 ps
+!     a_unit = 1.0000d-08  ! 1 Angstrom
+!     w_unit = 1.6605d-24  ! m_proton
+!     e_unit = 4.8033d-10  ! charge esu
+!
 !!    eps= k_B*T for LJ eq. and epsilon=78 for C.coupling are different !
 !!    scale_c  = (t_unit*e_unit)**2 /(w_unit*a_unit**3)
 !!    pref_eps = t_unit**2/(w_unit*a_unit**2)
@@ -279,10 +285,10 @@
 !*     ^  dv    (t*e)^2 qq'R   t^2  48*eps'R   r0       1 r0        *
 !*     m ---- = -------*---- + ----*-------- [(--)^12 - -(--)^6]    * 
 !*        dt     ma^3   r^3    ma^2   r*r      r        2 r         *
-!*
-!*                 t^2*e  Edc0(V/cm)
-!*              + ------ ----------  -mue*ag(i)*v                   *
-!*                  ma     300        Langevin thermostat           *
+!*                                                                  *
+!*                t^2*e  Edc0(V/cm)                                 *
+!*              + ------ ----------  -(mue0* a^2/t) mue*ag(i)*v     *
+!*                  ma     300         Langevin thermostat          *
 !
 !       ccel = 48.d0*pref_eps*epsav*snt*(snt-0.5d0)*sqrt(rsi/r2)
 !       forceV = prefactor*ch(i)*ch(j)*                            &
@@ -585,7 +591,7 @@
                      kjoule,kcal,mol,kbT
       common/units/ t_unit,a_unit,w_unit,e_unit
       common/unit2/ kjoule,kcal,mol,kbT
-      logical  if_write06/.true./
+      logical ::    if_write06/.true./,if_mue/.true./
 !
 !--------------------------
 !*  Initial condition.
@@ -697,9 +703,6 @@
 !************************************************
 !*  Free relaxation in the initial stage.       *
 !************************************************
-!  Temp below is relative to the initial one.
-!     Temp= 1.d0/2.d0**(t/2500.d0)
-!
 !*   <(1/2)*m v**2>= (3/2) kT, n a**3=1. in /init/
 !--------------------------------------------
 !     vth  = sqrt(2.d0*kbT/(Wmac*w_unit)) /(a_unit/t_unit)
@@ -717,7 +720,7 @@
       if(t8.lt.10.d0) then
         Exc= 0.d0
       else
-        Exc= Edc  ! Already converted
+        Exc= Edc  ! Already converted Edc0 -> Edc
       end if
 !
 !************************************************
@@ -745,8 +748,14 @@
 !-------------------------
 !*   Velocity update.
 !-------------------------
-!  the Langevin thermostat
-      mue= 1/200.d0  ! 0.d0
+!  the Langevin thermostat   10^-1/10^2
+!    -(mue0* a^2/t) mue*ag(i)*v -> 10^-1/10^2=10^-3
+      mue= a_unit**2/t_unit/(100.d0*1.d0)
+!
+      if(io_pe.eq.1 .and. if_mue) then
+        if_mue= .false.
+        write(11,*) 'thermostat mue=',mue
+      end if  
 !
       do i= 1,npqr
       dtm= dt/am(i)
@@ -1111,26 +1120,25 @@
                      xg(npio),yg(npio),zg(npio),phi,tht,dtwr,dtwr2
       integer(C_INT) np,nq
 !
-      real(C_DOUBLE)  xmax,ymax,zmax,                         &
-                      Bjerrum,qfrac,Qcore,Rmac,Wmac,Zcp,Zcn,Edc
-      common/parm3/   xmax,ymax,zmax,phi,tht,dtwr,dtwr2
-      common /elsta/  Bjerrum
-      common/cntion/  qfrac,Qcore,Rmac,Wmac,Zcp,Zcn
-      common/EBfild/  Edc
+      real(C_DOUBLE) alpha,length,dmesh,prefactor,pref_eps,econv,  &
+                     xmax,ymax,zmax,dx,dy,dz,rr,                   &
+                     Bjerrum,qfrac,Qcore,Rmac,Wmac,Zcp,Zcn,Edc
+      common/ewald1/ alpha,length,dmesh,prefactor,pref_eps,econv
+      common/parm3/  xmax,ymax,zmax,phi,tht,dtwr,dtwr2
+      common /elsta/ Bjerrum
+      common/cntion/ qfrac,Qcore,Rmac,Wmac,Zcp,Zcn
+      common/EBfild/ Edc
 !
       character(len=8) label,cdate*10,ctime,cax*1
       common/headr1/   label,cdate,ctime
       real(C_float)  time,xleng
       common/headr2/ time,xleng
 !
-      real(C_DOUBLE) alpha,length,dmesh,prefactor,pref_eps,econv
-      common/ewald1/ alpha,length,dmesh,prefactor,pref_eps,econv
-!
       integer(C_INT) i,j,k,nph1,nph2,nhi
-      real(C_float)  fsize,rmax1,xx,yy,ps,dd1,dd2,                     &
-                     HH,Qcore4,Zcp4,Zcn4,Edc4,Bjerrum4,Rmac4,Wmac4,    &
-                     HL,VD,pi,pha,tha,cph,sph,cth,sth,xp,yp,zp,        &
-                     xpp,ypp,zpp,x1,y1,z1,dph,dth,th,ph,rr
+      real(C_float) fsize,rmax1,xx,yy,ps,dd1,dd2,                     &
+                    HH,Qcore4,Zcp4,Zcn4,Edc4,Bjerrum4,Rmac4,Wmac4,    &
+                    HL,VD,pi,pha,tha,cph,sph,cth,sth,xp,yp,zp,        &
+                    xpp,ypp,zpp,x1,y1,z1,dph,dth,th,ph
 !
       call newcolor (0, 1.,0.,0.)
 !
@@ -1340,18 +1348,16 @@
 !
 !* Draw counterions and coions
       do 400 i= np+1,np+nq
-      dx= x0(i) -x0(1)  
-      dy= y0(i) -y0(1)  
-      dz= z0(i) -z0(1)  
+      dx= x0(i) -x0(1)
+      dy= y0(i) -y0(1)
+      dz= z0(i) -z0(1)
 !
       dx = dx - nint(dx/length)*length
       dy = dy - nint(dy/length)*length
       dz = dz - nint(dz/length)*length
       rr = sqrt(dx**2 + dy**2 + dz**2)
-      
-!  Near the macroion is OK, else...
-      if(rr.gt.21.) go to 400  ! 17.0
-! 
+      if(rr.gt.21.) go to 400
+!
       xp= x0(i)*cph -y0(i)*sph
       yp= x0(i)*sph +y0(i)*cph
       zp= z0(i)
@@ -1564,9 +1570,9 @@
 !*     m ---- = -------*--- - + ----*------ - [(--)^12 - -(--)^6]    * 
 !*        dt     ma^3   r^2 r   ma^2   r    r   r        2 r         *
 !*                                           snt=1/rlj^6, rlj=r/(ag_i+ag_j)
-!*                t^2*e  Edc0(V/cm)
-!*              + ------ ---------- -mue*a_i*v
-!*                  ma     300       Langevin thermostat
+!*                t^2*e  Edc0(V/cm)                                  *
+!*              + ------ ----------  -(mue0*a^2/t) mue*ag(i)*v       *
+!*                  ma     300         Langevin thermostat           *
 !
 !*  Coulomb force: 
 !     prefactor - used in realteil, p3m_perform; defined in L.230
@@ -3811,7 +3817,6 @@
       character(len=8) label,cdate*10,ctime*8,char
       common/headr1/  label,cdate,ctime
       common/headr2/ time,xleng
-!
       integer(C_INT) pxr,pxc,pxl,pyr,pyc,pyl,pzr,pzc,pzl
       common/ptable/ pxr(mx1),pxc(mx1),pxl(mx1),pyr(my1),pyc(my1),&
                      pyl(my1),pzr(mz1),pzc(mz1),pzl(mz1)
