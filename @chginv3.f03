@@ -1,4 +1,4 @@
-!*-------------------------------------------- Update: 2025/01/15 --*
+!*-------------------------------------------- Update: 2025/01/16 --*
 !*                                                                  *
 !*   ## Giant Charge Inversion of Macroions by Counter/Co-Ions ##   *
 !*                                                                  *
@@ -9,9 +9,7 @@
 !*  2. M.Tanaka and A.Yu Grosberg, Euro.Phys.J., E7, 371 (2002).    *
 !*  3. M.Tanaka, Phys.Reviews., E68, 061501 (2003).                 *
 !*                                                                  *
-!*  Equations of motion:               ^ ^ ^                        *
-!*    r,v,t are specially with the hat r,v,t                        *
-!*                                                                  *
+!*  Equation of motion:                                             *
 !*     ^  dv    (t*e)^2 qq'R   t^2  48*eps'R   r0       1 r0        *
 !*     m ---- = -------*---- + ----*-------- [(--)^12 - -(--)^6]    * 
 !*        dt     ma^3   r^3    ma^2   r*r      r        2 r         *
@@ -19,9 +17,6 @@
 !*                t^2*e  Edc0(V/cm)                                 *
 !*              + ------ ----------  -(mue0*a^2/t) mue*ag(i)*v      *
 !*                  ma     300         Langevin thermostat          *
-!*     dr                                                           * 
-!*    ---- = v                                                      * 
-!*     dt                                                           * 
 !*                                                                  * 
 !*    ccel = 48.d0*pref_eps*epsav*snt*(snt-0.5d0)*sqrt(rsi/r2)      *
 !*    forceV = prefactor*ch(i)*ch(j)* &                             *
@@ -735,7 +730,6 @@
 !*  Rescale the kinetic energy of neutrals.     *
 !************************************************
 !
-!     if(.false.) then
       if((t8.gt.10.d0).and.(iwrt3.eq.0)) then
         vcn= 0.d0
 !
