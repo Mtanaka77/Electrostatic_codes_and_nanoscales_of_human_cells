@@ -51,7 +51,6 @@
       write(6,*) 'Today = ',cdate,'  time = ',ctime
 !
 !--------------------------------------------------
-!*  pgf95 @wat_radial3.f03   
 !*  gfortran @wat_radial3.f03      
 !
       tmin=      0.
