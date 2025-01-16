@@ -1,4 +1,4 @@
-!*-------------------------------------------- Update: 2025/01/16 --*
+!*-------------------------------------------- Update: 2025/01/17 --*
 !*                                                                  *
 !*   ## Giant Charge Inversion of Macroions by Counter/Co-Ions ##   *
 !*                                                                  *
@@ -591,7 +591,7 @@
                      kjoule,kcal,mol,kbT
       common/units/ t_unit,a_unit,w_unit,e_unit
       common/unit2/ kjoule,kcal,mol,kbT
-      logical ::    if_write06/.true./,if_mue/.true./
+      logical       if_write06/.true./,if_mue/.true./
 !
 !--------------------------
 !*  Initial condition.
@@ -654,7 +654,7 @@
 !
       iwrt1= iwrta(t,dtwr )
       iwrt2= iwrtb(t,dtwr2)
-      iwrt3= iwrtc(t, 100.)
+      iwrt3= iwrtc(t,5000.) ! 50 ps
 !
       cl_first= 2
       call clocks (cpu1,cl_first)
@@ -730,7 +730,8 @@
 !*  Rescale the kinetic energy of neutrals.     *
 !************************************************
 !
-      if((t8.gt.10.d0).and.(iwrt3.eq.0)) then
+      if(.false.) then
+!     if((t8.gt.10.d0).and.(iwrt3.eq.0)) then
         vcn= 0.d0
 !
         do i= nCLp+1,npqr
@@ -738,7 +739,7 @@
         end do
 !
         vss0= (3.d0/2.d0)*vth3**2
-        red= sqrt(vss0/ (0.5d0*vcn/nr))
+        red= sqrt(vss0/ (0.5d0 *vcn/nr))
 !
         do i= nCLp+1,npqr
         vx(i)= red*vx(i)
@@ -750,9 +751,10 @@
 !-------------------------
 !*   Velocity update.
 !-------------------------
-!  the Langevin thermostat   10^-1/10^2
-!    -(mue0* a^2/t) mue*ag(i)*v -> 10^-1/10^2
-      mue= a_unit**2/t_unit/(100.d0*1.d0)
+!  the Langevin thermostat 
+!    -(mue0* a^2/t) mue*ag(i)*v -> 10^-1/10^2/100= 1 ps
+      mue= (a_unit**2/t_unit/100.d0) /50.d0
+!
       if(io_pe.eq.1 .and. if_mue) then
         if_mue= .false.
         write(11,*) 'mue=',mue
@@ -761,9 +763,9 @@
       do i= 1,npqr
       dtm= dt/am(i)
 !
-      vx(i)= vx(i) +(frx(i) +ch(i)*exc)*dtm -mue*ag(i)*vx(i)*dtm
-      vy(i)= vy(i) +(fry(i)           )*dtm -mue*ag(i)*vy(i)*dtm
-      vz(i)= vz(i) +(frz(i)           )*dtm -mue*ag(i)*vz(i)*dtm
+      vx(i)= vx(i) +(frx(i) -mue*ag(i)*vx(i) +ch(i)*exc)*dtm 
+      vy(i)= vy(i) +(fry(i) -mue*ag(i)*vy(i)           )*dtm 
+      vz(i)= vz(i) +(frz(i) -mue*ag(i)*vz(i)           )*dtm 
 !
       xg(i)= xg(i) +dt*vx(i)
       yg(i)= yg(i) +dt*vy(i)
@@ -774,7 +776,7 @@
 !
       if(it.eq.1) then
         do i= 1,npqr
-        xg(i) = xg(i) - nint(xg(i)/xmax)*xmax ! integer dnint()
+        xg(i) = xg(i) - nint(xg(i)/xmax)*xmax  ! integer dnint()
         yg(i) = yg(i) - nint(yg(i)/ymax)*ymax
         zg(i) = zg(i) - nint(zg(i)/zmax)*zmax
         end do
