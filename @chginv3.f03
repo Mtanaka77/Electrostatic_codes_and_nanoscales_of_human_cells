@@ -9,7 +9,9 @@
 !*  2. M.Tanaka and A.Yu Grosberg, Euro.Phys.J., E7, 371 (2002).    *
 !*  3. M.Tanaka, Phys.Reviews., E68, 061501 (2003).                 *
 !*                                                                  *
-!*  Equation of motion:                                             *
+!*  Equations of motion:               ^ ^ ^                        *
+!*    r,v,t are specially with the hat r,v,t                        *
+!*                                                                  *
 !*     ^  dv    (t*e)^2 qq'R   t^2  48*eps'R   r0       1 r0        *
 !*     m ---- = -------*---- + ----*-------- [(--)^12 - -(--)^6]    * 
 !*        dt     ma^3   r^3    ma^2   r*r      r        2 r         *
@@ -17,6 +19,9 @@
 !*                t^2*e  Edc0(V/cm)                                 *
 !*              + ------ ----------  -(mue0*a^2/t) mue*ag(i)*v      *
 !*                  ma     300         Langevin thermostat          *
+!*     dr                                                           * 
+!*    ---- = v                                                      * 
+!*     dt                                                           * 
 !*                                                                  * 
 !*    ccel = 48.d0*pref_eps*epsav*snt*(snt-0.5d0)*sqrt(rsi/r2)      *
 !*    forceV = prefactor*ch(i)*ch(j)* &                             *
@@ -703,6 +708,9 @@
 !************************************************
 !*  Free relaxation in the initial stage.       *
 !************************************************
+!  Temp below is relative to the initial one.
+!     Temp= 1.d0/2.d0**(t/2500.d0)
+!
 !*   <(1/2)*m v**2>= (3/2) kT, n a**3=1. in /init/
 !--------------------------------------------
 !     vth  = sqrt(2.d0*kbT/(Wmac*w_unit)) /(a_unit/t_unit)
@@ -727,8 +735,8 @@
 !*  Rescale the kinetic energy of neutrals.     *
 !************************************************
 !
-      if(.false.) then
-!     if((t8.gt.10.d0).and.(iwrt3.eq.0)) then
+!     if(.false.) then
+      if((t8.gt.10.d0).and.(iwrt3.eq.0)) then
         vcn= 0.d0
 !
         do i= nCLp+1,npqr
@@ -749,12 +757,11 @@
 !*   Velocity update.
 !-------------------------
 !  the Langevin thermostat   10^-1/10^2
-!    -(mue0* a^2/t) mue*ag(i)*v -> 10^-1/10^2=10^-3
+!    -(mue0* a^2/t) mue*ag(i)*v -> 10^-1/10^2
       mue= a_unit**2/t_unit/(100.d0*1.d0)
-!
       if(io_pe.eq.1 .and. if_mue) then
         if_mue= .false.
-        write(11,*) 'thermostat mue=',mue
+        write(11,*) 'mue=',mue
       end if  
 !
       do i= 1,npqr

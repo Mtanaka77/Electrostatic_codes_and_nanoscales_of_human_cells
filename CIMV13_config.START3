@@ -17,8 +17,8 @@
 # Subboxen pro Boxlaenge..............:            1
 # Skin................................:     1.16666600000000
 # Ortsraum-Cutoff...............(Ang).:    10.00000000000000
-# Size of K  (Ang).2.032.Matsumote  ..:     2.03200000000000
-# Size of Cl (Ang).5.244.ACS Journal..:     5.24400000000000
+# Size of K  (Ang).2.032.Matsumote  ..:     2.03000000000000
+# Size of Cl (Ang).5.244.ACS Journal..:     5.24000000000000
 # LJ energy of K  (kJ/mol)............:     1.97100000000000
 # LJ energy of Cl (kJ/mol)............:     0.01750000000000
 # Temperature (Kelvin)................:   300.00000000000000
@@ -29,7 +29,7 @@
 
 # Applied electric field edc (V/cm)...:  3000000.00000000000
 # epsmac of a macroion......factor....:     3.00000000000000
-# Teilchenzahl (including salt)..411..:         1611
+# Teilchenzahl (including salt).......:         1611
 # Non-neutral Polymer (if =1).........:            1
 # FFT-Mesh............................:           32
 # Gitter-ip...........................:            3
