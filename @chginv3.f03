@@ -37,7 +37,7 @@
 !*    realteil_s                                                    *
 !*    p3m_perform, p3m_init, perform_aliasing_sums,...              *
 !*      p3m routines are written by Dr. M. Deserno, and Dr. C. Holm *
-!*      University of Mainz, Germany at Dec. 1999.                  *
+!*      of University of Mainz, Germany in Dec. 1999.               *
 !*    init                                                          *
 !*    LPLOT1/HPLOT1                                                 *
 !*    gopen graphic package                                         *
