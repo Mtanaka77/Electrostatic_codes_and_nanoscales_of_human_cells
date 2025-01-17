@@ -37,7 +37,7 @@
 !*    realteil_s                                                    *
 !*    p3m_perform, p3m_init, perform_aliasing_sums,...              *
 !*    init                                                          *
-!*    LPLOT1/HPLOT1
+!*    LPLOT1/HPLOT1                                                 *
 !*    gopen graphic package                                         *
 !*                                                                  *
 !********************************************************************
