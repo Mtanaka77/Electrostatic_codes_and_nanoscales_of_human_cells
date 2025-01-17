@@ -9,6 +9,7 @@
                   suffix2*2,suffix1*2,suffix0*1
 !
       parameter  (np0=1,nq10=10+100,nq20=300,nr0=8000)
+!     parameter  (np0=3,nq10=30+100,nq20=300,nr0=8000)
 !
       parameter  (nq0=nq10+nq20,nhist=10000)
       parameter  (npqr0=np0+nq0+nr0,MAXPART=npqr0)
