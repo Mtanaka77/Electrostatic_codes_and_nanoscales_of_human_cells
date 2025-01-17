@@ -4,8 +4,8 @@
                   np0,nq0,nq10,nq20,nr0,npq0,npqr0,MAXPART, &
                   kstart,maxmesh,mesh,IP,nhist,             &
                   mx,my,mz,mx1,my1,mz1,npio
-!     character   praefixs*31,praefixc*31,praefixe*31, &
-      character   praefixs*31,praefixc*24,praefixe*24, &
+!     character   praefixs*31,praefixc*24,praefixe*24, &
+      character   praefixs*31,praefixc*31,praefixe*31, &
                   suffix2*2,suffix1*2,suffix0*1
 !
       parameter  (np0=1,nq10=10+100,nq20=300,nr0=8000)
@@ -18,12 +18,12 @@
       parameter  (mx=mesh,my=mesh,mz=mesh)
       parameter  (mx1=mesh+1,my1=mesh+1,mz1=mesh+1)
 !
-      parameter  (praefixs='/home/tanakam/MPI_chinv3/CIMV13', & 
-                  praefixc='/data/sht/tanakam/cimv13',        &
-                  praefixe='/data/sht/tanakam/CIMV13')
-!     parameter  (praefixs='/home/mtanaka/MPI_chinv3/CIMV23', & 
-!                 praefixc='/home/mtanaka/MPI_chinv3/cimv23', &
-!                 praefixe='/home/mtanaka/MPI_chinv3/CIMV23')
+!     parameter  (praefixs='/home/tanakam/MPI_chinv3/CIMV13', & 
+!                 praefixc='/data/sht/tanakam/cimv13',        &
+!                 praefixe='/data/sht/tanakam/CIMV13')
+      parameter  (praefixs='/home/mtanaka/MPI_chinv3/CIMV13', & 
+                  praefixc='/home/mtanaka/MPI_chinv3/cimv13', &
+                  praefixe='/home/mtanaka/MPI_chinv3/CIMV13')
 !
       parameter  (kstart=0,suffix2='3a',suffix1='3a',suffix0='3')
 !
