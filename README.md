@@ -24,8 +24,8 @@ From the figures, there are two requirements for the giant inversion, namely,
 (2) the Coulomb energy is larger than thermal energy of macroions and counterions.
 
 In the listed articles, the figures are best illustrated, partly 
-in color pictures. We use counterions with the radius 2.0 Ang and coions 
-with 5.2 Ang. The PDF file cimv23_773a.pdf in the Langevin thermostat 
+in color pictures. We use counterions with Zp=3 and the radius 2.0 Ang and coions 
+with Zn=-1 and 5.2 Ang. The PDF file cimv23_773a.pdf in the Langevin thermostat 
 shows a rather stationary macroion. The first peak of counterions at the top-left 
 panels exists very close to the macroion's surface at R= Rmac to (Rmac+5 Ang) of 
 cimv23_78.pdf - only the 20 Angstrom regime from the macroion is plotted. 
