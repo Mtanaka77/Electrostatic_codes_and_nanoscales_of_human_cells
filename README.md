@@ -25,10 +25,10 @@ From the figures, there are two requirements for the giant inversion, namely,
 
 In the listed articles, the figures are best illustrated, partly 
 in color pictures. We use counterions with Zp=3 and the radius 2.0 Ang and coions 
-with Zn=-1 and 5.2 Ang. The PDF file cimv23_773a.pdf in the Langevin thermostat 
+with Zn=-1 and 5.2 Ang. The PDF file cimv13_773a.pdf in the Langevin thermostat 
 shows a rather stationary macroion. The first peak of counterions at the top-left 
 panels exists very close to the macroion's surface at R= Rmac to (Rmac+5 Ang) of 
-cimv23_78.pdf - only the 20 Angstrom regime from the macroion is plotted. 
+cimv13_78.pdf - only the 20 Angstrom regime from the macroion is plotted. 
 
 
 (* CGS system: t_unit= 0.01d-12 s, a_unit= 1.00d-08 cm, w_unit= 1.6605d-24 g, 
