@@ -30,9 +30,11 @@ shows a rather stationary macroion. The first peak of counterions at the top-lef
 panels exists very close to the macroion's surface at R= Rmac to (Rmac+5 Ang) of 
 cimv13_78.pdf - only the 20 Angstrom regime from the macroion is plotted. 
 
-
 (* CGS system: t_unit= 0.01d-12 s, a_unit= 1.00d-08 cm, w_unit= 1.6605d-24 g, 
 e_unit= 4.803d-10 esu, and \epsilon=78 at 27 deg Celsius.)
+
+Everyone is welcome to copy and/or rewrite this simulation code under GPL-3
+license, by keeping initial 40 lines of this author of the code intact. 
 
 ## References ##
 1. M. Tanaka and A.Yu Grosberg, J.Chem.Phys., vol.115, 567-574 (2001).
