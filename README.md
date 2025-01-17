@@ -35,7 +35,7 @@ e_unit= 4.803d-10 esu, and \epsilon=78 at 27 deg Celsius.)
 
 Everyone is welcome to copy and/or rewrite this simulation code under 
 GNU General Public License v3.0 license, by keeping initial 53 lines of this 
-author of the code intact. 
+code of the author intact. 
 
 ## References ##
 1. M. Tanaka and A.Yu Grosberg, J.Chem.Phys., vol.115, 567-574 (2001).
