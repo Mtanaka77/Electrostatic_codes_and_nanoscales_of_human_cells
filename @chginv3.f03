@@ -36,6 +36,8 @@
 !*    moldyn                                                        *
 !*    realteil_s                                                    *
 !*    p3m_perform, p3m_init, perform_aliasing_sums,...              *
+!*      p3m routines are written by Dr. M. Dersano, University of   *
+!*      Mainz, Germany at Dec. 1999.                                *
 !*    init                                                          *
 !*    LPLOT1/HPLOT1                                                 *
 !*    gopen graphic package                                         *
