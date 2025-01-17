@@ -45,8 +45,8 @@
 !*  use, intrinsic :: iso_c_binding                                 *
 !*  The @ character is not permitted in the Intel (LX) system       *
 !*                                                                  *
-!*% mpif90 -fopenmp -mcmodel=medium -fPIC @chginv3.f03 -I/opt/fftw3/*
-!* include -L/opt/fftw3/lib -lfftw3 &> log                          * 
+!* mpif90 -mcmodel=medium -fPIC -o a.out @chginv3.f03 -I/opt/fftw3  *
+!* /include -L/opt/fftw3/lib -lfftw3 &> log                         *
 !********************************************************************
 !*-- 12/23/1999 --------------------------------------- 7/07/2001 --*
 !
@@ -597,7 +597,7 @@
                      kjoule,kcal,mol,kbT
       common/units/ t_unit,a_unit,w_unit,e_unit
       common/unit2/ kjoule,kcal,mol,kbT
-      logical ::    if_write06/.true./,if_mue/.true./
+      logical       if_write06/.true./,if_mue/.true./
 !
 !--------------------------
 !*  Initial condition.
@@ -729,30 +729,8 @@
       if(t8.lt.10.d0) then
         Exc= 0.d0
       else
-        Exc= Edc  ! Already converted Edc0 -> Edc
-      end if
-!
-!************************************************
-!*  Rescale the kinetic energy of neutrals.     *
-!************************************************
-!
-      if(.false.) then
-!     if((t8.gt.10.d0).and.(iwrt3.eq.0)) then
-        vcn= 0.d0
-!
-        do i= nCLp+1,npqr
-        vcn= vcn +vx(i)**2 +vy(i)**2 +vz(i)**2
-        end do
-!
-        vss0= (3.d0/2.d0)*vth3**2
-        red= sqrt(vss0/ (0.5d0 *vcn/nr))
-!
-        do i= nCLp+1,npqr
-        vx(i)= red*vx(i)
-        vy(i)= red*vy(i)
-        vz(i)= red*vz(i)
-        end do
-      end if
+        Exc= Edc  ! Converted Edc= econv*Edc0, by READ_CONF 
+      end if      ! econv= t_unit**2*e_unit/(w_unit*a_unit *299.98d0)
 !
 !-------------------------
 !*   Velocity update.
@@ -1690,9 +1668,9 @@
       implicit none
 !
       include    'param_inv13.h'
-      include    'aslfftw3.f03'                 ! SX
+!     include    'aslfftw3.f03'                 ! SX
 !     include    'fftw3.f03'                    ! LX
-!     include    '/opt/fftw3/include/fftw3.f03' ! physique
+      include    '/opt/fftw3/include/fftw3.f03' ! physique
 !
       real(C_DOUBLE),dimension(0:npqr0-1) :: xg,yg,zg,ch,fsx,fsy,fsz
       real(C_DOUBLE),dimension(0:npqr0-1,0:2) :: fek
