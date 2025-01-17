@@ -2,7 +2,8 @@
 !*                                                                  *
 !*   ## Giant Charge Inversion of Macroions by Counter/Co-Ions ##   *
 !*                                                                  *
-!*     Author: Motohiko Tanaka, PhD, Nagoya, Japan.                 *
+!*     Author: Motohiko Tanaka, Ph.D., Nature and Energy Science    *
+!*             Applications, Nagoya 464, Japan                      *
 !*                                                                  *
 !*  References                                                      *
 !*  1. M.Tanaka and A.Yu Grosberg, J.Chem.Phys., vol.115,567 (2001).*
@@ -10,7 +11,7 @@
 !*  3. M.Tanaka, Phys.Reviews., E68, 061501 (2003).                 *
 !*                                                                  *
 !*  Equations of motion:                                            *
-!*     r,v,t are normalized hat(r),hat(v),hat(t)                    *
+!*     r,v,t are normalized as hat(r),hat(v),hat(t)                 *
 !*                                                                  * 
 !*     ^  dv    (t*e)^2 qq'R   t^2  48*eps'R   r0       1 r0        *
 !*     m ---- = -------*---- + ----*-------- [(--)^12 - -(--)^6]    * 
