@@ -754,7 +754,7 @@
 !  the Langevin thermostat 
 !    -(mue0* a^2/t) mue*ag(i)*v -> 10^-1/10^2/100= 1 ps
       mue= (a_unit**2/t_unit/100.d0) /50.d0
-!
+!                                     50 ps
       if(io_pe.eq.1 .and. if_mue) then
         if_mue= .false.
         write(11,*) 'mue=',mue
