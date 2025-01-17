@@ -32,7 +32,7 @@ cimv23_78.pdf - only the 20 Angstrom regime from the macroion is plotted.
 
 
 (* CGS system: t_unit= 0.01d-12 s, a_unit= 1.00d-08 cm, w_unit= 1.6605d-24 g, 
-e_unit= 4.803d-10 esu, and \epsilon=78 at 28 deg Celsius.)
+e_unit= 4.803d-10 esu, and \epsilon=78 at 27 deg Celsius.)
 
 ## References ##
 1. M. Tanaka and A.Yu Grosberg, J.Chem.Phys., vol.115, 567-574 (2001).
