@@ -9,7 +9,9 @@
 !*  2. M.Tanaka and A.Yu Grosberg, Euro.Phys.J., E7, 371 (2002).    *
 !*  3. M.Tanaka, Phys.Reviews., E68, 061501 (2003).                 *
 !*                                                                  *
-!*  Equation of motion:                                             *
+!*  Equations of motion:                                            *
+!*     r,v,t are normalized hat(r),hat(v),hat(t)                    *
+!*                                                                  * 
 !*     ^  dv    (t*e)^2 qq'R   t^2  48*eps'R   r0       1 r0        *
 !*     m ---- = -------*---- + ----*-------- [(--)^12 - -(--)^6]    * 
 !*        dt     ma^3   r^3    ma^2   r*r      r        2 r         *
@@ -17,6 +19,9 @@
 !*                t^2*e  Edc0(V/cm)                                 *
 !*              + ------ ----------  -(mue0*a^2/t) mue*ag(i)*v      *
 !*                  ma     300         Langevin thermostat          *
+!*     dr                                                           * 
+!*    ---- = v                                                      *
+!*     dt                                                           * 
 !*                                                                  * 
 !*    ccel = 48.d0*pref_eps*epsav*snt*(snt-0.5d0)*sqrt(rsi/r2)      *
 !*    forceV = prefactor*ch(i)*ch(j)* &                             *
@@ -591,7 +596,7 @@
                      kjoule,kcal,mol,kbT
       common/units/ t_unit,a_unit,w_unit,e_unit
       common/unit2/ kjoule,kcal,mol,kbT
-      logical       if_write06/.true./,if_mue/.true./
+      logical ::    if_write06/.true./,if_mue/.true./
 !
 !--------------------------
 !*  Initial condition.
@@ -763,9 +768,9 @@
       do i= 1,npqr
       dtm= dt/am(i)
 !
-      vx(i)= vx(i) +(frx(i) -mue*ag(i)*vx(i) +ch(i)*exc)*dtm 
-      vy(i)= vy(i) +(fry(i) -mue*ag(i)*vy(i)           )*dtm 
-      vz(i)= vz(i) +(frz(i) -mue*ag(i)*vz(i)           )*dtm 
+      vx(i)= vx(i) +(frx(i) +ch(i)*exc)*dtm -mue*ag(i)*vx(i)*dtm
+      vy(i)= vy(i) +(fry(i)           )*dtm -mue*ag(i)*vy(i)*dtm
+      vz(i)= vz(i) +(frz(i)           )*dtm -mue*ag(i)*vz(i)*dtm
 !
       xg(i)= xg(i) +dt*vx(i)
       yg(i)= yg(i) +dt*vy(i)
@@ -776,7 +781,7 @@
 !
       if(it.eq.1) then
         do i= 1,npqr
-        xg(i) = xg(i) - nint(xg(i)/xmax)*xmax  ! integer dnint()
+        xg(i) = xg(i) - nint(xg(i)/xmax)*xmax ! integer dnint()
         yg(i) = yg(i) - nint(yg(i)/ymax)*ymax
         zg(i) = zg(i) - nint(zg(i)/zmax)*zmax
         end do
