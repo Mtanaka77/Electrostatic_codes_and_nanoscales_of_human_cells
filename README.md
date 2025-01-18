@@ -34,8 +34,8 @@ cimv13_78.pdf - only the 20 Angstrom regime from the macroion is plotted.
 e_unit= 4.803d-10 esu, and \epsilon=78 at 27 deg Celsius.)
 
 Everyone is welcome to copy and/or rewrite this simulation code under 
-GNU General Public License v3.0 license, by keeping initial 54 lines of this 
-code of the author intact. 
+GNU General Public License v3.0 license, by keeping initial 55 lines of this 
+author's code intact. 
 
 ## References ##
 1. M. Tanaka and A.Yu Grosberg, J.Chem.Phys., vol.115, 567-574 (2001).
