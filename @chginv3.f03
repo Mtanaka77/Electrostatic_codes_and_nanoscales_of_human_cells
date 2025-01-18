@@ -29,7 +29,7 @@
 !*                      (erfc/r +2*alpha/sqrtpi)*exp(-ar**2)/r2     *
 !*                                                                  *  
 !*------------------------------------------------------------------*
-!*  Main and subroutines (5000 lines):                              *
+!*  Main and subroutines (ca. 5000 lines):                              *
 !*                                                                  *  
 !*    program charge_inv                                            *
 !*    RUN_MD                                                        *
@@ -38,7 +38,8 @@
 !*    p3m_perform, p3m_init, perform_aliasing_sums,...              *
 !*      The p3m routines in C were written by Dr.M.Deserno and      *
 !*      Dr.C.Holm, University of Mainz, Germany in Jan.1999.        *
-!*      It was rewritten by Fortran by Dr.M.Tanaka, in Dec.1999.    *
+!*      It was rewritten by Fortran 90 in collaborative work of     *
+!*      Dr.M.Tanaka, in Dec.1999.                                   *
 !*    init                                                          *
 !*    LPLOT1/HPLOT1                                                 *
 !*    gopen graphic package                                         *
