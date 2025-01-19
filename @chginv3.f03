@@ -695,12 +695,14 @@
       fsz(i) = 0.d0
       end do
 !
+! Short-range forces
       call realteil_s (xg,yg,zg,ch,am,ag,ep,frx,fry,frz, &
                        ipar,size,np,nq,npqr)
 !
         cl_first= 2
         call clocks (cpu2,cl_first)
 !  
+! Long-range forces
       call p3m_perform (xg,yg,zg,ch,fsx,fsy,fsz,npqr,    &
                         E_Coulomb_P3M,first_p3m)
 !
