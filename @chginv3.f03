@@ -36,10 +36,10 @@
 !*    moldyn                                                        *
 !*    realteil_s                                                    *
 !*    p3m_perform, p3m_init, perform_aliasing_sums,...              *
-!*      The p3m routines in C were written by Dr. M.Deserno and     *
-!*      Dr. C.Holm, University of Mainz, Germany in Jan.1999.       *
-!*      It was rewritten by Fortran 90 in collaboration of          * 
-!*      Dr. M.Tanaka in Mainz, Dec.1999.                            *
+!*      Note: The p3m routines in C were written by Dr.M.Deserno    *
+!*      and Dr.C.Holm, University of Mainz, Germany in Jan.1999.    *
+!*      It was rewritten by Fortran 90 in the collaboration of      * 
+!*      Dr.M.Tanaka with Dr.Deserno in Mainz, in Dec.1999.          *
 !*    init                                                          *
 !*    LPLOT1/HPLOT1                                                 *
 !*    gopen graphic package                                         *
