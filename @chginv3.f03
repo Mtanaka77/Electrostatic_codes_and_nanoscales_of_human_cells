@@ -34,8 +34,8 @@
 !*    program charge_inv                                            *
 !*    RUN_MD                                                        *
 !*    moldyn                                                        *
-!*    realteil_s                                                    *
-!*    p3m_perform, p3m_init, perform_aliasing_sums,...              *
+!*    short-range - realteil_s                                      *
+!*    long-range - p3m_perform, p3m_init, perform_aliasing_sums,... *
 !*      Note: The p3m routines in C were written by Dr.M.Deserno    *
 !*       and Dr.C.Holm, University of Mainz, Germany in Jan.1999.   *
 !*       It was rewritten by Fortran 90 in the collaboration of     * 
