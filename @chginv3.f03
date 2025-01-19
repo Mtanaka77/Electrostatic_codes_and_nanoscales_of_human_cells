@@ -33,7 +33,7 @@
 !*                                                                  *  
 !*    program charge_inv                                            *
 !*    RUN_MD                                                        *
-!*    moldyn                                                        *
+!*    moldyn - equations of motion                                  *
 !*    short-range - realteil_s                                      *
 !*    long-range - p3m_perform, p3m_init, perform_aliasing_sums,... *
 !*      Note: The p3m routines in C were written by Dr.M.Deserno    *
