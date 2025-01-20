@@ -14,6 +14,7 @@ The equation of motion in Eq.(1) of Ref.1 has the Lengevin thermostat on top of
 Coulomb and Lennard-Jones forces of the righthand side.
 The short-ranges forces Eq.(1) and the long-ranges forces in p3m routines are 
 included in the code.
+
 The first 55 lines of the code are the title, author, equation of motion, and 
 structure of the code. Other important remarks are explained thereafter.
 Main subroutines are RUN_MD, moldyn, realteil, p3m_perform, and Gopen graphic packages.
