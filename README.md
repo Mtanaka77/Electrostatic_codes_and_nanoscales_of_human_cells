@@ -11,7 +11,7 @@ surrounded by the electrolyte of multivalent counterions and monovalent coions.
 The equation of motion in Eq.(1) of Ref.1 has the Lengevin thermostat on top of 
 Coulomb and Lennard-Jones forces of the righthand side.
 The short-range forces Eq.(1) and the long-range forces in p3m_perform routines are 
-included in the code.
+included for the best accuracy (Ref. 6).
 
 The simulation code is @chginv3.f03 with the paramer file parm_inv13.h and 
 the configure file CIMV13_config.START3.
@@ -46,5 +46,5 @@ code intact.
 3. M. Tanaka, Phys.Reviews., E68, 061501 (2003).
 4. M. Tanaka, J. Physics: Condensed Matter, vol.16, S2127-2134 (2004).
 5. Y.Rabin and M.Tanaka, Phys.Rev.Lett., vol.94, 148103 (2005).
-
+6. M. Deserno and C. Holm, J.Chem.Phys. 109, 7694–7701 (1998). 
 
