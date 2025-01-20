@@ -12,7 +12,7 @@ The simulation code is @chginv3.f03 with the paramer file parm_inv13.h and
 the configure file CIMV13_config.START3.
 The equation of motion in Eq.(1) of Ref.1 has the Lengevin thermostat on top of 
 Coulomb and Lennard-Jones forces of the righthand side.
-The short-ranges forces Eq.(1) and the long-ranges forces in p3m routines are 
+The short-range forces Eq.(1) and the long-range forces in p3m_perform routines are 
 included in the code.
 
 The first 55 lines of the code are the title, author, equation of motion, and 
