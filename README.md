@@ -38,7 +38,7 @@ cimv13_78.pdf - only the 20 Angstrom regime from the macroion is plotted.
 (* CGS system: t_unit= 0.01d-12 s, a_unit= 1.00d-08 cm, w_unit= 1.6605d-24 g, 
 e_unit= 4.803d-10 esu, and \epsilon=78 at 27 deg Celsius.)
 
-### Simulation code ###
+### Coulomb and P3M simulation code ###
 
 The short-range forces and the long-range forces in p3m_perform routines are included 
 to study the charge inversion phenomena at high accuracy.
