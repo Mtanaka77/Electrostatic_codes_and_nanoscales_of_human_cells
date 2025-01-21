@@ -41,8 +41,8 @@ e_unit= 4.803d-10 esu, and \epsilon=78 at 27 deg Celsius.)
 ### Simulation code ###
 
 The short-range forces and the long-range forces in p3m_perform routines are included 
-to study the charge inversion phenomena.
-Everyone is welcome to copy and/or rewrite this simulation code under 
+to study the charge inversion phenomena at high accuracy.
+Everyone is welcome to copy and rewrite this simulation code under 
 GNU General Public License v3.0 license, by keeping top 55 lines of the
 author's code intact. 
 
