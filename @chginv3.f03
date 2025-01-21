@@ -39,6 +39,7 @@
 !*      Note: The p3m routines in C were written by Dr.M.Deserno    *
 !*       and Dr.C.Holm, University of Mainz, Germany in Jan.1999.   *
 !*       It was rewritten by Fortran 90 by Dr.M.Tanaka in Dec.1999. *
+!*                                                                  *
 !*    init, ggauss, fun                                             *
 !*    LPLOT1/HPLOT1, lplots, ppl3da,...                             *
 !*    gopen graphic package                                         *
