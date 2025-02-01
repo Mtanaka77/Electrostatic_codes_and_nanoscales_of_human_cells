@@ -1,7 +1,7 @@
 ## Charge inversion and nanoscale phenomena for living cells ##
 
-Giant charge inversion and/or nanoscale phenomena for living cells are studied 
-using the codes of fortran 2003, and molecular dynamics simulations are execcuted (Refs. 1-5).
+Giant charge inversion and nanoscale phenomena for living cells are studied 
+using the Fortran 2003 code, and molecular dynamics simulations are execcuted (Refs. 1-5).
 Especially, "DNA in nanopores" is simulated for DNA transportation through nanepores, where 
 counterion condensation and coion depletion are the keys of the nanoscale pores of human cells.
 
