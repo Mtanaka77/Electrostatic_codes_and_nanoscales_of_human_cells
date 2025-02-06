@@ -5,7 +5,7 @@ using the Fortran 2003 code, and molecular dynamics simulations are execcuted (R
 Especially, "DNA in nanopores" is simulated for DNA transportation through nanepores, where 
 counterion condensation and coion depletion are the keys of the nanoscale pores of human cells.
 
-### Giant charge inversion ###
+### Simulation of charge inversion phenomena ###
 
 Charge inversion is about the macroions surrounded by the electrolyte of multivalent counterions 
 and monovalent coions.
