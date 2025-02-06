@@ -3,7 +3,7 @@
 Giant charge inversion and nanoscale phenomena for living cells are studied 
 using the Fortran 2003 code, and molecular dynamics simulations are execcuted (Refs. 1-5).
 Especially, "DNA in nanopores" is simulated for DNA transportation through nanepores, where 
-counterion condensation and coion depletion are the keys of the nanoscale pores of human cells.
+counterion condensation and coion depletion are the keys of the nanoscale human cells.
 
 ### Simulation of charge inversion phenomena ###
 
