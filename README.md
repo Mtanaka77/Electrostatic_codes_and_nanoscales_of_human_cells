@@ -7,13 +7,14 @@ counterion condensation and coion depletion are the keys of the nanoscale pores 
 
 ### Giant charge inversion ###
 
-The molecular dynamics simulation codes are created in several settings, and they are
-discussed in the articles. Gaint charge inversion is about the macroions 
-surrounded by the electrolyte of multivalent counterions and monovalent coions.
+Charge inversion is about the macroions surrounded by the electrolyte of multivalent counterions 
+and monovalent coions.
+The molecular dynamics simulation code to study charge inversion is created in different settings, 
+and is discussed in the articles.
 The equation of motion in Eq.(1) of Ref.1 has the Lengevin thermostat on top of 
 Coulomb and Lennard-Jones forces of the righthand side.
-The short-range forces Eq.(1) and the long-range forces in p3m_perform routines are 
-included for the best accuracy (Ref. 6).
+The short-range forces Eq.(1) and the long-range forces in p3m_perform routines are used 
+for the best accuracy of molecular dynamics simulations (Ref. 6).
 
 The simulation code is @chginv3.f03 with the paramer file parm_inv13.h and 
 the configure file CIMV13_config.START3.
