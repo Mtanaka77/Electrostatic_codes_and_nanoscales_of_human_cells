@@ -39,7 +39,7 @@ cimv13_78.pdf - only the 20 Angstrom regime from the macroion is plotted.
 ### Short-range and long-range interactions ###
 
 The Coulomb force by the positive charge $ Z_{p}*e_unit $ and negative charge $ Z_{n}*e_unit $
-is written $ -\nabla(Z_{p}*Z_{n}*e_unit^2/(\epsion * r)) $ in an infinite system (Ref. 6).
+is written $ -\nabla(Z_{p}*Z_{n}*e_unit^2/ r) $ in an infinite system (Ref. 6).
 However, the Coulomb forces in the periodic boundary system are calculated by 
 the short-range and long-range forces for the maximum accuracy (Ref. 7).
 The key of the short-range force is, 
