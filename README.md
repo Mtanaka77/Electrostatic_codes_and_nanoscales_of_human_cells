@@ -53,7 +53,7 @@ a_unit= 1.00d-08 cm, and \epsilon=78 at 27 deg Celsius.)
 ### Coulomb and P3M simulation code ###
 
 The short-range forces and the long-range forces in p3m_perform routines are included 
-to study the charge inversion phenomena at high accuracy (Refs. 1-5).
+to study the charge inversion phenomena at high accuracy (Ref. 1).
 Everyone is welcome to copy and rewrite this simulation code under 
 GNU General Public License v3.0, by keeping top 55 lines of the
 author's code intact. 
