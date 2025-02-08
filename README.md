@@ -65,5 +65,5 @@ author's code intact.
 4. M. Tanaka, J. Physics: Condensed Matter, vol.16, S2127-2134 (2004).
 5. Y.Rabin and M.Tanaka, Phys.Rev.Lett., vol.94, 148103 (2005).
 6. M. Deserno and C. Holm, J.Chem.Phys. 109, 7694–7701 (1998).
-7. M. Tanaka, Research work at Institute of Polymerforchung, University of Mainz (1999).
+7. M. Tanaka, Research work at Institute of Polymerforchung, University of Mainz, Germany (1999).
 
