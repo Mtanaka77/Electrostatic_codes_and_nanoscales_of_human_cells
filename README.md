@@ -44,8 +44,8 @@ However, the Coulomb forces in the periodic boundary system are calculated by
 the short-range and long-range forces for the maximum accuracy (Ref. 6).
 The key of the short-range force is, 
 $ prefactr * Z_{p}*Z_{n} *e_unit^2 (erfc/r +2 *alpha/sqrt(pi))*exp(-ar**2)/r $.
-Such forces are formulated in the C language, which are rewritten later in the 
-Fortran language (Ref. 7).
+Such forces are formulated in the C language, which are rewritten for large speedup 
+in the Fortran language (Ref. 7).
 
 (* CGS system: w_unit= 1.6605d-24 g, e_unit= 4.803d-10 esu, t_unit= 0.01d-12 s, 
 a_unit= 1.00d-08 cm, and \epsilon=78 at 27 deg Celsius.)
