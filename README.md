@@ -42,7 +42,7 @@ The Coulomb force by the positive charge Z_p*e_unit and negative charge Z_n*char
 is written -\nabla(Z_p*Z_n*e_unit^2/(\epsion*r)) in an infinite system.
 However, the Coulomb forces in the periodic boundary system are calculated by 
 the short-range and long-range forces for the maximum accuracy (Ref. 6).
-Such forces are first formed in the C language, which are rewritten in the 
+Such forces are first formulated in the C language, which are rewritten in the 
 Fortran language (Ref. 7).
 
 (* CGS system: t_unit= 0.01d-12 s, a_unit= 1.00d-08 cm, w_unit= 1.6605d-24 g, 
