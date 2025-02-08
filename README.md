@@ -36,6 +36,15 @@ shows a rather stationary macroion. The first peak of counterions at the top-lef
 panels exists very close to the macroion's surface at R= Rmac to (Rmac+5 Ang) of 
 cimv13_78.pdf - only the 20 Angstrom regime from the macroion is plotted. 
 
+### Short-range and long-range interactions ###
+
+The Coulomb force by the positive charge Z_p*e_unit and negative charge Z_n*charge
+is written -\nabla(Z_p*Z_n*e_unit^2/(\epsion*r)) in an infinite system.
+However, the Coulomb forces in the periodic boundary system are calculated by 
+the short-range and long-range forces for the maximum accuracy (Ref. 6).
+Such forces are first formed in the C language, which are rewritten in the 
+Fortran language (Ref. 7).
+
 (* CGS system: t_unit= 0.01d-12 s, a_unit= 1.00d-08 cm, w_unit= 1.6605d-24 g, 
 e_unit= 4.803d-10 esu, and \epsilon=78 at 27 deg Celsius.)
 
@@ -53,5 +62,6 @@ author's code intact.
 3. M. Tanaka, Phys.Reviews., E68, 061501 (2003).
 4. M. Tanaka, J. Physics: Condensed Matter, vol.16, S2127-2134 (2004).
 5. Y.Rabin and M.Tanaka, Phys.Rev.Lett., vol.94, 148103 (2005).
-6. M. Deserno and C. Holm, J.Chem.Phys. 109, 7694–7701 (1998). 
+6. M. Deserno and C. Holm, J.Chem.Phys. 109, 7694–7701 (1998).
+7. M. Tanaka, Research work at Institute of Polymerforchung, University of Mainz (1999).
 
