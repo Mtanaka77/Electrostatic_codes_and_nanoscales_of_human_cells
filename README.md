@@ -39,13 +39,13 @@ cimv13_78.pdf - only the 20 Angstrom regime from the macroion is plotted.
 ### Short-range and long-range interactions ###
 
 The Coulomb force by the positive charge $ Z_{p}*e_unit $ and negative charge $ Z_{n}*e_unit $
-is written $ -\nabla(Z_{p}*Z_{n}*e_unit^2/(\epsion * r)) $ in an infinite system.
+is written $ -\nabla(Z_{p}*Z_{n}*e_unit^2/(\epsion * r)) $ in an infinite system (Ref. 6).
 However, the Coulomb forces in the periodic boundary system are calculated by 
-the short-range and long-range forces for the maximum accuracy (Ref. 6).
+the short-range and long-range forces for the maximum accuracy (Ref. 7).
 The key of the short-range force is, 
 $ prefactr * Z_{p}*Z_{n} *e_unit^2 (erfc/r +2 *alpha/sqrt(pi))*exp(-ar**2)/r $.
 Such forces were formulated in the C language, which were rewritten for large speedup 
-in the Fortran language (Ref. 7).
+in the Fortran language (Ref. 8).
 
 (* CGS system: w_unit= 1.6605d-24 g, e_unit= 4.803d-10 esu, t_unit= 0.01d-12 s, 
 a_unit= 1.00d-08 cm, and \epsilon=78 at 27 deg Celsius.)
@@ -63,7 +63,8 @@ author's code intact.
 2. M. Tanaka and A.Yu Grosberg, Euro.Phys.J., E7, 371-379 (2002).
 3. M. Tanaka, Phys.Reviews., E68, 061501 (2003).
 4. M. Tanaka, J. Physics: Condensed Matter, vol.16, S2127-2134 (2004).
-5. Y.Rabin and M.Tanaka, Phys.Rev.Lett., vol.94, 148103 (2005).
-6. M. Deserno and C. Holm, J.Chem.Phys. 109, 7694–7701 (1998).
-7. M. Tanaka, Collaboration at Institute of Polymerforchung, University of Mainz, Germany (1999).
+5. Y. Rabin and M. Tanaka, Phys.Rev.Lett., vol.94, 148103 (2005).
+6. M. Tanaka and M. Murakami, Comp.Phys.Commun., 241, pp. 56-63 (2019).
+7. M. Deserno and C. Holm, J.Chem.Phys. 109, 7694–7701 (1998).
+8. M. Tanaka, Collaboration at Institute of Polymerforchung, University of Mainz, Germany (1999).
 
