@@ -45,11 +45,12 @@
 !*    gopen graphic package                                         *
 !*                                                                  *
 !********************************************************************
-!*  To get a free format (f90, f03), do the following: :%s/^c/!/    *
-!*  use, intrinsic :: iso_c_binding                                 *
+!*  To get a free format (f90, f03), convert f77 to the following:  *
+!*    :%s/^c/!/ and "tr 'A-Z' 'a-z' <@chginv3.f >@chginv3.f03"      *
+!*  Also, use, intrinsic :: iso_c_binding                           *
 !*  The @ character is not permitted in the Intel (LX) system       *
 !*                                                                  *
-!* mpif90 -mcmodel=medium -fPIC -o a.out @chginvH7.f03 -I/opt/fftw3/include -L/opt/fftw3/lib -lfftw3 &> log                         *
+!* mpif90 -mcmodel=medium -fPIC -o a.out @chginv3.f03 -I/opt/fftw3/include -L/opt/fftw3/lib -lfftw3 &> log                         *
 !********************************************************************
 !*-- 12/23/1999 --------------------------------------- 7/07/2001 --*
 !
