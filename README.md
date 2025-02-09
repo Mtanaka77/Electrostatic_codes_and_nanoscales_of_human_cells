@@ -47,6 +47,9 @@ $ prefactr * Z_{p}*Z_{n} *e_unit^2 (erfc/r +2 *alpha/sqrt(pi))*exp(-ar**2)/r $.
 Such forces were formulated in the C language, which were rewritten for large speedup 
 in the Fortran language (Ref. 8).
 
+We note that the particle-in-cell method uses space meshes for averaged density in nuclear fusion, 
+which is a different area from the molecular dynamics simulation.
+
 (* CGS system: w_unit= 1.6605d-24 g, e_unit= 4.803d-10 esu, t_unit= 0.01d-12 s, 
 a_unit= 1.00d-08 cm, and \epsilon=78 at 27 deg Celsius.)
 
