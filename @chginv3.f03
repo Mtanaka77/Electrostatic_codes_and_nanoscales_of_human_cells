@@ -11,22 +11,22 @@
 !*  3. M.Tanaka, Phys.Reviews., E68, 061501 (2003).                 *
 !*                                                                  *
 !*  Equations of motion:                                            *
-!*     r,v,t are normalized as hat(r),hat(v),hat(t)                 *
+!*    Original r,v,t,m are normalized as r_i,v_i,hat(t),m_i         *
 !*                                                                  * 
-!*     ^  dv    (t*e)^2 qq'R   t^2  48*eps'R   r0       1 r0        *
-!*     m ---- = -------*---- + ----*-------- [(--)^12 - -(--)^6]    * 
-!*        dt     ma^3   r^3    ma^2   r*r      r        2 r         *
+!*        dv_i   (t*e)^2 qq'R   t^2  48*eps'R   r0       1 r0       *
+!*    m_i ---- = -------*---- + ----*-------- [(--)^12 - -(--)^6]   * 
+!*         dt     ma^3   R^3    ma^2   R^2      R        2 R        *
 !*                                                                  *
-!*                t^2*e  Edc0(V/cm)                                 *
-!*              + ------ ----------  -(mue0*a^2/t) mue*ag(i)*v      *
+!*                t^2*e  Edc(V/cm)                                  *
+!*              + ------ ---------  -(mue0*a^2/t) mue*ag(i)*v_i     *
 !*                  ma     300         Langevin thermostat          *
-!*     dr                                                           * 
-!*    ---- = v                                                      *
+!*    dr_i                                                          * 
+!*    ---- = v_i                                                    *
 !*     dt                                                           * 
 !*                                                                  * 
 !*    ccel = 48.d0*pref_eps*epsav*snt*(snt-0.5d0)*sqrt(rsi/r2)      *
-!*    forceV = prefactor*ch(i)*ch(j)* &                             *
-!*                      (erfc/r +2*alpha/sqrtpi)*exp(-ar**2)/r2     *
+!*    forceV/r = prefactor*ch(i)*ch(j)* &                           *
+!*                    (erfc/r +2*alpha/sqrtpi)*exp(-ar**2)/r2       *
 !*                                                                  *  
 !*------------------------------------------------------------------*
 !*  Main and subroutines (ca. 5000 lines):                          *
@@ -37,8 +37,8 @@
 !*    Short-range - realteil_s                                      *
 !*    Long-range - p3m_perform, p3m_init, perform_aliasing_sums,... *
 !*      Note: The p3m routines in C were written by Dr.M.Deserno    *
-!*       and Dr.C.Holm, University of Mainz, Germany in Jan.1999.   *
-!*       It was rewritten by Fortran 90 by Dr.M.Tanaka in Dec.1999. *
+!*       and Dr.C.Holm, University of Mainz, Germany in Jan.1999,   *
+!*       and rewritten by Fortran 90 by Dr.M.Tanaka in Dec.1999.    *
 !*                                                                  *
 !*    init, ggauss, fun                                             *
 !*    LPLOT1/HPLOT1, lplots, ppl3da,...                             *
@@ -50,7 +50,7 @@
 !*  Also, use, intrinsic :: iso_c_binding                           *
 !*  The @ character is not permitted in the Intel (LX) system       *
 !*                                                                  *
-!* mpif90 -mcmodel=medium -fPIC -o a.out @chginv3.f03 -I/opt/fftw3/include -L/opt/fftw3/lib -lfftw3 &> log                         *
+!*  mpif90 -mcmodel=medium -fPIC -o a.out @chginv3.f03 -I/opt/fftw3/include -L/opt/fftw3/lib -lfftw3 &> log *
 !********************************************************************
 !*-- 12/23/1999 --------------------------------------- 7/07/2001 --*
 !
