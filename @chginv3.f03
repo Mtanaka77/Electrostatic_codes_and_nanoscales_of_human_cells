@@ -11,17 +11,17 @@
 !*  3. M.Tanaka, Phys.Reviews., E68, 061501 (2003).                 *
 !*                                                                  *
 !*  Equations of motion:                                            *
-!*    Original r,v,t,m are normalized as r_i,v_i,hat(t),m_i         *
+!*    Original r,v,t,m are normalized as R_i,V_i,hat(t),M_i         *
 !*                                                                  * 
-!*        dv_i   (t*e)^2 qq'R   t^2  48*eps'R   r0       1 r0       *
-!*    m_i ---- = -------*---- + ----*-------- [(--)^12 - -(--)^6]   * 
+!*        dV_i   (t*e)^2 qq'R   t^2  48*eps'R   r0       1 r0       *
+!*    M_i ---- = -------*---- + ----*-------- [(--)^12 - -(--)^6]   * 
 !*         dt     ma^3   R^3    ma^2   R^2      R        2 R        *
 !*                                                                  *
 !*                t^2*e  Edc(V/cm)                                  *
-!*              + ------ ---------  -(mue0*a^2/t) mue*ag(i)*v_i     *
+!*              + ------ ---------  -(mue0*a^2/t) mue*ag(i)*V_i     *
 !*                  ma     300         Langevin thermostat          *
-!*    dr_i                                                          * 
-!*    ---- = v_i                                                    *
+!*    dR_i                                                          * 
+!*    ---- = V_i                                                    *
 !*     dt                                                           * 
 !*                                                                  * 
 !*    ccel = 48.d0*pref_eps*epsav*snt*(snt-0.5d0)*sqrt(rsi/r2)      *
@@ -47,8 +47,8 @@
 !********************************************************************
 !*  To get a free format (f90, f03), convert f77 to the following:  *
 !*    :%s/^c/!/ and "tr 'A-Z' 'a-z' <@chginv3.f >@chginv3.f03"      *
-!*  Also, use, intrinsic :: iso_c_binding                           *
-!*  The @ character is not permitted in the Intel (LX) system       *
+!*  Also, "use, intrinsic :: iso_c_binding"                         *
+!*  The @ character is not permitted in the Intel (LX) system.      *
 !*                                                                  *
 !*  mpif90 -mcmodel=medium -fPIC -o a.out @chginv3.f03 -I/opt/fftw3/include -L/opt/fftw3/lib -lfftw3 &> log *
 !********************************************************************
@@ -59,7 +59,7 @@
       use, intrinsic :: iso_c_binding
       implicit none
 !
-      include 'param_invH7.h'
+      include 'param_inv3.h'
       include 'mpif.h'
 !
       real(C_DOUBLE) ctime1,ctime2,ctime
@@ -121,7 +121,7 @@
       use, intrinsic :: iso_c_binding
       implicit none
 !
-      include 'param_invH7.h'
+      include 'param_inv3.h'
       include 'mpif.h'
 !
       real(C_DOUBLE)  tt,unif1,unif2
@@ -159,7 +159,7 @@
       use, intrinsic :: iso_c_binding
       implicit none
 !
-      include    'param_invH7.h'
+      include    'param_inv3.h'
       include    'mpif.h'
 !
       integer(C_int) ipar,igrp,size,io_pe,num_proc
@@ -493,7 +493,7 @@
       use, intrinsic :: iso_c_binding
       implicit none
 !
-      include  'param_invH7.h'
+      include  'param_inv3.h'
 
       integer(C_int) nframe,igrp,io_pe,num_proc
       common/sub_proc/ io_pe,num_proc
@@ -521,7 +521,7 @@
       use, intrinsic :: iso_c_binding
       implicit none
 !
-      include    'param_invH7.h'
+      include    'param_inv3.h'
       include    'mpif.h'
 !
       real(C_DOUBLE),dimension(npqr0) :: &
@@ -1107,7 +1107,7 @@
 !-------------------------------------------------------------
       use, intrinsic :: iso_c_binding
       implicit none
-      include   'param_invH7.h'
+      include   'param_inv3.h'
 !
       real(C_float)  x0(npio),y0(npio),z0(npio),ch(npio),ag(npio), &
                      xg(npio),yg(npio),zg(npio),phi,tht,dtwr,dtwr2
@@ -1464,7 +1464,7 @@
       use, intrinsic :: iso_c_binding
       implicit none
 !*
-      include    'param_invH7.h'
+      include    'param_inv3.h'
       include    'mpif.h'
 !
       real(C_DOUBLE),dimension(npqr0) :: &
@@ -1673,7 +1673,7 @@
       use omp_lib
       implicit none
 !
-      include    'param_invH7.h'
+      include    'param_inv3.h'
 !     include    'aslfftw3.f03'                 ! SX
 !     include    'fftw3.f03'                    ! LX
       include    '/opt/fftw3/include/fftw3.f03' ! physique
@@ -1950,7 +1950,7 @@
       use, intrinsic :: iso_c_binding
       implicit none
 !
-      include  'param_invH7.h'
+      include  'param_inv3.h'
 !
       real(C_DOUBLE) t_unit,a_unit,w_unit,e_unit,  &
                      kjoule,kcal,mol,kbT,Bjerrum
@@ -1958,7 +1958,7 @@
       common/unit2/ kjoule,kcal,mol,kbT
       common /elsta/ Bjerrum
 !
-!     integer*4   P_max,MINTPOL --> param_invH7.h
+!     integer*4   P_max,MINTPOL --> param_inv3.h
       integer(C_int) io_pe,num_proc
       common/sub_proc/ io_pe,num_proc
 !
@@ -2005,9 +2005,9 @@
       use, intrinsic :: iso_c_binding
       implicit none
 !
-      include  'param_invH7.h'
+      include  'param_inv3.h'
 !
-!  Brillouin --> param_invH7.h
+!  Brillouin --> param_inv3.h
       integer(C_int) io_pe,num_proc
       common/sub_proc/ io_pe,num_proc
 !
@@ -2071,9 +2071,9 @@
       use, intrinsic :: iso_c_binding
       implicit none
 !
-      include  'param_invH7.h'
+      include  'param_inv3.h'
 !
-!     integer*4   P_max,MINTPOL --> param_invH7.h
+!     integer*4   P_max,MINTPOL --> param_inv3.h
       integer(C_int) io_pe,num_proc,i
       common/sub_proc/ io_pe,num_proc
 !  
@@ -2103,9 +2103,9 @@
       use, intrinsic :: iso_c_binding
       implicit none
 !
-      include  'param_invH7.h'
+      include  'param_inv3.h'
 !
-!     integer*4   P_max,MINTPOL --> param_invH7.h
+!     integer*4   P_max,MINTPOL --> param_inv3.h
       real(C_DOUBLE) alpha,length,dmesh,prefactor,pref_eps,econv, &
                      meshift,Dn,Ghat,pi
       common/ewald1/ alpha,length,dmesh,prefactor,pref_eps,econv
@@ -2168,9 +2168,9 @@
       use, intrinsic :: iso_c_binding
       implicit none
 !
-      include  'param_invH7.h'
+      include  'param_inv3.h'
 !
-!     integer*4   P_max,MINTPOL --> param_invH7.h
+!     integer*4   P_max,MINTPOL --> param_inv3.h
       integer(C_int) io_pe,num_proc,i
       common/sub_proc/ io_pe,num_proc
 !
@@ -2306,9 +2306,9 @@
       use, intrinsic :: iso_c_binding
       implicit none
 !
-      include  'param_invH7.h'
+      include  'param_inv3.h'
 !
-!     integer*4   P_max,MINTPOL --> param_invH7.h
+!     integer*4   P_max,MINTPOL --> param_inv3.h
       integer(C_int) io_pe,num_proc,i
       common/sub_proc/ io_pe,num_proc
 !
@@ -2394,7 +2394,7 @@
       use, intrinsic :: iso_c_binding
       implicit none
 !
-      include    'param_invH7.h'
+      include    'param_inv3.h'
 !
       integer(C_int) io_pe,num_proc
       common/sub_proc/ io_pe,num_proc
@@ -2590,7 +2590,7 @@
       use, intrinsic :: iso_c_binding
       implicit none
 !
-      include  'param_invH7.h'
+      include  'param_inv3.h'
 !
       real(C_DOUBLE) alpha,length,dmesh,prefactor,pref_eps,econv
       integer(C_INT) npartcls
@@ -2688,7 +2688,7 @@
 !************************
       use, intrinsic :: iso_c_binding
       implicit none
-      include 'param_invH7.h'
+      include 'param_inv3.h'
 !
       real(C_DOUBLE),dimension(npqr0) :: &
                        x,y,z,vx,vy,vz,ch,am,ag,ep
@@ -3154,7 +3154,7 @@
 !-----------------------------------------------------------
       use, intrinsic :: iso_c_binding
       implicit none
-      include  'param_invH7.h'
+      include  'param_inv3.h'
 !
       real(C_DOUBLE) vx(npq0),vy(npq0),vz(npq0),am(npq0)
       real(C_float)  fvx(51),fvy(51),fvz(51),xsc(51)
@@ -3281,7 +3281,7 @@
       use, intrinsic :: iso_c_binding
       implicit none
 !
-      include 'param_invH7.h'
+      include 'param_inv3.h'
       real(C_float),dimension(nhist) :: &
                    ekin,ekn2,ekn3,ecr,elj,ep3m,pot,time,           &
                    vxio,vxco,vxct,vxmc,vxtot,xmcc,vxwat,etot,      &
@@ -3805,7 +3805,7 @@
 !*   CONTOUR PLOTS OF SCALAR QUANTITIES.                               *
 !***********************************************************************
       use, intrinsic :: iso_c_binding
-      include 'param_invH7.h'
+      include 'param_inv3.h'
 !
       character(len=8) label,cdate*10,ctime*8,char
       common/headr1/  label,cdate,ctime
