@@ -50,7 +50,7 @@ in the Fortran language (Ref. 8).
 We note that the particle-in-cell method uses space meshes for averaged density in nuclear fusion, 
 which is a different area from the molecular dynamics simulation.
 
-(* CGS system: w_unit= 1.6605d-24 g, e_unit= 4.803d-10 esu, t_unit= 0.01d-12 s, 
+(* CGS system: w_unit= 1.6605d-24 g, e_unit= 4.803d-10 esu, t_unit= 1.01d-15 s, 
 a_unit= 1.00d-08 cm, and \epsilon=78 at 27 deg Celsius.)
 
 ### Coulomb and P3M simulation code ###
