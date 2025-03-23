@@ -2,8 +2,7 @@
 !*                                                                  *
 !*   ## Charge Inversion of Macroions by Counter/Co-Ions ##         *
 !*                                                                  *
-!*     Author: Motohiko Tanaka, Ph.D., Nature and Energy Science    *
-!*             Applications, Chikusa, Nagoya 464, Japan             *
+!*   Author: Motohiko Tanaka, Ph.D., Chikusa, Nagoya 464, Japan     *
 !*                                                                  *
 !*  References                                                      *
 !*  1. M.Tanaka and A.Yu Grosberg, J.Chem.Phys., vol.115,567 (2001).*
@@ -30,22 +29,22 @@
 !*                                                                  *  
 !*------------------------------------------------------------------*
 !*  Main and subroutines (ca. 5000 lines):                          *
-!*                                                                  *  
 !*    program charge_inv                                            *
+!*                                                                  *  
 !*    RUN_MD                                                        *
 !*    Equations of motion - moldyn                                  *
 !*    Short-range - realteil_s                                      *
 !*    Long-range - p3m_perform, p3m_init, perform_aliasing_sums,... *
 !*      Note: The p3m routines in C were written by Dr.M.Deserno    *
 !*       and Dr.C.Holm, University of Mainz, Germany in Jan.1999,   *
-!*       and rewritten by Fortran 90 by Dr.M.Tanaka in Dec.1999.    *
+!*       and rewritten by Fortran 90 by M.Tanaka in Dec.1999.       *
 !*                                                                  *
 !*    init, ggauss, fun                                             *
 !*    LPLOT1/HPLOT1, lplots, ppl3da,...                             *
 !*    gopen graphic package                                         *
 !*                                                                  *
 !********************************************************************
-!*  To get a free format (f90, f03), convert f77 to the following:  *
+!*  To get a free format (f90, f03), convert f77 into:              *
 !*    :%s/^c/!/ and "tr 'A-Z' 'a-z' <@chginv3.f >@chginv3.f03"      *
 !*  Also, "use, intrinsic :: iso_c_binding"                         *
 !*  The @ character is not permitted in the Intel (LX) system.      *
@@ -347,7 +346,7 @@
       phi= -60.
       tht=  15.
 !
-      pi = 4.d0*datan(1.d0)
+      pi = 4.d0*atan(1.d0)  !<- generic name atan()
       call ggauss 
 !
 !-----------------------------------------------------
@@ -766,9 +765,9 @@
 !
       if(it.eq.1) then
         do i= 1,npqr
-        xg(i) = xg(i) - nint(xg(i)/xmax)*xmax ! integer dnint()
-        yg(i) = yg(i) - nint(yg(i)/ymax)*ymax
-        zg(i) = zg(i) - nint(zg(i)/zmax)*zmax
+        xg(i) = xg(i) - anint(xg(i)/xmax)*xmax ! real of dnint()
+        yg(i) = yg(i) - anint(yg(i)/ymax)*ymax
+        zg(i) = zg(i) - anint(zg(i)/zmax)*zmax
         end do
       end if
 !
@@ -814,7 +813,7 @@
         do i= 1,np
         vsq= vx(i)**2 +vy(i)**2 +vz(i)**2
         s1= s1 +0.5d0*am(i)*vsq
-!       vm= amax1(sqrt(vsq), vm)
+!       vm= max(sqrt(vsq), vm)
         end do
 !
         do i= np+1,np+nq
@@ -932,9 +931,9 @@
         dy = yg(j) -yg(i)
         dz = zg(j) -zg(i)
 !
-        dx = dx - nint(dx/length)*length
-        dy = dy - nint(dy/length)*length
-        dz = dz - nint(dz/length)*length
+        dx = dx - anint(dx/length)*length
+        dy = dy - anint(dy/length)*length
+        dz = dz - anint(dz/length)*length
         r2 = dx**2 + dy**2 + dz**2
         r  = sqrt(r2)
 !
@@ -1016,9 +1015,9 @@
         end do
 !
         do i= 1,np+nq
-        x4(i)= x4(i) -nint(x4(i)/xmax)*xmax
-        y4(i)= y4(i) -nint(y4(i)/ymax)*ymax
-        z4(i)= z4(i) -nint(z4(i)/zmax)*zmax
+        x4(i)= x4(i) -anint(x4(i)/xmax)*xmax
+        y4(i)= y4(i) -anint(y4(i)/ymax)*ymax
+        z4(i)= z4(i) -anint(z4(i)/zmax)*zmax
         end do
 !
         write(23,371) np+nq
@@ -1045,9 +1044,9 @@
         do i= 1,nCLp  !!np+nq, charged only
         i1= i1 +1
 !
-        x4(i1)= xg(i1) -nint(xg(i1)/xmax)*xmax
-        y4(i1)= yg(i1) -nint(yg(i1)/ymax)*ymax
-        z4(i1)= zg(i1) -nint(zg(i1)/zmax)*zmax
+        x4(i1)= xg(i1) -anint(xg(i1)/xmax)*xmax
+        y4(i1)= yg(i1) -anint(yg(i1)/ymax)*ymax
+        z4(i1)= zg(i1) -anint(zg(i1)/zmax)*zmax
 !
         ch4(i1)= ch(i)
         ag4(i1)= ag(i)
@@ -1169,7 +1168,7 @@
       HL= 11.
       VD=  6.
 !
-      pi=  4.*atan(1.0)
+      pi=  4.0*atan(1.0)
       pha= pi*phi/180.
       tha= pi*tht/180.
 !
@@ -1193,7 +1192,7 @@
 !     do i= 1,np+nq  ! for all atoms
 !     xx = - x(i)     ! arrange the x-direction with ppl3da plot
 !     yy =   y(i)
-!     rmax1= amax1(rmax1, sqrt(xx**2 +yy**2))
+!     rmax1= max(rmax1, sqrt(xx**2 +yy**2))
 !!    rmax1= 2.11d-2     ! fixed in time
 !     end do
 !     ps= 0.5*fsize/rmax1
@@ -1345,9 +1344,9 @@
       dy= y0(i) -y0(1)
       dz= z0(i) -z0(1)
 !
-      dx = dx - nint(dx/length)*length
-      dy = dy - nint(dy/length)*length
-      dz = dz - nint(dz/length)*length
+      dx = dx - anint(dx/length)*length
+      dy = dy - anint(dy/length)*length
+      dz = dz - anint(dz/length)*length
       rr = sqrt(dx**2 + dy**2 + dz**2)
       if(rr.gt.21.) go to 400
 !
@@ -1510,15 +1509,15 @@
       common/headr2/ time,xleng
 !
 !*---------------------------------------------------------------
-      pi = 4.d0*datan(1.d0)
+      pi = 4.d0*atan(1.d0)  !<- generic name
       nCLp= np +nq
 !
       driwu2 = 1.25992104989487316476721060728d0  ! 2**(1/3)
-      driwu  = dsqrt(driwu2)                      ! 2**(1/6)
-      sqrtpi = dsqrt(pi)
+      driwu  = sqrt(driwu2)                      ! 2**(1/6)
+      sqrtpi = sqrt(pi)
 !
-      rcutlj =  dsqrt(rcutlj2)
-      rcutpme = dsqrt(rcutpme2)
+      rcutlj =  sqrt(rcutlj2)
+      rcutpme = sqrt(rcutpme2)
 !
       e_cl1 = 0
       e_lj1 = 0
@@ -1550,9 +1549,9 @@
       dy = yg(i) -yg(j)
       dz = zg(i) -zg(j)
 !
-      dx = dx - nint(dx/length)*length
-      dy = dy - nint(dy/length)*length
-      dz = dz - nint(dz/length)*length
+      dx = dx - anint(dx/length)*length  !<- real of dnint
+      dy = dy - anint(dy/length)*length
+      dz = dz - anint(dz/length)*length
       r2 = dx**2 + dy**2 + dz**2
       r  = sqrt(r2)
 !
@@ -1578,21 +1577,23 @@
           forceV= 0
 !
         else
-          ar   = alpha*r  ! <- may be 1/length
+          ar   = alpha*r  ! <- 1/length
           t    = 1.d0 / ( 1.d0 + PP * ar )
           erfc = t*(A1+t*(A2+t*(A3+t*(A4+t*A5))))
+!
           forceV = prefactor*ch(i)*ch(j)*                          &
-                       (erfc/r +2*alpha/sqrtpi)*exp(-ar**2)/(r*r) ! r*r2
+                       (erfc/r +2*alpha/sqrtpi)*exp(-ar**2)/(r*r)  ! r*r2
           e_cl1 = e_cl1 +prefactor*ch(i)*ch(j)*erfc*exp(-ar**2)/r
         end if
 !
 !  To prevent close particles from touching
         rlj= r/(ag(i)+ag(j))        ! Non-dimension: hard contact
+!
         if(rlj.gt.rcutlj) then      ! rcutlj= driwu
           ccel= 0
 !
         else
-          rlj0= dmax1(rlj,rlj_m)    ! rlj > rlj_m= 0.6 <- 459^1/12
+          rlj0= max(rlj,rlj_m)    ! rlj > rlj_m= 0.6 <- 459^1/12
 !
           rsi = 1.d0/rlj0**2        ! 
           snt = rsi*rsi*rsi
@@ -1762,7 +1763,7 @@
 !
       ei = cmplx(0.d0,1.d0,kind(0d0))
 ! -----------------------------------
-      pi = 4.d0*datan(1.d0)
+      pi = 4.d0*atan(1.d0)
       MESHMASK = mesh-1     
 !
       dmesh = dfloat(mesh)
@@ -1775,10 +1776,10 @@
       sum_q2  = 0
 !
       do i= 0,npq0-1
-      if (dabs(ch(i)) .gt. 1.d-5) then 
-        coop(qzahl, 0) = xg(i) - nint(xg(i)/length -0.5d0)*length ! integer nint
-        coop(qzahl, 1) = yg(i) - nint(yg(i)/length -0.5d0)*length
-        coop(qzahl, 2) = zg(i) - nint(zg(i)/length -0.5d0)*length
+      if (abs(ch(i)) .gt. 1.d-5) then 
+        coop(qzahl, 0) = xg(i) - anint(xg(i)/length -0.5d0)*length ! real of dnint
+        coop(qzahl, 1) = yg(i) - anint(yg(i)/length -0.5d0)*length
+        coop(qzahl, 2) = zg(i) - anint(zg(i)/length -0.5d0)*length
 !
         qzahl= qzahl + 1
         qp(qzahl) = ch(i)
@@ -1820,17 +1821,17 @@
       d1  = coop(i,0)*Hi + modadd1
       Gi0 = int(d1 + modadd2) + assignshift
       G(i,0) = Gi0 
-      xarg(i) = int( (d1 - nint(d1) + 0.5d0)*MI2 ) !! integer of nint()
+      xarg(i) = int( (d1 - anint(d1) + 0.5d0)*MI2 ) !! real of dnint()
 !      
       d1  = coop(i,1)*Hi + modadd1 
       Gi1 = int(d1 + modadd2) + assignshift
       G(i,1) = Gi1
-      yarg(i) = int( (d1 - nint(d1) + 0.5d0)*MI2 )
+      yarg(i) = int( (d1 - anint(d1) + 0.5d0)*MI2 )
 !      
       d1  = coop(i,2)*Hi + modadd1 
       Gi2 = int(d1 + modadd2) + assignshift
       G(i,2) = Gi2 
-      zarg(i) = int( (d1 - nint(d1) + 0.5d0)*MI2 )
+      zarg(i) = int( (d1 - anint(d1) + 0.5d0)*MI2 )
 !
       m0= -1
 !*
@@ -1974,7 +1975,7 @@
       common/flags1/ For_flag, E_Coulomb_P3M_flag
 !
 !
-      pi = 4.d0*datan(1.d0)
+      pi = 4.d0*atan(1.d0)
 !
 !  Use flags instead of 0-addresses.
 !  *********************************
@@ -2023,7 +2024,7 @@
 !
       exponent_limit = 30.d0
 !
-      pi = 4.d0*datan(1.d0)
+      pi = 4.d0*atan(1.d0)
       fak1 = 1.d0/dmesh
       fak2 = (pi/(alpha*length))**2  ! <- READ_-CONF
 !
@@ -2088,8 +2089,9 @@
       end if
 !
       do i= 0,mesh-1
-      Dn(i) = dfloat(i) - nint(dfloat(i)/dmesh)*dmesh
-      end do  !           integer nint
+      Dn(i) =  real(i) - anint(dfloat(i)/dmesh)*dmesh
+!     Dn(i) = float(i) - anint(dfloat(i)/dmesh)*dmesh
+      end do 
 !
       Dn(mesh/2) = 0.d0
 !
@@ -2126,7 +2128,7 @@
                '   alpha=',d18.10,',  length=',d18.10)
       end if
 ! 
-       pi = 4.d0*datan(1.d0)
+       pi = 4.d0*atan(1.d0)
        fak1  = dmesh*dmesh*dmesh * 2.d0 / length**2
        fak2  = (pi/(alpha*length))**2  ! <--READ_CONF
 !
@@ -2323,7 +2325,7 @@
       end if
 !  
       do 100 i= 0, mesh-1
-      meshift(i) = i - nint(i/dmesh)*dmesh  !! integer of dnint() 
+      meshift(i) = i - anint(i/dmesh)*dmesh  !! real of dnint() 
   100 continue
 !
       return
@@ -2344,17 +2346,17 @@
       c6 = -0.1984126984127d-3
       c8 =  0.2755731922399d-5
 !
-      pi = 4.d0*datan(1.d0)
+      pi = 4.d0*atan(1.d0)
       pid = pi*d
 !
-      if (dabs(d).gt.epsi) then
+      if (abs(d).gt.epsi) then
          sinc = dsin(pid) / pid
       else 
          pid2 = pid*pid
          sinc = 1.d0 + pid2*( c2 + pid2*( c4 + pid2*(c6 + pid2*c8) ) )
       end if
 !
-      if(dabs(sinc).lt.1.d-100) sinc= 0.d0
+      if(abs(sinc).lt.1.d-100) sinc= 0.d0
 !
       return
       end function sinc
@@ -2920,9 +2922,9 @@
 !
 ! Within the (-L/2,+L/2) system
       do i= 1,npqr
-      x(i) = x(i) -nint(x(i)/xmax)*xmax ! integer nint()
-      y(i) = y(i) -nint(y(i)/ymax)*ymax
-      z(i) = z(i) -nint(z(i)/zmax)*zmax
+      x(i) = x(i) -anint(x(i)/xmax)*xmax ! real of dnint()
+      y(i) = y(i) -anint(y(i)/ymax)*ymax
+      z(i) = z(i) -anint(z(i)/zmax)*zmax
       end do
 !
       if(io_pe.eq.1) then
@@ -3338,7 +3340,7 @@
       call lplmax (ep3m,e3max,e3min,is)
       call lplmax (etot,etmax,etmin,is)
 !
-      emax= amax1(emax1,emax2)
+      emax= max(emax1,emax2)
 !
       ILN= 1
       ILG= 2
@@ -3458,8 +3460,8 @@
       fmin=  1.e10
 !
       do i= 1,is
-      fmax= amax1(fmax,f(i))
-      fmin= amin1(fmin,f(i))
+      fmax= max(fmax,f(i))
+      fmin= min(fmin,f(i))
       end do
 !
       return
@@ -3674,15 +3676,15 @@
          ymin=  1.e10
 !
          do i= 1,npt
-         ymax= amax1(ymax,v(i))
-         ymin= amin1(ymin,v(i))
+         ymax= max(ymax,v(i))
+         ymin= min(ymin,v(i))
          end do
 !
          if(ymin.ge.0.) then
            ymax= 1.1*ymax
            ymin= 0.
          else
-           ymax= amax1(0.,ymax)
+           ymax= max(0.,ymax)
            ymin= 1.1*ymin
          end if
       END IF
@@ -3974,8 +3976,8 @@
 !
       do jj= 1,4
       do i= 1,mx
-      amax7= amax1(cut(i,jj),amax7)
-      amin7= amin1(cut(i,jj),amin7)
+      amax7= max(cut(i,jj),amax7)
+      amin7= min(cut(i,jj),amin7)
       end do
       end do
 !

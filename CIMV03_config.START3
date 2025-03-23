@@ -1,0 +1,35 @@
+# Praefix-String.. to separate touch..: CIMV03
+# Maximum cpu time for this run..590..:    30.00000000000000
+# Diskretisierungs-Schritt...t:1 fs...:     0.10000000000000
+# Physikalische Endzeit...............: 100000.3000000000000
+# Write out interval for IWRT1. FT13..:    50.00000000000000 
+# Write out interval for IWRT2. FT23..:  2500.00000000000000 
+# Charge of macroions..div by Zcp.....:   -30.00000000000000
+# Radius of macroions.................:     5.00000000000000
+# Mass of a macroion..w_unit=1.66d-24.:   300.00000000000000
+# Zahl der Macroionen.................:            1
+# Anzahl der Polymere.................:            0
+# Ladungen pro Polymer..........64....:           64
+# Fraction of Polymer non-neutrality..:     0.00000000000000
+# Valenz der Gegenionen...............:            3
+# Valenz der negativen Salzionen......:           -1
+# Boxlaenge...actually 67.5 A...(Ang).:    67.50000000000000
+# Subboxen pro Boxlaenge..............:            1
+# Skin................................:     1.16666600000000
+# Ortsraum-Cutoff...............(Ang).:    10.00000000000000
+# Size of K  (Ang).2.032.Matsumote  ..:     2.03000000000000
+# Size of Cl (Ang).5.244.ACS Journal..:     5.24000000000000
+# LJ energy of K  (kJ/mol)............:     1.97100000000000
+# LJ energy of Cl (kJ/mol)............:     0.01750000000000
+# Temperature (Kelvin)................:   300.00000000000000
+# LJ-Cutoff (non dimension)...........:     1.12246204800000
+# alpha.............0.262 at 32Ang....:     0.12400000000000
+# Bjerrum-Laenge......................:     5.00000000000000
+# Applied electric field edc (V/cm)...:  3000000.00000000000
+
+# Applied electric field edc (V/cm)...:  3000000.00000000000
+# epsmac of a macroion......factor....:     3.00000000000000
+# Teilchenzahl (including salt)..411..:         1611
+# Non-neutral Polymer (if =1).........:            1
+# FFT-Mesh............................:           32
+# Gitter-ip...........................:            3
