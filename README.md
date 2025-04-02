@@ -1,4 +1,4 @@
-## Electrostatic code, charge inversion, and nanoscale phenomena for living cells ##
+## Electrostatic molecular dynamics in nanoscales living cells ##
 
 Electrostatic code, charge inversion, and nanoscale phenomena for living cells are studied 
 using the electrostatic Fortran 2003 code, and molecular dynamics simulations are execcuted (Refs. 1-5).
