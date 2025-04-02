@@ -14,7 +14,7 @@ We use the Linux OS of 6 cores of 3 GMz, typically in our desktop workstation.
 The program is divided with, (i) the parallelization and parameters setups, (ii) the initialization of
 ions and electrons by /init/, (iii) the main loop of simulation run /moldyn/, where the important 
 subroutine is the calculation of ions and electrons dynamics, /cl_forces/,
-and (iv) closing of the code /gclose/. The run is about one hour, and graphic outputs are 
+and (iv) closing of the code /gclose/. The run takes about one hour, and graphic outputs are 
 generated as shown in expl07.77a.pdf.
 
 Code: @md3-para7.f03 with the parameter file paramE7.h, ca. 1600 lines.
