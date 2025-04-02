@@ -2,7 +2,9 @@
 
 Giant charge inversion and nanoscale phenomena for living cells are studied 
 using the Fortran 2003 code, and molecular dynamics simulations are execcuted (Refs. 1-5).
-Especially, "DNA in nanopores" is simulated for DNA transportation through nanepores, where 
+Before that thema, we show the electostatic simulation code to understand molecular dynimics
+simulation.
+With the thema, "DNA in nanopores" is simulated for DNA transportation through nanepores, where 
 counterion condensation and coion depletion are the keys of the nanoscale human cells.
 
 ### 3D Electrostatic molecular dynamics simulation code ###
