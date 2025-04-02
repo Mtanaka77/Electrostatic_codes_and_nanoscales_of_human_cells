@@ -5,6 +5,19 @@ using the Fortran 2003 code, and molecular dynamics simulations are execcuted (R
 Especially, "DNA in nanopores" is simulated for DNA transportation through nanepores, where 
 counterion condensation and coion depletion are the keys of the nanoscale human cells.
 
+### 3D Electrostatic molecular dynamics simulation code ###
+
+First of all, we have a very easy electrostatic code of three dimensions that does 
+Fortran 2003 compilation, and then parallel execution. It uses MPI v.3 and the Ghostviewer script. 
+We use the Linux OS of 6 cores of 3 GMz, typically in our desktop workstation. 
+
+The program starts with, (i) parallel setup and parameters, (ii) the initialization of
+ions and electrons by /init/, (iii) the main loop of simulation run /moldyn/, 
+and (iv) closing of the code /gclose/.
+
+Code: @md3-para7.f03 with the parameter file paramE7.h, ca. 1600 lines.
+
+
 ### Simulation of charge inversion phenomena ###
 
 Charge inversion is about the macroions surrounded by the electrolyte of multivalent counterions 
