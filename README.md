@@ -12,7 +12,8 @@ Fortran 2003 compilation, and then parallel execution. It uses MPI v.3 and the G
 We use the Linux OS of 6 cores of 3 GMz, typically in our desktop workstation. 
 
 The program starts with, (i) parallel setup and parameters, (ii) the initialization of
-ions and electrons by /init/, (iii) the main loop of simulation run /moldyn/, 
+ions and electrons by /init/, (iii) the main loop of simulation run /moldyn/, the important 
+subroutine is the calculation of ions and electrons dynamics, /cl_forces/,
 and (iv) closing of the code /gclose/.
 
 Code: @md3-para7.f03 with the parameter file paramE7.h, ca. 1600 lines.
