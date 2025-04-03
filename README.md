@@ -21,7 +21,7 @@ The open boundary system is used for which the periodic boundary system /reflect
 The run takes about one hour, and graphic outputs are generated in time as expl07.77a.ps.
 It should be converted to expl07.77a.pdf to view on the screen or do draw on paper.
 
-We can see in the figure that ions are spattered but they stay at constant radii,
+We can see in the figure that ions are spattered but they stay roughly at constant radii,
 where electrons tend to keep the similar radii because Coulomb forces make the positive and negative 
 species togather in the sphere.
 
