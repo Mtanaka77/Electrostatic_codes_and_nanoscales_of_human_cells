@@ -79,8 +79,8 @@
       phi= -60.
       tht=  15.
 !
-      it_write06=  2000 ! steps   200 !  2000 
-      it_write23= 10000 ! steps   400 ! 50000 
+      it_write06= 2000 ! steps   200 !  2000 
+      it_write23= 5000 ! steps   400 ! 10000 ! 50000 
 !
 ! ---------------------------------------------------------
       call moldyn (ipar,igrp,irefl,kstart,tmax,cptot,  &
@@ -858,9 +858,9 @@
         end do
 !
 !       ps  = 1.5*fsize/rmax1
-!       ps  = 0.5*fsize/rmax1
         ps  = 0.1*fsize/rmax1 !<- may be the best
-        ps2 = 1.5*fsize/rmax1
+        ps2 = 1.3*fsize/rmax1
+!       ps2 = 1.5*fsize/rmax1
 !
         if(io_pe.eq.1) then
           open (unit=11,file=praefixc//'.06'//cname,               &
@@ -936,7 +936,6 @@
 !
 !---    
 !
-!     do i= 1,np,50
       do i= 1,np,10
       xp= x(i)*cph -y(i)*sph
       yp= x(i)*sph +y(i)*cph
@@ -961,7 +960,6 @@
       end do
 !---
 !
-!     do i= np+1,np+nq,50
       do i= np+1,np+nq,10
       xp= x(i)*cph -y(i)*sph
       yp= x(i)*sph +y(i)*cph
