@@ -1,16 +1,15 @@
 ## Electrostatic molecular dynamics simulation in living human cells ##
 
-Electrostatic code, charge inversion, and nanoscale phenomena for living cells are studied 
+Electrostatic molecular dynamics, that of charge inversion, and nanoscale phenomena for living cells are studied 
 using the electrostatic Fortran 2003 code, and molecular dynamics simulations are execcuted (Refs. 1-5).
-Before that thema, we show the electostatic simulation code to understand molecular dynimics
-simulation.
-With the thema, "DNA in nanopores" is simulated for DNA transportation through nanepores, where 
+Before writing of the thema, we talk about the electostatic simulation code to understand molecular dynimics 
+simulation. Then with the thema, "DNA in nanopores" is simulated for DNA transportation through nanepores, where 
 counterion condensation and coion depletion are the keys of the nanoscale human cells.
 
 ### 3D Electrostatic molecular dynamics simulation code ###
 
-First of all, we have a very easy electrostatic code of three dimensions that does 
-Fortran 2003 compilation, and then parallel execution. It uses MPI v.3 and the Ghostviewer script. 
+First of all, we have an easy electrostatic simulation code of three dimensions that first does 
+Fortran 2003 compilation, and then does parallel execution. It uses MPI v.3 and the Ghostviewer script. 
 We use the Linux OS of 6 cores of 3 GMz, typically in our desktop workstation. 
 
 The program is divided with, (i) the parallelization and parameters setups, (ii) the initialization of
@@ -19,7 +18,7 @@ subroutine is the calculation of ions and electrons dynamics, /cl_forces/,
 and (iv) closing of the code /gclose/. The mass of ion is 1836 for that of electron 1. 
 The open boundary system is used for which the periodic boundary system /reflect/ is skipped.
 The run takes about one hour, and graphic outputs are generated in time as expl07.77a.ps.
-It should be converted to expl07.77a.pdf to view on the screen or do draw on paper.
+It should be converted to expl07.77a.pdf to view on the screen or draw on letter paper.
 
 We can see in the figure that ions are spattered but they stay roughly at constant radii,
 where electrons tend to keep the similar radii because Coulomb forces make the positive and negative 
