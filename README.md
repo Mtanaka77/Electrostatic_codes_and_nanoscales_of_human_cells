@@ -21,8 +21,8 @@ periodic boundary system /reflect/ is skipped.
 The run takes about one hour, and graphic outputs are generated in time as expl07.77a.ps.
 It should be converted to expl07.77a.pdf to view on the screen or do draw on paper.
 
-We can see that ions are spattered but stay at constant radii where electrons 
-tend to keep the similar radii because Coulomb forces keep the positive and negative 
+We can see in the figure that ions are spattered but they stay at constant radii,
+where electrons tend to keep the similar radii because Coulomb forces make the positive and negative 
 species togather in the sphere.
 
 Code: @md3-para7.f03 with the parameter file paramE7.h, ca. 1600 lines.
