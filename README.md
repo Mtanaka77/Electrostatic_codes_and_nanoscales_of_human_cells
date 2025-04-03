@@ -19,7 +19,7 @@ subroutine is the calculation of ions and electrons dynamics, /cl_forces/,
 and (iv) closing of the code /gclose/. The open boundary system is used for which the 
 periodic boundary system /reflect/ is skipped.
 The run takes about one hour, and graphic outputs are generated in time as expl07.77a.ps.
-It should be converted to expl07.77a.pdf to view on the screen or write on paper.
+It should be converted to expl07.77a.pdf to view on the screen or do draw on paper.
 
 Code: @md3-para7.f03 with the parameter file paramE7.h, ca. 1600 lines.
 
