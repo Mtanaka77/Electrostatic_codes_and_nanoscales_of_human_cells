@@ -1,4 +1,4 @@
-## Electrostatic molecular dynamics in living human cells ##
+## Electrostatic molecular dynamics simulation in living human cells ##
 
 Electrostatic code, charge inversion, and nanoscale phenomena for living cells are studied 
 using the electrostatic Fortran 2003 code, and molecular dynamics simulations are execcuted (Refs. 1-5).
