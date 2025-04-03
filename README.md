@@ -16,8 +16,8 @@ We use the Linux OS of 6 cores of 3 GMz, typically in our desktop workstation.
 The program is divided with, (i) the parallelization and parameters setups, (ii) the initialization of
 ions and electrons by /init/, (iii) the main loop of simulation run /moldyn/, where the important 
 subroutine is the calculation of ions and electrons dynamics, /cl_forces/,
-and (iv) closing of the code /gclose/. The open boundary system is used for which the 
-periodic boundary system /reflect/ is skipped.
+and (iv) closing of the code /gclose/. The mass of ion is 1836 for that of electron 1. 
+The open boundary system is used for which the periodic boundary system /reflect/ is skipped.
 The run takes about one hour, and graphic outputs are generated in time as expl07.77a.ps.
 It should be converted to expl07.77a.pdf to view on the screen or do draw on paper.
 
