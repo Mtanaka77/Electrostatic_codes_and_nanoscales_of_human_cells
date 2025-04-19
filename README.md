@@ -90,7 +90,7 @@ It has N_x=N_y=80 and N_z=120 meshes, 14,000 particles, and a test run takes 15 
 
 The file porv41.777.pdf shows four plots of potential plot, particles of DNA and ions, those of all particles 
 (every 100 of water), and the velocity plot. One can see the DNA chain moving toward the positive z direction with time
-into the cell.  
+into the cell volume.  
 
 
 
