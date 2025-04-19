@@ -98,9 +98,7 @@ into the cell.
 The short-range forces and the long-range forces in p3m_perform routines, or non-periodic code are included 
 to study the charge inversion or the DNA tranport phenomena at high accuracy (Refs. 1, 5).
 Everyone is welcome to copy and rewrite this simulation codes under 
-GNU General Public License v3.0, by keeping top (2) 55 lines or (3) 100 lines of the
-author's codes intact. 
-
+GNU General Public License v3.0, by keeping the code of top 55 lines in (2) and 100 lines in (3) intact.
 
 ## References ##
 1. M. Tanaka and A.Yu Grosberg, J.Chem.Phys., vol.115, 567-574 (2001).
