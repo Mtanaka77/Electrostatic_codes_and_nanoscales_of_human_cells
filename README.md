@@ -85,7 +85,8 @@ m dv/dt = (q'q/Gamma *r^2) (grad r/r) - fgm *(2 r(i)-r(i+1)-r(i-1)) +48 *(epsil_
 The long-range forces with the meshes of (i,j,k) coordinates are solved by the Poisson equation, i.e.,
 div(epsilon grad [pot(i,j,k)]) = - 4*pi *rho(i,j,k). 
 
-The simulation code is named @nanoporAPF.f03 (ca 9,900 lines with graphics), and the paramter file paramAPF.h and the configuration file PORV41_config.start3. The used subroutines are: RUN_MD, moldyn, sht-forces, LJ-forces, sprmul, reflect_endpl, init, poissn, emcof3, cresmd, and graphics. It has N_x=N_y=80 and N_z=120 meshes, 14,000 particles, and a test run takes 15 minutes/6 cores (3.0 GHz) for t=800 with dt=0.01 (x 10^-14 s).  *) This present code will be available soon. 
+The simulation code is named @nanoporAPF.f03 (ca 9,900 lines with graphics), and the paramter file paramAPF.h and the configuration file PORV41_config.start3. The used subroutines are: RUN_MD, moldyn, sht-forces, LJ-forces, sprmul, reflect_endpl, init, poissn, emcof3, cresmd, and graphics. There are many input items to run the code, like the nanopore sizes, the number of DNA, counterions and coions, the Cartesian meshes of Poisson solver, and a time step of dt. 
+It has N_x=N_y=80 and N_z=120 meshes, 14,000 particles, and a test run takes 15 minutes/6 cores (3.0 GHz) for t=800 with dt=0.01 (x 10^-14 s).  *) This present code will be available soon. 
 
 The file porv41.777.pdf shows four plots of potential plot, particles of DNA and ions, those of all particles 
 (every 100 of water), and the velocity plot. One can see the DNA moving toward the positive z direction with time
