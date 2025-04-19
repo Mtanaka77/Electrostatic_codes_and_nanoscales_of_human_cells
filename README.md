@@ -112,4 +112,4 @@ GNU General Public License v3.0, by keeping the code of top 55 lines in (2) and 
 6. M. Tanaka and M. Murakami, Comp.Phys.Commun., 241, pp. 56-63 (2019).
 7. M. Deserno and C. Holm, J.Chem.Phys. 109, 7694–7701 (1998).
 8. M. Tanaka, Collaboration at Institute of Polymerforchung, University of Mainz, Germany (1999).
-9. M. Tanaka, this updated code will be available soon. 
+9. M. Tanaka, the updated code of DNA transport will be available soon. 
