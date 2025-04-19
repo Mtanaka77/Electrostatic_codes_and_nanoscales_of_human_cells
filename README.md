@@ -89,7 +89,7 @@ The simulation code is named @nanoporAPF.f03 (ca 9,900 lines with graphics), and
 
 The file porv41.777.pdf shows four plots of potential plot, particles of DNA and ions, those of all particles 
 (every 100 of water), and the velocity plot. One can see the DNA moving toward the positive z direction with time
-to the cell.  
+into the cell.  
 
 
 
