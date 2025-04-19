@@ -89,7 +89,7 @@ The simulation code is named @nanoporAPF.f03 (ca 9,900 lines with graphics), and
 It has N_x=N_y=80 and N_z=120 meshes, 14,000 particles, and a test run takes 15 minutes/6 cores (3.0 GHz) for t=800 with dt=0.01 (x 10^-14 s).  *) This updated code will be available soon. 
 
 The file porv41.777.pdf shows four plots of potential plot, particles of DNA and ions, those of all particles 
-(every 100 of water), and the velocity plot. One can see the DNA moving toward the positive z direction with time
+(every 100 of water), and the velocity plot. One can see the DNA chain moving toward the positive z direction with time
 into the cell.  
 
 
