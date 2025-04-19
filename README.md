@@ -84,7 +84,8 @@ The transport of DNA with counterions and coions is studied where a narrow nanop
 m dv/dt = (q'q/Gamma *r^2) (grad r/r) - fgm *(2 r(i)-r(i+1)-r(i-1)) +48 *(epsil_LJ/kT) grad[(sigma/r_ij)^12 -(sigma/r_ij)^6].
 
 The long-range potential forces with the meshes of (i,j,k) coordinates are solved by the Poisson equation, i.e.,
-div(epsilon grad [pot(i,j,k)]) = - 4*pi *rho(i,j,k). 
+div(epsilon grad [pot(i,j,k)]) = - 4*pi *rho(i,j,k). There are large potentials of positive and negative drops at end plates,
+and they are small otherwise.
 
 The simulation code is named @nanoporAPF.f03 (ca 9,900 lines with graphics), and the paramter file paramAPF.h and the configuration file PORV41_config.start3. The used subroutines are: RUN_MD, moldyn, sht-forces, LJ-forces, sprmul, reflect_endpl, init, poissn, emcof3, cresmd, and graphics. There are many input items to run the code, like the nanopore sizes, the number of DNA, counterions and coions, the Cartesian meshes of the Poisson solver, a time step of dt, the potential values of top and bottom plates, and the Bjerrum length, etc. 
 It has N_x=N_y=80 and N_z=120 meshes, 14,000 particles, and a test run takes 15 minutes/6 cores (3.0 GHz) for t=800 with dt=0.01 (x 10^-14 s).  *) This updated code will be available soon. 
