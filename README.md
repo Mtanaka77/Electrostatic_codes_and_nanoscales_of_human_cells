@@ -1,16 +1,18 @@
-## Electrostatic molecular dynamics simulation in living human cells ##
+## Molecular dynamics simulation for electrostatic living cells ##
 
-Electrostatic molecular dynamics, that of charge inversion, and nanoscale phenomena for living cells are studied 
-using the electrostatic Fortran 2003 code, and molecular dynamics simulations are execcuted (Refs. 1-5).
-Before writing of the thema, we talk about the electostatic simulation code to understand molecular dynimics 
-simulation. Then with the thema, "DNA in nanopores" is simulated for DNA transportation through nanepores, where 
-counterion condensation and coion depletion are the keys of the nanoscale human cells.
+The charge inversion and ion transport phonemena through nanopores are studied for living cells. 
+The electrostatic molecular dynamics simulations are execcuted (Refs. 1-5).
+We first talk about the electostatic code to understand and properly execute molecular dynamics simulation. 
+Then back to the thema, the charge inversion and "DNA in nanopores" are simulated for DNA transport through nanopores.
+The former deals with the periodic boundary system, while the latter treats the 3D non-periodic boundary problem with short-range and long-range electrostatic interactions. 
+The counterion condensation and coion depletion are the keys of the nanoscale human cells.
 
-### 3D Electrostatic molecular dynamics simulation code ###
+
+### (1) What is electrostatic molecular dynamics simulation ###
 
 First of all, we have an easy electrostatic simulation code of three dimensions that first does 
 Fortran 2003 compilation, and then does parallel execution. It uses MPI v.3 and the Ghostviewer script. 
-We use the Linux OS of 6 cores of 3 GMz, typically in our desktop workstation. 
+We use the Linux operating system of 6 cores of 3 GMz, typically in our desktop workstation. 
 
 The program is divided with, (i) the parallelization and parameters setups, (ii) the initialization of
 ions and electrons by /init/, (iii) the main loop of simulation run /moldyn/, where the important 
@@ -27,7 +29,7 @@ species togather in the sphere.
 Code: @md3-para7.f03 with the parameter file paramE7.h, ca. 1600 lines.
 
 
-### Simulation of charge inversion phenomena ###
+### (2) Simulation of charge inversion phenomena ###
 
 Charge inversion is about the macroions surrounded by the electrolyte of multivalent counterions 
 and monovalent coions.
@@ -75,13 +77,30 @@ which is a different area from the molecular dynamics simulation.
 (* CGS unit system: w_unit= 1.673d-24 g, e_unit= 4.803d-10 esu, t_unit= 1.00d-15 s, 
 a_unit= 1.00d-08 cm, and \epsilon=78 at 27 deg Celsius.)
 
-### Coulomb and P3M simulation code ###
 
-The short-range forces and the long-range forces in p3m_perform routines are included 
-to study the charge inversion phenomena at high accuracy (Ref. 1).
-Everyone is welcome to copy and rewrite this simulation code under 
-GNU General Public License v3.0, by keeping top 55 lines of the
-author's code intact. 
+### (3) DNA transport through nanepores ###
+
+The transport of DNA with counterions and coions is studied where a narrow nanopore along the z-direction seperates wide downside and upside regions (Ref. 5).  The cylinder of the pore is assumed 1.5 nm wide and 4.0 nm high, embedded in 4.0 nm in x,y directions and 12.0 nm in the z direction. The short-range Coulomb and Lennard-Jones forces are treated, i.e., 
+m dv/dt = (q'q/Gamma *r^2) (grad r/r) - fgm *(2 r(i)-r(i+1)-r(i-1)) +48 *(epsil_LJ/kT) grad[(sigma/r_ij)^12 -(sigma/r_ij)^6].
+The long-range forces with the meshes of (i,j,k) coordinates are solved by the Poisson equation, i.e.,
+div(epsilon grad [pot(i,j,k)]) = - 4*pi *rho(i,j,k). 
+
+The simulation code is named @nanoporAPF.f03 (ca 9,900 lines with graphics), and the paramter file paramAPF.h and the configuration file PORV41_config.start3. The used subroutines are: RUN_MD, moldyn, sht-forces, LJ-forces, sprmul, reflect_endpl, init, poissn, emcof3, cresmd, and graphics. It has N_x=N_y=80 and N_z=120 meshes, 14,000 particles, and a test run takes 15 minutes/6 cores (3.0 GHz) for t=800 with dt=0.01 (x 10^-14 s).  
+
+The file porv41.777.pdf shows four plots of potential plot, particles of DNA and ions, those of all particles 
+(every 100 of water), and the velocity plot. One can see the DNA moving toward the positive z direction with time
+to the cell.  
+
+
+
+### Coulomb and P3M or bound (non periodic) simulation code ###
+
+The short-range forces and the long-range forces in p3m_perform routines, or non-periodic code are included 
+to study the charge inversion or the DNA tranport phenomena at high accuracy (Refs. 1, 5).
+Everyone is welcome to copy and rewrite this simulation codes under 
+GNU General Public License v3.0, by keeping top (2) 55 lines or (3) 100 lines of the
+author's codes intact. 
+
 
 ## References ##
 1. M. Tanaka and A.Yu Grosberg, J.Chem.Phys., vol.115, 567-574 (2001).
