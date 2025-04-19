@@ -82,7 +82,8 @@ a_unit= 1.00d-08 cm, and \epsilon=78 at 27 deg Celsius.)
 
 The transport of DNA with counterions and coions is studied where a narrow nanopore along the z-direction seperates wide downside and upside regions (Ref. 5).  The cylinder of the pore is assumed 1.5 nm wide and 4.0 nm high, embedded in 4.0 nm in x,y directions and 12.0 nm in the z direction. The short-range Coulomb and Lennard-Jones forces are treated, i.e., 
 m dv/dt = (q'q/Gamma *r^2) (grad r/r) - fgm *(2 r(i)-r(i+1)-r(i-1)) +48 *(epsil_LJ/kT) grad[(sigma/r_ij)^12 -(sigma/r_ij)^6].
-The long-range forces with the meshes of (i,j,k) coordinates are solved by the Poisson equation, i.e.,
+
+The long-range potential forces with the meshes of (i,j,k) coordinates are solved by the Poisson equation, i.e.,
 div(epsilon grad [pot(i,j,k)]) = - 4*pi *rho(i,j,k). 
 
 The simulation code is named @nanoporAPF.f03 (ca 9,900 lines with graphics), and the paramter file paramAPF.h and the configuration file PORV41_config.start3. The used subroutines are: RUN_MD, moldyn, sht-forces, LJ-forces, sprmul, reflect_endpl, init, poissn, emcof3, cresmd, and graphics. There are many input items to run the code, like the nanopore sizes, the number of DNA, counterions and coions, the Cartesian meshes of the Poisson solver, a time step of dt, the potential values of top and bottom plates, and the Bjerrum length, etc. 
