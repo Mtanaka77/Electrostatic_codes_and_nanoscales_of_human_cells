@@ -106,12 +106,12 @@ The simulation codes of this directory:
 
 (1) Periodic, prototype
 
-* @md3-para7.f03, with the parameter file paramE7.h, ca. 1600 lines.
+* @md3-para7.f03, with the parameter file paramE7.h (ca. 1,600 lines)
 
 (2) Periodic, charge inversion
 
-* @chginv3.f03, with the paramer file parm_inv13.h and  
-the configure file CIMV13_config.START3.
+* @chginv3.f03, with the paramer file parm_inv13.h and 
+the configure file CIMV13_config.START3 (ca. 5,100 lines)
 
 (3) Non-periodic (bound), DNA transport
 
