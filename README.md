@@ -1,7 +1,7 @@
 ## Molecular dynamics simulation for electrostatic living cells ##
 
-The charge inversion and ion transport phenemena through nanopores are studied for living cells,  
-and the electrostatic molecular dynamics simulations are execcuted (Refs. 1-5).
+The charge inversion and ion transport phenemena through nanopores are studied for 
+living cells, and the electrostatic molecular dynamics simulations are execcuted (Refs. 1-5).
 We first talk about the electrostatic code to understand and properly execute molecular dynamics simulation. 
 Then back to the thema, the charge inversion and "DNA in nanopores" are simulated transport through nanopores.
 The former deals with the periodic boundary system, while the latter treats the 3D non-periodic boundary problem with short-range and long-range electrostatic interactions. 
