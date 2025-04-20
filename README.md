@@ -99,10 +99,7 @@ Moreover, the lower dielectric constant condition eps(\r) in the pore makes the 
 
 The short-range and long-range forces in periodic p3m_perform routines, 
 or the non-periodic system are used to study the charge inversion, and
-the DNA tranport phenomena at high accuracy (Refs. 1, 5).
-
-
-The simulation codes of this directory:
+the DNA tranport phenomena at high accuracy. The simulation codes of this directory have recently been updated.
 
 (1) Periodic, prototype
 
