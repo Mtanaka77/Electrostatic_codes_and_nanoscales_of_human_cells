@@ -1,17 +1,18 @@
 ## Molecular dynamics simulation for electrostatic living cells ##
 
-The charge inversion and ion transport phonemena through nanopores are studied for living cells. 
-The electrostatic molecular dynamics simulations are execcuted (Refs. 1-5).
-We first talk about the electostatic code to understand and properly execute molecular dynamics simulation. 
-Then back to the thema, the charge inversion and "DNA in nanopores" are simulated for DNA transport through nanopores.
+The charge inversion and ion transport phenemena through nanopores are studied for living cells,  
+and the electrostatic molecular dynamics simulations are execcuted (Refs. 1-5).
+We first talk about the electrostatic code to understand and properly execute molecular dynamics simulation. 
+Then back to the thema, the charge inversion and "DNA in nanopores" are simulated transport through nanopores.
 The former deals with the periodic boundary system, while the latter treats the 3D non-periodic boundary problem with short-range and long-range electrostatic interactions. 
 The counterion condensation and coion depletion are the keys of the nanoscale human cells.
 
 
 ### (1) What is electrostatic molecular dynamics simulation ###
 
-First of all, we have an easy electrostatic simulation code of three dimensions that first does 
-Fortran 2003 compilation, and then does parallel execution. It uses MPI v.3 and the Ghostviewer script. 
+First of all, we have an easy electrostatic simulation code of three dimensions 
+that first does Fortran 2003 compilation, and then does parallel execution. 
+It uses MPI v.3 and the Ghostviewer script. 
 We use the Linux operating system of 6 cores of 3 GMz, typically in our desktop workstation. 
 
 The program is divided with, (i) the parallelization and parameters setups, (ii) the initialization of
@@ -94,14 +95,34 @@ The file porv41.777.pdf shows four plots of potentials, particles of DNA and ion
 One can see that the DNA chain moves toward the positive z direction into the cell volume.  
 Moreover, the lower dielectric constant condition eps(\r) in the pore makes the DNA blob thicker because counterions easily find negatively-charged DNA, which accelerates it to inside the cell region. 
 
+### Coulomb and P3M or bound (non periodic) simulation codes ###
+
+The short-range and long-range forces in periodic p3m_perform routines, 
+or the non-periodic system are used to study the charge inversion, and
+the DNA tranport phenomena at high accuracy (Refs. 1, 5).
 
 
-### Coulomb and P3M or bound (non periodic) simulation code ###
+The simulation codes of this directory:
 
-The short-range forces and the long-range forces in p3m_perform routines, or non-periodic code are included 
-to study the charge inversion or the DNA tranport phenomena at high accuracy (Refs. 1, 5).
+(1) Periodic, prototype
+
+* @md3-para7.f03, with the parameter file paramE7.h, ca. 1600 lines.
+
+(2) Periodic, charge inversion
+
+* @chginv3.f03, with the paramer file parm_inv13.h and  
+the configure file CIMV13_config.START3.
+
+(3) Non-periodic (bound), DNA transport
+
+* @nanoporAPF.f03 (ca. 9,900 lines with graphics), with 
+the paramter file paramAPF.h and the configuration file PORV41_config.start3. 
+
+
 Everyone is welcome to copy and rewrite this simulation codes under 
-GNU General Public License v3.0, by keeping the code of top 55 lines in (2) and 100 lines in (3) intact.
+GNU General Public License v3.0, by keeping the first top 55 lines in (2) 
+and 100 lines in (3) of the codes intact.
+
 
 ## References ##
 1. M. Tanaka and A.Yu Grosberg, J.Chem.Phys., vol.115, 567-574 (2001).
@@ -113,3 +134,5 @@ GNU General Public License v3.0, by keeping the code of top 55 lines in (2) and 
 7. M. Deserno and C. Holm, J.Chem.Phys. 109, 7694–7701 (1998).
 8. M. Tanaka, Collaboration at Institute of Polymerforchung, University of Mainz, Germany (1999).
 9. M. Tanaka, the updated code of DNA transport will be available soon. 
+
+
