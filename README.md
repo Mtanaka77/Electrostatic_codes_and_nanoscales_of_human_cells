@@ -129,6 +129,6 @@ and 100 lines in (3) of the codes intact.
 6. M. Tanaka and M. Murakami, Comp.Phys.Commun., 241, pp. 56-63 (2019).
 7. M. Deserno and C. Holm, J.Chem.Phys. 109, 7694–7701 (1998).
 8. M. Tanaka, Collaboration at Institute of Polymerforchung, University of Mainz, Germany (1999).
-9. M. Tanaka, the updated code of DNA transport will be available soon. 
+9. M. TanThe simulation codes of this directory have been updated in April, 2025.
 
 
