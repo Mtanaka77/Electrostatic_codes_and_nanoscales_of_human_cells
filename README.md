@@ -2,7 +2,7 @@
 
 The charge inversion and ion transport phenomena through nanopores are studied for 
 living cells. The electrostatic molecular dynamics simulations are execcuted (Refs. 1-5).
-We first talk about the electrostatic code to propery execute molecular dynamics simulation. 
+We first talk about the electrostatic code to properly execute molecular dynamics simulation. 
 Back to the theme, the charge inversion and "DNA in nanopores" are simulated.
 The former deals with the periodic boundary system, while the latter treats the 3D non-periodic 
 boundary problem with short-range and long-range electrostatic interactions. 
