@@ -6,7 +6,8 @@ We first talk about the electrostatic code to properly execute molecular dynamic
 Back to the theme, the charge inversion and "DNA in nanopores" are simulated.
 The former deals with the periodic boundary system, while the latter treats the 3D non-periodic 
 boundary problem with short-range and long-range electrostatic interactions. 
-The counterion condensation and coion depletion are the key of the nanoscale human cells.
+The counterion condensation and coion depletion against macroions or DNA are 
+the key of the nanoscale human cells.
 
 
 ### (1) What is electrostatic molecular dynamics simulation ? ###
