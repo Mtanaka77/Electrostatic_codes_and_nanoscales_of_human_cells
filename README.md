@@ -129,6 +129,6 @@ and 100 lines in (3) of the codes intact.
 6. M. Tanaka and M. Murakami, Comp.Phys.Commun., 241, pp. 56-63 (2019).
 7. M. Deserno and C. Holm, J.Chem.Phys. 109, 7694–7701 (1998).
 8. M. Tanaka, Collaboration at Institute of Polymerforchung, University of Mainz, Germany (1999).
-9. The transport of DNA will be ready soon.
+9. The new version of DNA transport will be ready soon.
 
 
