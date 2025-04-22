@@ -25,7 +25,7 @@
 # Potential of the top plate.Vtop.(kT):    1.5000000000000000
 #           the bottom plate..Vbottom.:   -1.5000000000000000
 # Boundary = 0 (fixed), 1 (smooth)....:            0
-# ifLJ    for attractive LJ...........:            0
+# ifLJ    for attractive LJ.(cut).....:            0
 # ifrgrod for existing rod............:            0
 # ifrodco.............................:            0
 # t00     for initial start...........:   10.0000000000000000
@@ -47,7 +47,3 @@
 # LJ-Cutoff.............Ang...........:    1.1224620480000000
 # Bjerrum-Laenge......................:    5.0000000000000000
 
-# Radius of a rod.....................:    2.0000000000000000
-# Length of a rod.....................:   40.0000000000000000
-# Radius for rod charges. Rhelix.??...:    3.5000000000000000
-# Fraction of PE non-neutrality.......:    0.0000000000000000
