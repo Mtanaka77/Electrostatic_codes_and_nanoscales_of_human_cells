@@ -1,22 +1,22 @@
-! ----------------------------------------------- 2025/4/01------
-!
-!  << Simple Program of 3D Electrostatic Simulation Code >>
-!
-!    This program explains a very easy code showing Fortran 2003 
-!   compilation and then parallel execution, using Linux OS of 
-!   6 cores of 3 GMz. It uses MPI v.3 and the Ghostviewer script.
-!
-!   Code: @md3-para7.f03 
-!         paramE7.h
-!
-!   Author: Motohiko Tanaka, Ph.D., Chikusa, Nagoya 464, Japan 
-!                                                                
-!   Released by GPL-3.0 License, https://github.com/Mtanaka77/   
-!   Copyright(C) 2006-2025. All rights reserved.                 
-!
-! ---------------------------------------------------------------
-!  For one cpu execution, % mpiexec -n 1 a.out &  (very slow !)
-!----------------------------------------------------------------
+!*-------------------------------------------------- 2025/4/01 ----*
+!*                                                                 *
+!* << Simple Program of "3D Electrostatic Simulation Code" >>      *
+!*                                                                 *
+!*   This program explains a very easy code showing Fortran 2003   *
+!*  compilation and then parallel execution, using Linux OS of     *
+!*  6 cores of 3 GMz. It uses MPI v.3 and the Ghostviewer script.  *
+!*                                                                 *
+!*  Code: @md3-para7.f03                                           *
+!*        paramE7.h                                                *
+!*                                                                 *
+!*  Author: Motohiko Tanaka, Ph.D., Chikusa, Nagoya 464, Japan     *
+!*                                                                 *
+!*  Released by GPL-3.0 License, https://github.com/Mtanaka77/     *
+!*  Copyright(C) 2006-2025. All rights reserved.                   *
+!*                                                                 *
+!*-----------------------------------------------------------------*
+!* For one cpu execution, % mpiexec -n 1 a.out &  (very slow !)    *
+!*-----------------------------------------------------------------*  
 !
       program es3d_CL
 !
@@ -79,7 +79,7 @@
       phi= -60.
       tht=  15.
 !
-      it_write06= 2000 ! steps   200 !  2000 
+      it_write06=  500 ! steps   200 !  2000 
       it_write23= 5000 ! steps   400 ! 10000 ! 50000 
 !
 ! ---------------------------------------------------------
@@ -377,6 +377,7 @@
           open (unit=11,file=praefixc//'.06'//cname,               &
                 status='unknown',position='append',form='formatted')
           write(11,*) 'Go to 2000'
+          close(11)
         end if
 !
         go to 2000
@@ -975,8 +976,8 @@
       if(xx.lt.0.1 .or. xx.gt.23.) go to 500
       if(yy.lt.0.1 .or. yy.gt.18.) go to 500
 !
-      dd= 4*ps*ag(i)
-!     dd= 7*ps*ag(i)
+!     dd= 4*ps*ag(i)
+      dd= 7*ps*ag(i)
       call newcolor (3,1.,0.,0.)  ! red
       call circle (xx-0.12,yy-0.12,dd,1)
 !
