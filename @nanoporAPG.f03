@@ -1,15 +1,16 @@
-!************************************************** 2025/04/21 ***
+!************************************************** 2025/04/23 ***
 !*                                                               *
 !*    ## Molecular Dynamics for Electrostatic Living Cells ##    *
-!*    @nanoporAPF.f03 with the Poisson equation                  *
+!*    @nanoporAPG.f03 with the Poisson equation                  *
 !*                                                               *
 !*    Author: Motohiko Tanaka, Ph.D.                             *
 !*          Nature and Science Applications, Nagoya 464, Japan.  *
 !*    The code is permitted by GNU General Public License v3.0.  *
 !*                                                               *
+!*-------------------------------------------------------------- *
 !*     The short-range Coulomb forces of /moldyn/, L.1325, and   *
 !*   the long-range electrostatic effects by Poisson equation,   *
-!*   L.1390 are treated in this simulation code.                 *
+!*   (nob3=13) L.1390, are treated in this simulation code.      *
 !*                                                               *
 !*     This molecular dynamics simulation of nanoscale pores     *
 !*   in 3D electrostatic effects is updated in April 2025.       *
@@ -47,42 +48,43 @@
 !*                                                               *
 !*  Equation of motion:                                          *
 !*                                                               *
-!*      dv      q'q     grad r                                   *
-!*   m ---- = --------- ------ - fgm*(2*r(i)-r(i+1)-r(i-1))      *
-!*      dt    gamma r^2   r                                      *
+!*      d\bf{v}      q'q     grad r                              *
+!*   m --------- = --------- ------ + q \bf{E(r)}                *
+!*        dt       gamma r^2   r                                 *
+!*                                                               *
+!*                 - fgm*(2*r(i)-r(i+1)-r(i-1))                  *
 !*                                                               *
 !*                      epslj       sigma       sigma            *
 !*                 + 48*----- grad[(-----)^12- (-----)^6]        *
 !*                       kT         r_ij        r_ij             *
 !*                                                               *
 !*   Poisson equation:                                           *
-!*     div[eps(i,j,k) grad*pot(i,j,k)] = - 4*pi*rho(i,j,k)       *
+!*     div(eps(i,j,k) [grad pot(i,j,k)]) = - 4*pi*rho(i,j,k)     *
 !*                                                               *
 !*     Bjerrum = gamma = e**2/(eps*a)/kT                         *
-!*                 The electrostatic coupling constant.          *
 !*                                                               *
 !*****************************************************************
 !*  Main program and subroutines:                                *
 !*                                                               *
-!*   Program nanopore  MPI setup -> setups /Run_MD/ -> /moldyn/  *
-!*    param_APF.h (parameter), PORV41_config.start3 (config)     *     
+!*   Program nanopore  MPI setup -> setup /Run_MD/ -> /moldyn/   *
+!*    param_APG.h (parameter), PORV11_config.start3 (config)     *     
 !*                                                               *
 !*   /moldyn/     Time cycles, Coulomb and EM fields, L.735-     *
-!*   /sht_forces/ Coulomb forces, L.1305, 1945-                  *
-!*   /LJ_forces/  Lennard-Jones potential, L.1310, 2190-         *
-!*   /sprmul/     Spring forces, L.1315, 2455-                   * 
-!*   /reflect_endpl/ Particles boundary, L.2845-                 *
+!*   /sht_forces/ Coulomb forces, L.1323, 1930-                  *
+!*   /LJ_forces/  Lennard-Jones potential, L.1330, 2175-         *
+!*   /sprmul/     Spring forces, L.1330, 2440-                   * 
+!*   /reflect_endpl/ Particles boundary, L.2830-                 *
 !*                                                               *
-!*   /init/       Setups from /RUN_MD/, L.3825-                  *
-!*   /poissn/     Poisson solver, L.5655-                        *
-!*   /emcof3/     EM forces, closed boundary, L.5785-            *
-!*     /bound_s/    for it > 1, L.6130                           * 
-!*   /cresmd/-/avmult/  Conjugate residual method, L.6730-       *
-!*    Graphics    /gopen/ (Adobe-2.0 postscript)                 *
+!*   /init/       Setups from /RUN_MD/, L.3810-                  *
+!*   /poissn/     Poisson solver, L.5570-                        *
+!*   /emcof3/     EM forces, closed boundary, L.5700-            *
+!*     /bound_s/    for it > 1, L.5915                           * 
+!*   /cresmd/-/avmult/  Conjugate residual method, L.6680-       *
+!*   Graphics    /gopen/ (Adobe-2.0 postscript)                  *
 !*                                                               *
-!*** 2004/10/25 (Orig) **************************** 12/18/2006 ***
+!*** 2004/10/25 (Orig) **************************** 2006/12/18 ***
 !*                                                               *
-!*  To get a free format of Fortan f90 or f03, convert f77       *
+!*  To get a free format in Fortan f90 or f03, convert f77       *
 !*  format into:                                                 *
 !*    :%s/^c/!/  change 'c' of ALL column one to '!'             *
 !*    :%s/^C/!/                                                  *
@@ -198,7 +200,7 @@
                                 xg,yg,zg,vx,vy,vz,ch,am,ag,ep, &
                                 vxs,vys,vzs
       real(C_DOUBLE),dimension(npq0) :: vxc,vyc,vzc,fcx0,fcy0,fcz0
-!     real(C_DOUBLE),dimension(np0)  :: ftx,fty,ftz,fpx,fpy,fpz  !<- later
+!     real(C_DOUBLE),dimension(np0)  :: fpx,fpy,fpz 
 !     real(C_DOUBLE),dimension(np0)  :: dox,doy,doz,doxc,doyc,dozc
       common/vsplit/ vxc,vyc,vzc
       common/vspli2/ vxs,vys,vzs
@@ -738,7 +740,7 @@
       real(C_DOUBLE),dimension(npqr0) :: fsx,fsy,fsz
       real(C_DOUBLE),dimension(npq0) ::  fcx,fcy,fcz,fgx,fgy,fgz, &
                                          fcx0,fcy0,fcz0
-      real(C_DOUBLE),dimension(np0)  ::  ftx,fty,ftz,fpx,fpy,fpz
+      real(C_DOUBLE),dimension(np0)  ::  fpx,fpy,fpz
       common/fcxyz0/ fcx0,fcy0,fcz0      !<- read/write(12)
 !
       integer(C_INT) ipar,kstart,np,nq,nCLp,nr,npqr
@@ -1080,7 +1082,6 @@
       end do
       end do
       end do
-! 700 continue
 !
 !* Set initial positions of ions   Symmetric of xmax and xmin 
 !     xg(i)-zg(i) in /init/
@@ -1186,7 +1187,7 @@
       iwrt1= iwrta(t,dtwr1)   ! energy data, dtwr1=10.
       iwrt2= iwrtb(t,dtwr2)   ! restart data, dtwr2=200
       iwrt3= iwrtc(t,dtwr3)   ! field data, dtwr3=50
-      iwrt4= iwrtd(t,  10.)   ! write(13), 10.
+      iwrt4= iwrtd(t,  10.)   ! write(13)
 !*
 !     if(t8.lt.t00) then
 !       Vtop    = 0.d0
@@ -1299,10 +1300,6 @@
       fpx(i)= 0.d0
       fpy(i)= 0.d0
       fpz(i)= 0.d0
-!
-      ftx(i)= 0.d0
-      fty(i)= 0.d0
-      ftz(i)= 0.d0
       end do
 !
       do i = 1,nCLp
@@ -1337,30 +1334,24 @@
         call clocks (wtime3,size,cl_first)
 !
 !
-!**************************************************
-!*  Step 3: Coulomb forces on grids               *
-!**************************************************
-!   The space cell index follows i= 0,mx-1 as /charges/.
-!
-!*  -4*pi*rho = div*(eps*grad pot)
+!****************************************************
+!*  Step 3: Electric field for geometry correction  *
+!****************************************************
+!*  div (eps [grad pot]) = -4*pi*rho)
 !    pot = pot_q + pot_g
-!        pot_q: direct sum of coulomb forces
+!        pot_q: direct sum of Coulomb forces
 !        pot_g: geometry correction (boundary)
-!  then,  
-!     div*(eps*grad pot_g) = -4*pi*rho - div*(eps*grad pot_q)
-!     where  pot_p = sum q/(eps*r) defined on grids
 !                     
 ! ------------------------------------
-      if(t8.lt.t_poisn) go to 370       !<- L.1480-1620
+      if(t8.lt.t_poisn) go to 370    
 ! ------------------------------------
-      ntimes= 10  ! 20
 ! 
+      ntimes= 10  ! 20
       if(mod(it,ntimes).eq.0) then
 !**                       +++
         istep= istep +1  
-!         increment of time: dt*ntimes= 0.01x10 = 0.1
+!     time increment: dt*ntimes= 0.01x10 = 0.1
 !
-!                     *** zero reset 
         call charges (rho,xg,yg,zg,ch,ql,g,ipar,nCLp)
 !       call water_dens (xg,yg,zg,ipar,nCLp,npqr)
 !
@@ -1378,9 +1369,6 @@
         call filt1p (rho,filtx,filty,filtz,symp,symp2)
 !            +++++++++++     
 !
-!* Abandon the solution if not converged,
-!  which occurs when rho() is large locally
-!
         ndim= 3
         call poissn (rho,pot,ndim,itermax,iterp,ipar)
 !       +++++++++++++++++++++++++++++++++++++++++++++
@@ -1392,16 +1380,16 @@
         e_grid = 0.d0
         ef20 = 7.
 !
-        do k= 1,mz-2    ! inner points i= 1,mx-2
+        do k= 1,mz-2 
         do j= 1,my-2
         do i= 1,mx-2
         ex(i,j,k)= -(pot(i+1,j,k) -pot(i-1,j,k))/ghx2(i)
         ey(i,j,k)= -(pot(i,j+1,k) -pot(i,j-1,k))/ghy2(j)
         ez(i,j,k)= -(pot(i,j,k+1) -pot(i,j,k-1))/ghz2(k)
 !
-        ef2 = sqrt(ex(i,j,k)**2 +ey(i,j,k)**2 +ez(i,j,k)**2)
-!
 !* Limit maximum norm
+!
+        ef2 = sqrt(ex(i,j,k)**2 +ey(i,j,k)**2 +ez(i,j,k)**2)
 !
         if(ef2.gt.ef20) then
           ex(i,j,k)= ef20*ex(i,j,k)/ef2
@@ -1411,7 +1399,7 @@
           ef2 = ef20
         end if
 !
-        e_grid = e_grid +ef2
+        e_grid = e_grid + ef2
         end do
         end do
         end do
@@ -1419,8 +1407,6 @@
         e_grid = e_grid/float(mx*my*mz)
 !
 ! ----------------------------------------------------
-!         increment of time: dt*ntimes= 0.01x10 = 0.1
-!       if(e_grid.gt.5.d0) then
         if(mod(istep,50).eq.0 .and. io_pe.eq.1) then   !  istep=50 for Dt=5 
 !
           OPEN (unit=11,file=praefixc//'.06'//suffix2,             &
@@ -1430,7 +1416,7 @@
   341     format('#(bcg-ps) t8, ierr,e_grid,rsdl= ',f8.2,i6,1p2d12.3)
           close(11)
  
-!         go to 370  !<--
+!         go to 370 
         end if
 ! ----------------------------------------------------
 !
@@ -1466,7 +1452,7 @@
         do i= 1,nCLp
         dtm= ntimes*dt/(gamma*am(i))
 !
-        vxc(i)= vxc(i) +fgx(i)*dtm  !<-- Coulomb forces
+        vxc(i)= vxc(i) +fgx(i)*dtm  !<-- Electric field
         vyc(i)= vyc(i) +fgy(i)*dtm
         vzc(i)= vzc(i) +fgz(i)*dtm
         end do
@@ -1495,24 +1481,24 @@
 !* Forces other than Coulomb forces in a short stride.
 !
       if(t8.ge.t_pe) then
-        do i= 1,np
-        dtm= dt/am(i)
-!                                  Coulomb and PO_4
-        vxs(i)= vxs(i) +((fcx(i) -fcx0(i) +fpx(i))/gamma +fsx(i))*dtm  !<- Macroions 
-        vys(i)= vys(i) +((fcy(i) -fcy0(i) +fpy(i))/gamma +fsy(i))*dtm
-        vzs(i)= vzs(i) +((fcz(i) -fcz0(i) +fpz(i))/gamma +fsz(i))*dtm
-        end do
+      do i= 1,np
+      dtm= dt/am(i)
+!                       Macroions or PO_4  
+      vxs(i)= vxs(i) +((fcx(i) -fcx0(i) +fpx(i))/gamma +fsx(i))*dtm 
+      vys(i)= vys(i) +((fcy(i) -fcy0(i) +fpy(i))/gamma +fsy(i))*dtm
+      vzs(i)= vzs(i) +((fcz(i) -fcz0(i) +fpz(i))/gamma +fsz(i))*dtm
+      end do
       end if
 !
       do i= np+1,nCLp
       dtm= dt/am(i)
-!
+!                       Counterions/coions
       vxs(i)= vxs(i) +((fcx(i) -fcx0(i))/gamma +fsx(i))*dtm  !<- Counter/co-ions
       vys(i)= vys(i) +((fcy(i) -fcy0(i))/gamma +fsy(i))*dtm
       vzs(i)= vzs(i) +((fcz(i) -fcz0(i))/gamma +fsz(i))*dtm
       end do
 !
-      if(t8.le.t_pe+10.d0) then   ! retain salt until DNA contracts
+      if(t8.le.t_pe+10.d0) then   ! salt until DNA contracts
         do i= np+1,nCLp           !             5/28/2006
         if(abs(zg(i)).lt.0.5*Hpore) then
           vzs(i)= 0.d0
@@ -1522,8 +1508,8 @@
 !
       do i= nCLp+1,npqr
       dtm= dt/am(i)
-!
-      vxs(i)= vxs(i) +fsx(i)*dtm  !<- water particles
+!                     Water (neutral)
+      vxs(i)= vxs(i) +fsx(i)*dtm 
       vys(i)= vys(i) +fsy(i)*dtm
       vzs(i)= vzs(i) +fsz(i)*dtm
       end do
@@ -1532,14 +1518,14 @@
 !* Limit and randomize velocity (happens after reflection)
 !---------------------------------------------------------------
 !
-!     do 480 i= 1,npqr
+!     do i= 1,npqr
 !     vv= sqrt(vx(i)**2 +vy(i)**2 +vz(i)**2)
 !     if(vv.gt.30.) then
 !       vx(i)= 0.1 *(ranff(0.) -0.5)
 !       vy(i)= 0.1 *(ranff(0.) -0.5)
 !       vz(i)= 0.1 *(ranff(0.) -0.5)
 !     end if
-! 480 continue 
+!     end do
 !
       do i= 1,nCLp
       vx(i)= vxc(i) +vxs(i)  !<-- Coulomb + LJ
@@ -3932,15 +3918,18 @@
       pxl(i)= i -1
       end do
 !
-      pxr(mx-1)= mx-1
-      pxl(0)   =  0
+!  Periodic case
+      pxr(mx-1)= 0    ! mx-1
+      pxl(0)   = mx-1 ! 0
 !
-      pxr(mx)= mx-1
-      pxc(mx)= mx-1
-      pxl(mx)= mx-1
+      pxr(mx)=  1    ! mx-1
+      pxc(mx)=  0    ! mx-1
+      pxl(mx)= mx-1  ! mx-1
+!
       pxr(-1) = 0
-      pxc(-1) = 0
-      pxl(-1) = 0
+      pxc(-1) = mx-1 ! 0
+      pxl(-1) = mx-2 !0
+!
 !
       do j= 0,my-1
       pyr(j)= j +1
@@ -3948,17 +3937,18 @@
       pyl(j)= j -1
       end do
 !
-      pyr(my-1)= my-1
-      pyl(0)   =  0
+      pyr(my-1)= 0    ! my-1
+      pyl(0)   = my-1 ! 0
 !
-      pyr(my)= my-1
-      pyc(my)= my-1
-      pyl(my)= my-1
+      pyr(my)= 1    ! my-1
+      pyc(my)= 0    ! my-1
+      pyl(my)= my-1 ! my-1
+!
       pyr(-1) = 0
-      pyc(-1) = 0
-      pyl(-1) = 0
+      pyc(-1) = my-1 ! 0
+      pyl(-1) = my-2 ! 0
 !
-!
+!  Bound case
       do k= 0,mz-1
       pzr(k)= k +1
       pzc(k)= k 
@@ -5286,80 +5276,6 @@
       return
       end subroutine get_rod
 !
-!                                        ***********
-!---------------------------------------------------------------------
-      subroutine get_torque (tqx,tqy,tqz,fcx,fcy,fcz,ftx,fty,ftz,np)
-!---------------------------------------------------------------------
-      use, intrinsic :: iso_c_binding 
-      implicit none
-!*
-      include   'paramAPG.h'
-!
-      real(C_DOUBLE),dimension(npq0) :: fcx,fcy,fcz
-      real(C_DOUBLE),dimension(np0) ::  ftx,fty,ftz 
-      real(C_DOUBLE),dimension(np0) ::  dox,doy,doz,doxc,doyc,dozc
-      common/macroin1/ dox,doy,doz,doxc,doyc,dozc
-!
-      real(C_DOUBLE) tqx,tqy,tqz,                                &
-                     q1,q2,q3,q4,angx,angy,angz,ipx,ipy,ipz,     &
-                     rxx,rxy,rxz,ryx,ryy,ryz,rzx,rzy,rzz,        &
-                     sxo,syo,szo,xmax,ymax,zmax,xmin,ymin,zmin , &
-                     xgc,ygc,zgc,vxg,vyg,vzg,rod_leng,Rmac,Rhelix
-      real(C_float)  phi,tht,dtwr1,dtwr2,dtwr3
-      integer(C_INT) np,n_rodp,i
-!
-      common/parm3/ xmax,ymax,zmax,xmin,ymin,zmin
-      common/parm4/ phi,tht,dtwr1,dtwr2,dtwr3
-      common/macroion/ xgc,ygc,zgc,vxg,vyg,vzg,rod_leng,Rmac,  &
-                       Rhelix,n_rodp
-      common/macroiov/ q1,q2,q3,q4,angx,angy,angz,ipx,ipy,ipz
-!
-!--------------------------------------------------------------------
-!*  Calculate site vectors with q, since the use of sx= xo(i) -x(i)
-!   makes a problem because of the folding-back procedure.
-!--------------------------------------------------------------------
-!
-      rxx= -q1**2 +q2**2 -q3**2 +q4**2
-      rxy=  2.d0*(q3*q4 -q1*q2)
-      rxz=  2.d0*(q2*q3 +q1*q4)
-      ryx= -2.d0*(q1*q2 +q3*q4)
-      ryy= q1**2 -q2**2 -q3**2 +q4**2
-      ryz=  2.d0*(q2*q4 -q1*q3)
-      rzx=  2.d0*(q2*q3 -q1*q4)
-      rzy= -2.d0*(q1*q3 +q2*q4)
-      rzz= -q1**2 -q2**2 +q3**2 +q4**2
-!
-!* The Coulomb force (site vector from the gc)
-!
-      tqx= 0.d0
-      tqy= 0.d0
-      tqz= 0.d0
-
-      do i= 1,np
-      sxo=  rxx*doxc(i) +ryx*doyc(i) +rzx*dozc(i)
-      syo=  rxy*doxc(i) +ryy*doyc(i) +rzy*dozc(i)
-      szo=  rxz*doxc(i) +ryz*doyc(i) +rzz*dozc(i)
-!
-      tqx=  tqx + syo*fcz(i) -szo*fcy(i)
-      tqy=  tqy + szo*fcx(i) -sxo*fcz(i)
-      tqz=  tqz + sxo*fcy(i) -syo*fcx(i)
-      end do
-!
-!* The LJ force from the rod-axis
-!
-      do i= 1,n_rodp
-      sxo=  rxx*dox(i) +ryx*doy(i) +rzx*doz(i)
-      syo=  rxy*dox(i) +ryy*doy(i) +rzy*doz(i)
-      szo=  rxz*dox(i) +ryz*doy(i) +rzz*doz(i)
-!
-      tqx=  tqx + syo*ftz(i) -szo*fty(i)
-      tqy=  tqy + szo*ftx(i) -sxo*ftz(i)
-      tqz=  tqz + sxo*fty(i) -syo*ftx(i)
-      end do
-!
-      return
-      end subroutine get_torque 
-!
 !
 !---------------------------------------------------------------
       subroutine shuffl_ions (ch,np,nq)
@@ -5952,9 +5868,9 @@
       lxyz= i +mx*(j +my*k)
 !
       do m= 1,nob3
-      ii= lai(m)      ! periodic  pxc()
-      jj= laj(m)
-      kk= lak(m)      !<-- bound 
+      ii= pxc(lai(m))      ! periodic  pxc()
+      jj= pyc(laj(m))
+      kk= lak(m)           !<-- bound 
 !
       aa(lxyz,m) = ca(m) 
       na(lxyz,m) = ii +mx*(jj +my*kk) 
@@ -6018,7 +5934,7 @@
       do j= 0,my-1
       do i= 0,mx-1
 !
-! if x= xmin or xmax
+! if x= xmin or xmax  <-- periodic in x and y
 !     if(i.eq.0 .or. i.eq.mx-1) then
 !       pot8(i,j,k)= 0.d0
 !       rho8(i,j,k)= 0.d0
