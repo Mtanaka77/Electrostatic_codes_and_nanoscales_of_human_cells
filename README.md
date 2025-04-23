@@ -93,7 +93,7 @@ and they are small otherwise.
 The simulation code is named @nanoporAPF.f03 (ca 9,900 lines with graphics), and the parameter file paramAPF.h and the configuration file PORV21_config.start3. The used subroutines are: RUN_MD, moldyn, sht-forces, LJ-forces, sprmul, reflect_endpl, init, poissn, emcof3, cresmd, and graphics. There are many input items to run the code, like the nanopore sizes, the number of DNA, counterions and coions, the Cartesian meshes of the Poisson solver, a time step dt, the potential values of top and bottom plates, and the Bjerrum length, etc. It has N_x=N_y=80 and N_z=120 meshes, ca. 14,000 particles, and a test run takes 15 minutes/6 cores (3.0 GHz) for the time t=800 with the time step dt=0.01 (x 10^-14 s, Ref. 9). 
 
 The file porv21.773.pdf for very small dielectric constant in the pore region shows four plots of potentials, particles of DNA and ions, those of all particles (every 5 water molecules), and the velocity distributions. One can see that the DNA chain moves toward the positive z direction into the cell volume. Moreover, the low dielectric constant eps(\r) in the pore makes the DNA blob more concentrated because counterions easily find negatively-charged DNA, which accelerates it to inside the cell region.
-In passing about the transvers (x,y) directions, the closed boundary system seems to be better as a small distance may mix up fictitious artifact.    
+In passing about the transvers (x,y) directions, the closed boundary system seems to be better as a small distance in the periodic system may mix up fictitious artifact.    
 
 
 
