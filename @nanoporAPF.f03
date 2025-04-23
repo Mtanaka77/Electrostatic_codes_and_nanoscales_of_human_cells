@@ -1,4 +1,4 @@
-!************************************************** 2025/04/21 ***
+!************************************************** 2025/04/23 ***
 !*                                                               *
 !*    ## Molecular Dynamics for Electrostatic Living Cells ##    *
 !*    @nanoporAPF.f03 with the Poisson equation                  *
@@ -7,6 +7,7 @@
 !*          Nature and Science Applications, Nagoya 464, Japan.  *
 !*    The code is permitted by GNU General Public License v3.0.  *
 !*                                                               *
+!*---------------------------------------------------------------*
 !*     The short-range Coulomb forces of /moldyn/, L.1325, and   *
 !*   the long-range electrostatic effects by Poisson equation,   *
 !*   L.1390 are treated in this simulation code.                 *
@@ -47,9 +48,11 @@
 !*                                                               *
 !*  Equation of motion:                                          *
 !*                                                               *
-!*      dv      q'q     grad r                                   *
-!*   m ---- = --------- ------ - fgm*(2*r(i)-r(i+1)-r(i-1))      *
-!*      dt    gamma r^2   r                                      *
+!*      d\bf{v}      q'q     grad r                              *
+!*   m --------- = --------- ------ + q \bf{E(r)}                *
+!*        dt       gamma r^2   r                                 *
+!*                                                               *
+!*                 - fgm*(2*r(i)-r(i+1)-r(i-1))                  *
 !*                                                               *
 !*                      epslj       sigma       sigma            *
 !*                 + 48*----- grad[(-----)^12- (-----)^6]        *
@@ -64,25 +67,25 @@
 !*****************************************************************
 !*  Main program and subroutines:                                *
 !*                                                               *
-!*   Program nanopore  MPI setup -> setups /Run_MD/ -> /moldyn/  *
-!*    param_APF.h (parameter), PORV41_config.start3 (config)     *     
+!*   Program nanopore  MPI setup -> setup /Run_MD/ -> /moldyn/   *
+!*    param_APF.h (parameter), PORV21_config.start3 (config)     *     
 !*                                                               *
 !*   /moldyn/     Time cycles, Coulomb and EM fields, L.735-     *
-!*   /sht_forces/ Coulomb forces, L.1305, 1945-                  *
-!*   /LJ_forces/  Lennard-Jones potential, L.1310, 2190-         *
-!*   /sprmul/     Spring forces, L.1315, 2455-                   * 
-!*   /reflect_endpl/ Particles boundary, L.2845-                 *
+!*   /sht_forces/ Coulomb forces, L.1330, 1945-                  *
+!*   /LJ_forces/  Lennard-Jones potential, L.1335, 2190-         *
+!*   /sprmul/     Spring forces, L.1337, 2455-                   * 
+!*   /reflect_endpl/ Particles boundary, L.2855-                 *
 !*                                                               *
 !*   /init/       Setups from /RUN_MD/, L.3825-                  *
-!*   /poissn/     Poisson solver, L.5655-                        *
-!*   /emcof3/     EM forces, closed boundary, L.5785-            *
-!*     /bound_s/    for it > 1, L.6130                           * 
-!*   /cresmd/-/avmult/  Conjugate residual method, L.6730-       *
-!*    Graphics    /gopen/ (Adobe-2.0 postscript)                 *
+!*   /poissn/     Poisson solver, L.5670-                        *
+!*   /emcof3/     EM forces, closed boundary, L.5790-            *
+!*     /bound_s/    for it > 1, L.6120                           * 
+!*   /cresmd/-/avmult/  Conjugate residual method, L.6885-       *
+!*   Graphics    /gopen/ (Adobe-2.0 postscript)                  *
 !*                                                               *
 !*** 2004/10/25 (Orig) **************************** 12/18/2006 ***
 !*                                                               *
-!*  To get a free format of Fortan f90 or f03, convert f77       *
+!*  To get a free format in Fortan f90 or f03, convert f77       *
 !*  format into:                                                 *
 !*    :%s/^c/!/  change 'c' of ALL column one to '!'             *
 !*    :%s/^C/!/                                                  *
@@ -95,7 +98,7 @@
 !*  % mpif90 -mcmodel=medium -fpic -o a.out @nanoporAPF.f03 \    *
 !*    -I/opt/fftw3/include -L/opt/fftw3/lib -lfftw3 &> log       *
 !*                                                               *
-!*  Check the configuration file and execute by: 
+!*  Check the configuration file and execute by:                 * 
 !*  % mpiexec -n 6 a.out &                                       *
 !*                                                               *
 !*****************************************************************
