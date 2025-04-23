@@ -25,9 +25,9 @@ The open boundary system is used for which the periodic boundary system /reflect
 The run takes about one hour, and graphic outputs are generated in time as expl07.77a.ps.
 It should be converted to expl07.77a.pdf to view on the screen or draw on letter paper.
 
-We can see in the figure that ions are spattered but they stay roughly at a constant radius,
-where electrons tend to have the similar radius because Coulomb forces make the positive and negative 
-species together within the sphere.
+We can see in the figure that ions are spattered but they stay roughly at a constant radius.
+Whereas electrons tend to initially expand faster but have the similar radius because 
+Coulomb forces make the positive and negative species together within the sphere.
 
 Code: @md3-para7.f03 with the parameter file paramE7.h, ca. 1600 lines.
 
