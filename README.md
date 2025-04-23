@@ -20,14 +20,14 @@ We use the Linux operating system of 6 cores of 3 GMz, typically in our desktop 
 The program is divided with, (i) the parallelization and parameters setups, (ii) the initialization of
 ions and electrons by /init/, (iii) the main loop of simulation run /moldyn/, where the important 
 subroutine is the calculation of ions and electrons dynamics, /cl_forces/,
-and (iv) closing of the code /gclose/. The mass of ion is 1836 for that of electron 1. 
+and (iv) closing of the code /gclose/. The mass of ion is 1836 for that of electron is unity 1. 
 The open boundary system is used for which the periodic boundary system /reflect/ is skipped.
 The run takes about one hour, and graphic outputs are generated in time as expl07.77a.ps.
 It should be converted to expl07.77a.pdf to view on the screen or draw on letter paper.
 
-We can see in the figure that ions are spattered but they stay roughly at constant radii,
-where electrons tend to have the similar trend because Coulomb forces make the positive and negative 
-species togather in the sphere.
+We can see in the figure that ions are spattered but they stay roughly at a constant radius,
+where electrons tend to have the similar radius because Coulomb forces make the positive and negative 
+species together within the sphere.
 
 Code: @md3-para7.f03 with the parameter file paramE7.h, ca. 1600 lines.
 
