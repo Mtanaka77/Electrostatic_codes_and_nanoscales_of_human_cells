@@ -352,8 +352,8 @@
       a_unit = 1.4d0       ! Angstrom
       w_unit = 1.d0        ! Hydrogen mass
 !
-      wwat = 18.d0/w_unit  ! Water mass
-      awat = 1.2d0/a_unit  !  radius/a_unit
+      wwat = 18.0d0        ! Water mass
+      awat =  1.4d0        ! radius
 ! ++++++++++++++++++++++++++++++++++++++++++++
 !
 !*  np,nq,nseg :  defined in /READ_CONF/.

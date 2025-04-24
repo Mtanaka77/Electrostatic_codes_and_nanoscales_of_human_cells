@@ -1,4 +1,4 @@
-!  paramAPF.h - PORV31
+!  paramAPF.h - PORV21
 !
       logical  linux7
       integer(C_INT) num_proc,np0,nq0,nr0,npq0,npqr0,npio, &
@@ -16,8 +16,8 @@
       parameter  (mxy=mx*my,mxyz=mx*my*mz)   ! sendrecv
 !
       parameter  (ntmax=7000) 
-      parameter  (ip0=3,mintpol=4*50048)  ! index number ip0
-      parameter  (nob3=13,iblk3=1)
+      parameter  (ip0=3,mintpol=4*50048)     ! index number ip0
+      parameter  (nob3=13,iblk3=1)           ! nob3=13
 !
       character(len=29) praefixs,praefixi,praefixc,praefixe
       character(len=1)  suffix2
