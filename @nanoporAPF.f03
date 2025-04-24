@@ -350,10 +350,10 @@
 !  Water particles.
 ! ++++++++++++++++++++++++++++++++++++++++++++
       a_unit = 1.4d0       ! Angstrom
-      w_unit = 1.d0        ! Hydrogen mass
+      w_unit = 1.0d0       ! Hydrogen mass
 !
       wwat = 18.0d0        ! Water mass
-      awat =  1.4d0        ! radius
+      awat =  1.0d0        ! radius
 ! ++++++++++++++++++++++++++++++++++++++++++++
 !
 !*  np,nq,nseg :  defined in /READ_CONF/.
