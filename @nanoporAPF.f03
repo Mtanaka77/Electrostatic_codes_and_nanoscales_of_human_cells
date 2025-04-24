@@ -352,8 +352,8 @@
       a_unit = 1.4d0       ! Angstrom
       w_unit = 1.0d0       ! Hydrogen mass
 !
-      wwat = 18.0d0        ! Water mass
-      awat =  1.0d0        ! radius
+      wwat = 18.0d0/w_unit  ! Water mass
+      awat =  1.4d0/a_unit  ! radius
 ! ++++++++++++++++++++++++++++++++++++++++++++
 !
 !*  np,nq,nseg :  defined in /READ_CONF/.
@@ -4295,7 +4295,7 @@
 !  Na  .... 22/e ,  K  .... 38/e
 !  Cl  .... 34/-e
 ! -----------------------
-!
+!* Original mass (ww1) and size (a_phos)
       ww1  = 38.d0  ! K
       ww2  = 34.d0  ! Cl
 !
