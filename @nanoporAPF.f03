@@ -1,4 +1,4 @@
-!************************************************** 2025/04/23 ***
+!************************************************** 2025/04/21 ***
 !*                                                               *
 !*    ## Molecular Dynamics for Electrostatic Living Cells ##    *
 !*    @nanoporAPF.f03 with the Poisson equation                  *
@@ -7,7 +7,6 @@
 !*          Nature and Science Applications, Nagoya 464, Japan.  *
 !*    The code is permitted by GNU General Public License v3.0.  *
 !*                                                               *
-!*---------------------------------------------------------------*
 !*     The short-range Coulomb forces of /moldyn/, L.1325, and   *
 !*   the long-range electrostatic effects by Poisson equation,   *
 !*   L.1390 are treated in this simulation code.                 *
@@ -48,11 +47,9 @@
 !*                                                               *
 !*  Equation of motion:                                          *
 !*                                                               *
-!*      d\bf{v}      q'q     grad r                              *
-!*   m --------- = --------- ------ + q \bf{E(r)}                *
-!*        dt       gamma r^2   r                                 *
-!*                                                               *
-!*                 - fgm*(2*r(i)-r(i+1)-r(i-1))                  *
+!*      dv      q'q     grad r                                   *
+!*   m ---- = --------- ------ - fgm*(2*r(i)-r(i+1)-r(i-1))      *
+!*      dt    gamma r^2   r                                      *
 !*                                                               *
 !*                      epslj       sigma       sigma            *
 !*                 + 48*----- grad[(-----)^12- (-----)^6]        *
@@ -67,25 +64,25 @@
 !*****************************************************************
 !*  Main program and subroutines:                                *
 !*                                                               *
-!*   Program nanopore  MPI setup -> setup /Run_MD/ -> /moldyn/   *
-!*    param_APF.h (parameter), PORV21_config.start3 (config)     *     
+!*   Program nanopore  MPI setup -> setups /Run_MD/ -> /moldyn/  *
+!*    param_APF.h (parameter), PORV41_config.start3 (config)     *     
 !*                                                               *
 !*   /moldyn/     Time cycles, Coulomb and EM fields, L.735-     *
-!*   /sht_forces/ Coulomb forces, L.1330, 1945-                  *
-!*   /LJ_forces/  Lennard-Jones potential, L.1335, 2190-         *
-!*   /sprmul/     Spring forces, L.1337, 2455-                   * 
-!*   /reflect_endpl/ Particles boundary, L.2855-                 *
+!*   /sht_forces/ Coulomb forces, L.1305, 1945-                  *
+!*   /LJ_forces/  Lennard-Jones potential, L.1310, 2190-         *
+!*   /sprmul/     Spring forces, L.1315, 2455-                   * 
+!*   /reflect_endpl/ Particles boundary, L.2845-                 *
 !*                                                               *
 !*   /init/       Setups from /RUN_MD/, L.3825-                  *
-!*   /poissn/     Poisson solver, L.5670-                        *
-!*   /emcof3/     EM forces, closed boundary, L.5790-            *
-!*     /bound_s/    for it > 1, L.6120                           * 
-!*   /cresmd/-/avmult/  Conjugate residual method, L.6885-       *
-!*   Graphics    /gopen/ (Adobe-2.0 postscript)                  *
+!*   /poissn/     Poisson solver, L.5655-                        *
+!*   /emcof3/     EM forces, closed boundary, L.5785-            *
+!*     /bound_s/    for it > 1, L.6130                           * 
+!*   /cresmd/-/avmult/  Conjugate residual method, L.6730-       *
+!*    Graphics    /gopen/ (Adobe-2.0 postscript)                 *
 !*                                                               *
 !*** 2004/10/25 (Orig) **************************** 12/18/2006 ***
 !*                                                               *
-!*  To get a free format in Fortan f90 or f03, convert f77       *
+!*  To get a free format of Fortan f90 or f03, convert f77       *
 !*  format into:                                                 *
 !*    :%s/^c/!/  change 'c' of ALL column one to '!'             *
 !*    :%s/^C/!/                                                  *
@@ -98,7 +95,7 @@
 !*  % mpif90 -mcmodel=medium -fpic -o a.out @nanoporAPF.f03 \    *
 !*    -I/opt/fftw3/include -L/opt/fftw3/lib -lfftw3 &> log       *
 !*                                                               *
-!*  Check the configuration file and execute by:                 * 
+!*  Check the configuration file and execute by: 
 !*  % mpiexec -n 6 a.out &                                       *
 !*                                                               *
 !*****************************************************************
@@ -350,10 +347,10 @@
 !  Water particles.
 ! ++++++++++++++++++++++++++++++++++++++++++++
       a_unit = 1.4d0       ! Angstrom
-      w_unit = 1.0d0       ! Hydrogen mass
+      w_unit = 1.d0        ! Hydrogen mass
 !
-      wwat = 18.0d0/w_unit  ! Water mass
-      awat =  1.4d0/a_unit  ! radius
+      wwat = 18.d0/w_unit  ! Water mass
+      awat = 1.4d0/a_unit  !  radius
 ! ++++++++++++++++++++++++++++++++++++++++++++
 !
 !*  np,nq,nseg :  defined in /READ_CONF/.
@@ -2510,7 +2507,7 @@
       do i= ia,ib                  !<- ia--ib
       fgm= fgm0
 !     rr= sqrt((xg(i)-xg(i+1))**2 +(yg(i)-yg(i+1))**2 +(zg(i)-zg(i+1))**2)
-!     rrmax= bond_ps/a_unit        ! 4.3 Ang
+!     rrmax= bond_ps/a_unit 
 !     fgm= fgm0*exp(-(rr/rrmax)**2) 
 !
       if(i.eq.ia) then
@@ -3931,7 +3928,6 @@
       pxl(i)= i -1
       end do
 !
-! Bound case
       pxr(mx-1)= mx-1
       pxl(0)   =  0
 !
@@ -3948,7 +3944,6 @@
       pyl(j)= j -1
       end do
 !
-! Bound case
       pyr(my-1)= my-1
       pyl(0)   =  0
 !
@@ -3966,7 +3961,6 @@
       pzl(k)= k -1
       end do
 !
-! Bound case
       pzr(mz-1)= mz-1
       pzl(0)   =  0
 !
@@ -4295,7 +4289,7 @@
 !  Na  .... 22/e ,  K  .... 38/e
 !  Cl  .... 34/-e
 ! -----------------------
-!* Original mass (ww1) and size (a_phos)
+!
       ww1  = 38.d0  ! K
       ww2  = 34.d0  ! Cl
 !
@@ -4356,16 +4350,16 @@
 !
       if(mod(i,2).eq.1) then   
         ch(i)= -1.d0                 ! PO_4
-        if(ifbase.eq.2) ch(i)= 0.d0  !  neutral chain ?
+        if(ifbase.eq.2) ch(i)= 0.d0  !  neutral chain 
 !
         am(i)=  94.d0/w_unit
-        ag(i)=  a_phos/(2*a_unit)    ! diameter= 4.1 Ang
+        ag(i)=  a_phos/(2*a_unit)    ! Diameter= 4.1 Ang
         ep(i)=  epslj
       else
 !
         ch(i)= 0.d0                  ! Sugar ring
         am(i)= 218.d0/w_unit
-        ag(i)=  a_sugar/(2*a_unit)   ! diameter= 3.6 Ang
+        ag(i)=  a_sugar/(2*a_unit)   ! Diameter= 3.6 Ang
         ep(i)=  epslj
       end if
 !
@@ -4582,7 +4576,7 @@
 !
       ch(np00 +nnb)= 0.d0                ! base: AGCT,heavy,LJ
       am(np00 +nnb)= 130.d0/w_unit 
-      ag(np00 +nnb)= a_base1/(2*a_unit)  ! diameter
+      ag(np00 +nnb)= a_base1/(2*a_unit)  ! Diameter
       ep(np00 +nnb)= epslj
 !
       ist1(nnb)= i
@@ -5843,70 +5837,11 @@
 !
 !*                       !!<-- emcof3, i and j periodic/bound
       do i= 0,mx-1 
-      if(i.eq.0) then
-!
-        do j= 0,my-1
-        do k= 0,mz-1
-        lai(1)= 0
-        laj(1)= j
-        lak(1)= k
-         ca(1)= 1.d0
-!
-        lai(2)= 1
-        laj(2)= j
-        lak(2)= k
-         ca(2)= 1.d0
-! 
-        lxyz= 0 +mx*(j +my*k)
-!
-        aa(lxyz,1) = ca(1) 
-        na(lxyz,1) = 0 +mx*(j +my*k) 
-!            l    m           +          +
-        aa(lxyz,2) = ca(2) 
-        na(lxyz,2) = 1 +mx*(j +my*k) 
-! 
-        do m= 3,nob3
-        aa(lxyz,m)= 0
-        na(lxyz,m)= lxyz 
-        end do
-!
-        end do
-        end do
-      end if
-!
-!
       do j= 0,my-1 
-      if(j.eq.0) then
-!**
-        do k= 0,mz-1
-        lai(1) =  i      
-        laj(1) =  0     
-        lak(1) =  k     
-         ca(1) =  1.d0 
-!
-        lai(2)=   i
-        laj(2)=   1
-        lak(2)=   k
-         ca(2)=   1.d0 
-!*
-        lxyz= i +mx*(0 +my*k)
-!
-        aa(lxyz,1) = ca(1) 
-        na(lxyz,1) = i +mx*(0 +my*k) 
-!            l    m           +          +
-        aa(lxyz,2) = ca(2) 
-        na(lxyz,2) = i +mx*(1 +my*k) 
-! 
-        do m= 3,nob3
-        aa(lxyz,m)= 0
-        na(lxyz,m)= lxyz 
-        end do
-        end do
-      end if
-!
 !***
       do k= 0,mz-1
       if(k.eq.0) then
+!**
 !* (i,j-1,k)
         lai(1) =  i      ! number i=0: lai(1,0)=0
         laj(1) =  j      !  na(,)=0    laj(1,0)=0
@@ -6013,9 +5948,9 @@
       lxyz= i +mx*(j +my*k)
 !
       do m= 1,nob3
-      ii= lai(m)      !<- bound 
+      ii= lai(m)      ! periodic  pxc()
       jj= laj(m)
-      kk= lak(m)      !<- bound 
+      kk= lak(m)      !<-- bound 
 !
       aa(lxyz,m) = ca(m) 
       na(lxyz,m) = ii +mx*(jj +my*kk) 
@@ -6023,6 +5958,7 @@
 !***
 !
       else if(k.eq.mz-1) then
+!
 !* (i,j-1,k)
         lai(1)=   i
         laj(1)=   j
@@ -6048,70 +5984,10 @@
         na(lxyz,m)= lxyz 
         end do
       end if
-      end do  !<- end k
-!***
 !
-      if(j.eq.my-1) then
-!
-        do k= 0,mz-1
-        lai(1)=   i
-        laj(1)=   my-2
-        lak(1)=   k
-         ca(1)=   1.d0
-!
-        lai(2)=   i
-        laj(2)=   my-1
-        lak(2)=   k
-         ca(2)=   1.d0
-!
-        lxyz= i +mx*(my-1 +my*k) 
-!
-        aa(lxyz,1) = ca(1) 
-        na(lxyz,1) = i +mx*(my-2 +my*k) 
-! 
-        aa(lxyz,2) = ca(2) 
-        na(lxyz,2) = i +mx*(my-1 +my*k) 
-! 
-        do m= 3,nob3
-        aa(lxyz,m)= 0
-        na(lxyz,m)= lxyz 
-        end do
-        end do
-      end if
-      end do  !<- end j
-!***
-!
-      if(i.eq.mx-1) then
-!
-        do j= 0,my-1
-        do k= 0,mz-1
-        lai(1)= mx-2
-        laj(1)= j
-        lak(1)= k
-         ca(1)= 1.d0
-!
-        lai(2)= mx-1
-        laj(2)= j
-        lak(2)= k
-         ca(2)= 1.d0
-! 
-        lxyz= mx-1 +mx*(j +my*k)
-!
-        aa(lxyz,1) = ca(1) 
-        na(lxyz,1) = mx-2 +mx*(j +my*k) 
-!            l    m           +          +
-        aa(lxyz,2) = ca(2) 
-        na(lxyz,2) = mx-1 +mx*(j +my*k) 
-! 
-        do m= 3,nob3
-        aa(lxyz,m)= 0
-        na(lxyz,m)= lxyz 
-        end do
-!
-        end do
-        end do
-      end if
-      end do  !<- end of i 
+      end do 
+      end do 
+      end do 
 !
       return
       end subroutine emcof3
