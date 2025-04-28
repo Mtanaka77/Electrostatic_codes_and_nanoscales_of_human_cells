@@ -7,8 +7,8 @@
 !
       parameter  (num_proc=6,linux7=.true.)  ! 6, Linux
 !     parameter  (num_proc=8,linux7=.false.) 
-!
-      parameter  (np0=50,nq0=300,nr0=34000) 
+!                                              water
+      parameter  (np0=50,nq0=300,nr0=13000)  ! kl,km,kn=20x20x41
       parameter  (npq0=np0+nq0,npqr0=np0+nq0+nr0)
       parameter  (npio=np0+nq0)
 !
