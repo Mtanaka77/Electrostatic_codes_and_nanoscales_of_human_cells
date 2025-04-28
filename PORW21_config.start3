@@ -1,31 +1,31 @@
 # Praefix-String......................: PORW21
 # Non-neutral Pl (if =1)..............:            1
-# Maximum cpu time for run,.1430 Min..:   60.0000000000000000
+# Maximum cpu time for run,.1430 Min..:   15.0000000000000000
 # Physikalische Endzeit...............: 1000.0200000000000000
 # Diskretisierungs-Schritt............:    0.0100000000000000
-# Write interval for time,    iwrt1...:   20.0000000000000000 
+# Write interval for time,    iwrt1...:    5.0000000000000000 
 # Write interval for restart, iwrt2,..:  200.0000000000000000 
-# Write interval for field,   iwrt3,..:  100.0000000000000000 
-# Radius of a nanopore.........10.3 A.:    7.3600000000000000
-# Height of a nanopore.......  56.0 A.:   40.0000000000000000
+# Write interval for field,   iwrt3,..:   20.0000000000000000 
+# Radius of a nanopore.diamter 1.46 nm:    7.3600000000000000
+# Height of a nanopore.length  4.00 nm:   40.0000000000000000
 # Dielectric constant of membrane.....:    3.0000000000000000
 # Number of Polyelectrolyte (2).......:            1
 # Ladungen pro PE (per strand !)......:           24
 # Neutral base is attached if 1.ifbase:            1
-# Radius of a rod....Rmac.......3.9 A.:    2.8000000000000000
-# Length of a rod....rod_leng..42.0 A.:   30.0000000000000000
-# Radius for rod charges.Rhelix.4.9 A.:    3.5000000000000000
+# Radius of a rod....Rmac......0.28 nm:    2.8000000000000000
+# Length of a rod....rod_leng..3.00 nm:   30.0000000000000000
+# Radius for rod charges.Rhelix0.35 nm:    3.5000000000000000
 # Pore's dielectric constant .........:   79.0000000000000000
 # Valenz der Gegenionen.......... Zp..:            1
 # Valenz der negativen Salzionen. Zn..:           -1
 # Teilchenzahl (including salt).......:          300
-# Box size: xleng.......Ang....84.0 A.:   60.0000000000000000
-# Box size: yleng.......Ang....84.0 A.:   60.0000000000000000
-# Box size: zleng.......Ang...168.0 A.:  120.0000000000000000
-# Potential of the top plate.Vtop.(kT):    1.5000000000000000
-#           the bottom plate..Vbottom.:   -1.5000000000000000
+# Box size: xleng...............6.0 nm:   60.0000000000000000
+# Box size: yleng...............6.0 nm:   60.0000000000000000
+# Box size: zleng..............12.0 nm:  120.0000000000000000
+# Potential of the top plate.Vtop.(kT):    1.0000000000000000
+#           the bottom plate..Vbottom.:   -1.0000000000000000
 # Boundary = 0 (fixed), 1 (smooth)....:            0
-# ifLJ    for attractive LJ.(cut).....:            0
+# ifLJ    for attractive LJ.(cut).....:            1
 # ifrgrod for existing rod............:            0
 # ifrodco.............................:            0
 # t00     for initial start...........:   10.0000000000000000
@@ -42,8 +42,3 @@
 # LJ-Cutoff.............sigma/A.......:    1.1224620480000000
 # Bjerrum-Laenge......................:    5.0000000000000000
 
-# Ion velocity rescaling until........:    0.0000000000000000
-#   time interval rescaling...........:    2.0000000000000000
-# Change solvent vel rescaling at.....:   10.0000000000000000 
-#   time interval - early phase.......:    2.0000000000000000
-#   time interval - late phase........:   10.0000000000000000
