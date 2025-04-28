@@ -102,7 +102,7 @@ The short-range and long-range forces in periodic p3m_perform routines,
 or the non-periodic system are used to study the charge inversion, and
 the DNA tranport phenomena at high accuracy. The simulation codes of this directory have recently been updated.
 
-(1) Periodic, prototype
+(1) Periodic system, prototype
 
 * @md3-para7.f03, with the parameter file paramE7.h (ca. 1,600 lines)
 
@@ -111,7 +111,7 @@ the DNA tranport phenomena at high accuracy. The simulation codes of this direct
 * @chginv3.f03, with the paramer file parm_inv13.h and 
 the configure file CIMV13_config.START3 (ca. 5,100 lines)
 
-(3) Non-periodic (bound system), DNA transport
+(3) Non-periodic (bound) system, DNA transport
 
 * @nanoporAPG.f03 (ca. 9,900 lines with graphics), with 
 the parameter file paramAPG.h and the configuration file PORV21_config.start3. 
