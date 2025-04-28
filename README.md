@@ -83,14 +83,13 @@ a_unit= 1.00d-08 cm, and \epsilon=78 at 27 deg Celsius.)
 
 ### (3) DNA transport through nanopores ###
 
-The transport of DNA with counterions and coions is studied where a narrow nanopore along the z-direction seperates wide downside and upside regions (Ref. 5).  The cylinder of the pore is assumed 1.0 nm wide and 5.6 nm high, embedded in 8.4 nm in x,y directions and 16.8 nm in the z direction. The short-range Coulomb and Lennard-Jones forces are treated, i.e., 
+The transport of DNA with counterions and coions is studied where a narrow nanopore along the z-direction seperates wide downside and upside regions (Ref. 5).  The cylinder of the pore is assumed 1.5 nm wide and 4.0 nm high, embedded in 6.0 nm in x,y directions and 12.0 nm in the z direction. The short-range Coulomb and Lennard-Jones forces are treated, i.e., 
 m dv/dt = (Gamma q'q/r^2) (grad r/r) - fgm *(2 r(i)-r(i+1)-r(i-1)) +48 *(epsil_LJ/kT) grad[(sigma/r_ij)^12 -(sigma/r_ij)^6] with the coupling constant Gamma=5.
 
 The long-range potential forces with the meshes of (i,j,k) coordinates are solved by the Poisson equation, i.e.,
-div(eps(i,j,k) [grad pot(i,j,k)]) = - 4*pi*Gamma*rho(i,j,k). There are large potentials of positive and negative drops at end plates,
-and they are small otherwise.
+div(eps(i,j,k) [grad pot(i,j,k)]) = - 4*pi*Gamma*rho(i,j,k). There are large potentials of positive and negative drops at end plates, and they are small otherwise.
 
-The simulation code is named @nanoporAPG.f03 (ca 9,900 lines with graphics), and the parameter file paramAPG.h and the configuration file PORV21_config.start3. The used subroutines are: RUN_MD, moldyn, sht-forces, LJ-forces, sprmul, reflect_endpl, init, poissn, emcof3, cresmd, and graphics. There are many input items to run the code, like the nanopore sizes, the number of DNA, counterions and coions, the Cartesian meshes of the Poisson equation, a time step dt, the potential values of top and bottom plates, and the Bjerrum length, etc. It has N_x=N_y=80 and N_z=120 meshes, ca. 14,000 particles, and a test run takes 15 minutes/6 cores (3.0 GHz) for the time t=800 with the time step dt=0.01 (x 10^-14 s, Ref. 9). 
+The simulation code is named @nanoporAPG.f03 (ca 9,900 lines with graphics), and the parameter file paramAPG.h and the configuration file PORW21_config.start3. The used subroutines are: RUN_MD, moldyn, sht-forces, LJ-forces, sprmul, reflect_endpl, init, poissn, emcof3, cresmd, and graphics. There are many input items to run the code, like the nanopore sizes, the number of DNA, counterions and coions, the Cartesian meshes of the Poisson equation, a time step dt, the potential values of top and bottom plates, and the Bjerrum length, etc. It has N_x=N_y=80 and N_z=120 meshes, ca. 14,000 particles, and a test run takes 15 minutes/6 cores (3.0 GHz) for the time t=800 with the time step dt=0.01 (x 10^-14 s, Ref. 9). 
 
 The file porw21.773.pdf for very small dielectric constant in the pore region shows four plots of potentials, particles of DNA and ions, those of all particles (every 5 water molecules), and the velocity distributions. One can see that the DNA chain moves toward the positive z direction into the cell volume. Moreover, the low dielectric constant eps(\r) in the pore makes the DNA blob more concentrated because counterions easily find negatively-charged DNA, which accelerates it to inside the cell region.
 In passing about the transvers (x,y) directions, the closed boundary system may seem to be better as a small distance in the periodic system mixes up fictitious artifact.    
