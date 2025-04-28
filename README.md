@@ -87,7 +87,7 @@ The transport of DNA with counterions and coions is studied where a narrow nanop
 m dv/dt = (Gamma q'q/r^2) (grad r/r) - fgm *(2 r(i)-r(i+1)-r(i-1)) +48 *(epsil_LJ/kT) grad[(sigma/r_ij)^12 -(sigma/r_ij)^6] with the coupling constant Gamma=5.
 
 The long-range potential forces with the meshes of (i,j,k) coordinates are solved by the Poisson equation, i.e.,
-div(eps(i,j,k) [grad pot(i,j,k)]) = - 4*pi*Gamma*rho(i,j,k). There are large potentials of positive and negative drops at end plates, and they are small otherwise.
+div(eps(i,j,k) [grad pot(i,j,k)]) = - 4*pi* Gamma*rho(i,j,k). There are large potentials of positive and negative drops at end plates, and they are small otherwise.
 
 The simulation code is named @nanoporAPG.f03 (ca 9,900 lines with graphics), and the parameter file paramAPG.h and the configuration file PORW21_config.start3. The used subroutines are: RUN_MD, moldyn, sht-forces, LJ-forces, sprmul, reflect_endpl, init, poissn, emcof3, cresmd, and graphics. There are many input items to run the code, like the nanopore sizes, the number of DNA, counterions and coions, the Cartesian meshes of the Poisson equation, a time step dt, the potential values of top and bottom plates, and the Bjerrum length, etc. It has N_x=N_y=80 and N_z=100 meshes, ca. 14,000 particles, and a test run takes 15 minutes/6 cores (3.0 GHz) for the time t=250 with the time step dt=0.01 (x 10^-14 s, Ref. 9). 
 
