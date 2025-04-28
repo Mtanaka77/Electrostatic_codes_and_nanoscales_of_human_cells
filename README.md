@@ -91,7 +91,7 @@ div(eps(i,j,k) [grad pot(i,j,k)]) = - 4*pi* Gamma*rho(i,j,k). There are large po
 
 The simulation code is named @nanoporAPG.f03 (ca 9,900 lines with graphics), and the parameter file paramAPG.h and the configuration file PORW21_config.start3. The used subroutines are: RUN_MD, moldyn, sht-forces, LJ-forces, sprmul, reflect_endpl, init, poissn, emcof3, cresmd, and graphics. There are many input items to run the code, like the nanopore sizes, the number of DNA, counterions and coions, the Cartesian meshes of the Poisson equation, a time step dt, the potential values of top and bottom plates, and the Bjerrum length, etc. It has N_x=N_y=80 and N_z=100 meshes, ca. 11,000 particles, and a test run takes 15 minutes/6 cores (3.0 GHz) for the time t=700 with the time step dt=0.01 (x 10^-14 s, Ref. 9). 
 
-The file porw21.773.pdf for very small dielectric constant in the pore region shows four plots of potentials, particles of DNA and ions, those of all particles (every 5 water molecules), and the velocity distributions. One can see that the DNA chain moves toward the positive z direction into the cell volume. Moreover, the low dielectric constant eps(\r) in the pore makes the DNA blob more concentrated because counterions easily find negatively-charged DNA, which accelerates it to inside the cell region.
+The file porw21.773.pdf for very small dielectric constant eps=3 in the pore region shows four plots of potentials, particles of DNA and ions, those of all particles (every 5 water molecules), and the velocity distributions. One can see that the DNA chain moves toward the positive z direction into the cell volume. Moreover, the low dielectric constant eps(\r) in the pore makes the DNA blob more concentrated because counterions easily find negatively-charged DNA, which accelerates it to inside the cell region.
 In passing about the transvers (x,y) directions, the closed boundary system may seem to be better as a small distance in the periodic system mixes up fictitious artifact.    
 
 
@@ -106,12 +106,12 @@ the DNA tranport phenomena at high accuracy. The simulation codes of this direct
 
 * @md3-para7.f03, with the parameter file paramE7.h (ca. 1,600 lines)
 
-(2) Periodic, charge inversion
+(2) Periodic system, charge inversion
 
 * @chginv3.f03, with the paramer file parm_inv13.h and 
 the configure file CIMV13_config.START3 (ca. 5,100 lines)
 
-(3) Non-periodic (bound), DNA transport
+(3) Non-periodic (bound system), DNA transport
 
 * @nanoporAPG.f03 (ca. 9,900 lines with graphics), with 
 the parameter file paramAPG.h and the configuration file PORV21_config.start3. 
