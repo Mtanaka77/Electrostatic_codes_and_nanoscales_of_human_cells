@@ -1243,13 +1243,13 @@
       iwrt3= iwrtc(t,dtwr3)   ! field data, dtwr3=50
       iwrt4= iwrtd(t,  10.)   ! write(13), 10.
 !*
-!     if(t8.lt.t00) then
-!       Vtop    = 0.d0
-!       Vbottom = 0.d0
-!     else if(t8.gt.t00) then
-        Vtop    = Vtop0    *(1.d0 -exp(-t8/100.d0))
-        Vbottom = Vbottom0 *(1.d0 -exp(-t8/100.d0))
-!     end if
+      if(t8.lt.t00) then
+        Vtop    = 0.d0
+        Vbottom = 0.d0
+      else if(t8.gt.t00) then
+        Vtop    = Vtop0    *(1.d0 -exp(-(t8-t00)/100.d0))
+        Vbottom = Vbottom0 *(1.d0 -exp(-(t8-t00)/100.d0))
+      end if
 !
       if(t8.lt.t_recyc) then
         ifrecyc = 0         ! Equilibration phase
@@ -4238,7 +4238,7 @@
       q_PE= q_PE +ch(i)
 !
       if(mod(i,2).eq.1) then
-        rod_len(i)= -rod_leng/2 +ag(i)*(i-1) 
+        rod_len(i)= -rod_leng/2 +ag(i)*(i-1)  !<- chain
       else
         rod_len(i)= rod_len(i-1)
       end if
@@ -4477,13 +4477,13 @@
 ! --------------------
       do jj= 1,nnb  !<-- do 270
 !
-      i= ist1(jj)
-      k= ist2(jj) 
+      i= ist1(jj)   ! ist1(1),...
+      k= ist2(jj)   ! ist2(1),...
 !
       ss = ag(i) +ag(k) 
-      ll= 0
+!     ll= 0
 !
-  273 ll= ll +1
+  273 continue  !ll= ll +1
       ph = 2*pi*ranff(0.d0)
       th =   pi*ranff(0.d0)
       ph3= pi2*(i-1)/(n_rodp -1)
@@ -4519,7 +4519,7 @@
         end do 
       end if
 !
-      do j= 1,i-1  ! 1,np00 to (i-1)
+      do j= 1,i-1  !  j=1 to (i-1)
       rr= sqrt((x0-xg(j))**2 +(y0-yg(j))**2 +(z0-zg(j))**2) 
       if(rr.le. ag(k) +ag(j)) go to 273
       end do  
@@ -4577,33 +4577,15 @@
           ag(i)= acount 
           ep(i)= eps_Na
 !
-      else if(i.ge.np+Nzi+1 .and. i.le.np+Nzi+Ncc_pore/2) then
-          n1= n1 +1
-!
-          ch(i)=  Zcp
-          am(i)= ww1/w_unit
-          ag(i)= acount 
-          ep(i)= eps_Na
-!
-      else if(i.ge.np+Nzi+Ncc_pore/2+1 .and. &
-                   i.le.np+Nzi+Ncc_pore) then
-          n2= n2 +1
-!
-          ch(i)=  Zcn
-          am(i)= ww2/w_unit
-          ag(i)= acoion 
-          ep(i)= eps_Cl
-!
-      else if(i.ge.np+Nzi+Ncc_pore+1 .and. &
-                 i.le.np+Nzi+Ncc_pore+Ncc_wide/2) then
+      else if(i.ge.np+Nzi+1 .and. i.le.np+Nzi+nq/2) then
           n3= n3 +1
 !
+          ch(i)=  Zcp
           am(i)= ww1/w_unit
           ag(i)= acount
           ep(i)= eps_Na
 !
-      else if(i.ge.np+Nzi+Ncc_pore+Ncc_wide/2+1 .and. &
-                                   i.le.np+nq) then
+      else if(i.ge.np+Nzi+nq/2+1 .and. i.le.np+nq) then
           n4= n4 +1
 !
           ch(i)=  Zcn
@@ -4657,10 +4639,8 @@
       z0 = Hpore*(ranff(0.d0) -0.5d0)
 ! 
       if( sqrt((x0-xg(j))**2 +(y0-yg(j))**2 +(z0-zg(j))**2) &
-                                .le. ag(i)+ag(j) ) go to 331
-      go to 330
-!
-  331 n0= n0 +1
+                                 .le. ag(i)+ag(j) ) go to 330 !<--
+      n0= n0 +1
       ch(i)= Zcp
 ! 
       xg(i)= x0       ! Counterions near the polyelectroryte 
@@ -4676,29 +4656,33 @@
         end if
       end do
 !
+!* Balance the number of ions
 !
-!* Balance the number of ions in the pore
+      n3= 0
+      n4= 0
+!           ++++++++ +++++++++++
+      do i= np+Nzi+1,np+Nzi+nq/2
 !
-      n1= 0
-      n2= 0
-!           ++++++++ +++++++++++++++++
-      do i= np+Nzi+1,np+Nzi+Ncc_pore/2
+  460 z0= zmin +(zmax-zmin)*ranff(0.d0)
 !
-  460 z0= Hpore*(ranff(0.d0) -0.5d0)
+      if(abs(z0).lt.Hpore2) then   !<- z0 < Hpore/2
+        th = pi2*ranff(0.d0)
+        x0= (Rpore-ag(i))*cos(th)
+        y0= (Rpore-ag(i))*sin(th)
+      else
+        x0 = xmin +(xmax-xmin)*ranff(0.d0) 
+        y0 = ymin +(ymax-ymin)*ranff(0.d0) 
+      end if
 !
-      th = pi2*ranff(0.d0)
-      x0 = (Rpore-ag(i))*cos(th)
-      y0 = (Rpore-ag(i))*sin(th)
-!
-      do j= 1,i-1    !<-- ions in the pore 
+      do j= 1,i-1 
       rr= sqrt((x0-xg(j))**2 +(y0-yg(j))**2 +(z0-zg(j))**2)
       if(rr.le. ag(i)+ag(j)) go to 460 
       end do  
 !
-      n1= n1 +1
+      n3= n3 +1
       ch(i)= Zcp
 !
-      xg(i)= x0       !<-- Choose counter/coions in the pore
+      xg(i)= x0 
       yg(i)= y0
       zg(i)= z0
 !
@@ -4706,101 +4690,34 @@
           OPEN (unit=11,file=praefixc//'.06'//suffix2,             &
                 status='unknown',position='append',form='formatted')
 !
-          write(11,*) 'Pore region:  i,n1(+), n2(-)=',i,n1,n2
+          write(11,*) 'Counterion: i,n3(+), n4(-)=',i,n3,n4
           close(11)
         end if
       end do 
 !
-!           +++++++++++++++++++ +++++++++++++++
-      do i= np+Nzi+Ncc_pore/2+1,np+Nzi+Ncc_pore
+!           +++++++++++++++++
+      do i= np+Nzi+nq/2,np+nq
 !
-  465 z0= Hpore*(ranff(0.d0) -0.5d0)
+  465 z0= zmin +(zmax-zmin)*ranff(0.d0) 
 !
-      th = pi2*ranff(0.d0)
-      x0 = (Rpore-ag(i))*cos(th)
-      y0 = (Rpore-ag(i))*sin(th)
+      if(abs(z0).lt.Hpore2) then
+        th = pi2*ranff(0.d0)
+        x0= (Rpore-ag(i))*cos(th)
+        y0= (Rpore-ag(i))*sin(th)
+      else
+        x0 = xmin +(xmax-xmin)*ranff(0.d0) 
+        y0 = ymin +(ymax-ymin)*ranff(0.d0) 
+      end if
 !
-      do j= 1,i-1    !<-- ions in the pore 
+      do j= 1,i-1 
       rr= sqrt((x0-xg(j))**2 +(y0-yg(j))**2 +(z0-zg(j))**2)
       if(rr.le. ag(i)+ag(j)) go to 465 
       end do 
 !
-      n2= n2 +1
-      ch(i)= Zcn
-!
-      xg(i)= x0       !<-- Choose counter/coions in the pore
-      yg(i)= y0
-      zg(i)= z0
-!
-        if(io_pe.eq.1) then
-          OPEN (unit=11,file=praefixc//'.06'//suffix2,             &
-                status='unknown',position='append',form='formatted')
-!
-          write(11,*) 'Pore region:  i,n1(+), n2(-)=',i,n1,n2
-          close(11)
-        end if
-      end do 
-!
-!
-!* Outer region except the pore
-!
-      n3= 0
-      n4= 0
-!           +++++++++++++++++ ++++++++++++++++++++++++++ 
-      do i= np+Nzi+Ncc_pore+1,np+Nzi+Ncc_pore+Ncc_wide/2
-!
-  480 x0= xmin + xleng *ranff(0.d0)
-      y0= ymin + yleng *ranff(0.d0)
-!
-      n3= n3 +1
-      ch(i)= Zcp
-!
-      if(mod(n3,2).eq.1) then
-        z0=  (Hpore/2) +(zleng -Hpore)/2.d0*ranff(0.d0) 
-      else
-        z0= -(Hpore/2) -(zleng -Hpore)/2.d0*ranff(0.d0) 
-      end if
-!
-!           +++++
-      do j= 1,i-1    !<-- ions in the wide region 
-      rr= sqrt((x0-xg(j))**2 +(y0-yg(j))**2 +(z0-zg(j))**2)
-      if(rr.le. ag(i)+ag(j)) go to 480 
-      end do  
-!
-      xg(i)= x0       !<-- Choose counter/coions
-      yg(i)= y0
-      zg(i)= z0
-!
-        if(io_pe.eq.1) then
-          OPEN (unit=11,file=praefixc//'.06'//suffix2,             &
-                status='unknown',position='append',form='formatted')
-!
-          write(11,*) 'Out regions:  i,n3(+), n4(-)=',i,n3,n4
-          close(11)
-        end if
-      end do 
-!
-!           ++++++++++++++++++++++++++++ +++++
-      do i= np+Nzi+Ncc_pore+Ncc_wide/2+1,np+nq
-!
-  490 x0= xmin + xleng *ranff(0.d0)
-      y0= ymin + yleng *ranff(0.d0)
-!
       n4= n4 +1
       ch(i)= Zcn
 !
-      if(mod(n4,2).eq.1) then
-        z0=  (Hpore/2) +(zleng -Hpore)/2.d0*ranff(0.d0) 
-      else
-        z0= -(Hpore/2) -(zleng -Hpore)/2.d0*ranff(0.d0) 
-      end if
-!
-      do j= 1,i-1
-      rr= sqrt((x0-xg(j))**2 +(y0-yg(j))**2 +(z0-zg(j))**2)
-      if(rr.le. ag(i)+ag(j)) go to 490 
-      end do 
-!
-      xg(i)= x0       !<-- Choose counter/coions
+      xg(i)= x0 
       yg(i)= y0
       zg(i)= z0
 !
@@ -4808,10 +4725,11 @@
           OPEN (unit=11,file=praefixc//'.06'//suffix2,             &
                 status='unknown',position='append',form='formatted')
 !
-          write(11,*) 'Out regions:  i,n3(+), n4(-)=',i,n3,n4
+          write(11,*) 'Coion:      i,n3(+), n4(-)=',i,n3,n4
           close(11)
         end if
       end do 
+!
 !
       if(io_pe.eq.1) then
         OPEN (unit=11,file=praefixc//'.06'//suffix2,             &
@@ -4823,8 +4741,8 @@
         write(11,*) '       Sugar and AGCT=',2.d0*abs(q_PE)
         write(11,*) '  Counterions and coions in pore and wide regions '
         write(11,*) '  (+)=',n0
-        write(11,*) '  (+)=',n1+n3,'  pore,wide=',n1,n3
-        write(11,*) '  (-)=',n2+n4,'  pore,wide=',n2,n4
+        write(11,*) '  (+)=',n3
+        write(11,*) '  (-)=',n4
         write(11,*) ' np+nq = ',np+nq 
         write(11,*)
 !
@@ -4833,18 +4751,17 @@
 !
 ! Swap Zcp and Zcn
 !
-      nn3= np+Nzi+Ncc_pore+Ncc_wide/2
-      nn4= np+Nzi+Ncc_pore+Ncc_wide/2+1
+      nn3= np+Nzi+nq/2  ! max number of counterions
+      nn4= np+Nzi+nq
 !
 !     do k= 1,3
-!     do k= 1,7
-      do k= 1,0  !<-- Look at numbers !
+      do k= 1,5  !<-- Look at numbers !
 !
-      n3= n3 +1
-      n4= n4 -1
+      n3= n3 -1
+      n4= n4 +1
 !
 ! Border of Zcp and Zcn
-      nn3= nn3 +1
+      nn3= nn3 -1
       nn4= nn4 +1
 !
       ch(nn3)=  Zcp
@@ -4864,8 +4781,8 @@
 !
         write(11,*)
         write(11,*) 'Swap Zcp and Zcn...'
-        write(11,*) '  (+)=',n1+n3,'  pore,wide=',n1,n3
-        write(11,*) '  (-)=',n2+n4,'  pore,wide=',n2,n4
+        write(11,*) '  (+)=',n3
+        write(11,*) '  (-)=',n4
         write(11,*) ' Zcp (last) =',nn3
         write(11,*) ' Zcn (first)=',nn4
         write(11,*) ' np+nq = ',np+nq 
@@ -4895,8 +4812,8 @@
         write(11,*) '       sugar and AGCT =',2.d0*abs(q_PE)
         write(11,*) 'Counterions and coions in pore and wide regions '
         write(11,*) '  (+)=',n0
-        write(11,*) '  (+)=',n1+n3,'  pore,wide=',n1,n3
-        write(11,*) '  (-)=',n2+n4,'  pore,wide=',n2,n4
+        write(11,*) '  (+)=',n3
+        write(11,*) '  (-)=',n4
         write(11,*) 'np+nq = ',np+nq 
         write(11,*)
 !
@@ -7419,30 +7336,6 @@
                  '        ',8,'        ',8)
       call lplot1 (3,6,is,time,vzco,vzco1,vzco2,iln,'vz(coio)',8, &
                  '  time  ',8,'        ',8)
-!------------------------
-      call chart
-!------------------------
-!
-      call lplmax ( qtop(1,1), qtop1a, qtop1b,is)
-      call lplmax ( qtop(1,2), qtop2a, qtop2b,is)
-      call lplmax ( qpor(1,1), qpop1a, qpop1b,is)
-      call lplmax ( qpor(1,2), qpop2a, qpop2b,is)
-      call lplmax ( qbot(1,1), qbot1a, qbot1b,is)
-      call lplmax ( qbot(1,2), qbot2a, qbot2b,is)
-      qqmax= max(qtop1a,qtop2a,qpop1a,qpop2a,qbot1a,qbot2a)
-!
-      call lplot1 (2,4,is,time, qtop(1,1), qqmax, 0.,iln,'n_top(+)',8, &
-                  '        ',8,'        ',8)
-      call lplot1 (2,5,is,time, qpor(1,1), qqmax, 0.,iln,'n_por(+)',8, &
-                  '        ',8,'        ',8)
-      call lplot1 (2,6,is,time, qbot(1,1), qqmax, 0.,iln,'n_bot(+)',8, &
-                  '  time  ',8,'        ',8)
-      call lplot1 (3,4,is,time, qtop(1,2), qqmax, 0.,iln,'n_top(-)',8, &
-                  '        ',8,'        ',8)
-      call lplot1 (3,5,is,time, qpor(1,2), qqmax, 0.,iln,'n_por(-)',8, &
-                  '        ',8,'        ',8)
-      call lplot1 (3,6,is,time, qbot(1,2), qqmax, 0.,iln,'n_bot(-)',8, &
-                  '  time  ',8,'        ',8)
 !------------------------
       call chart
 !------------------------
