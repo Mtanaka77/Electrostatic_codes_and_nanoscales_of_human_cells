@@ -1,4 +1,4 @@
-!************************************************** 2025/04/27 ***
+!************************************************** 2025/04/29 ***
 !*                                                               *
 !*   ## Electrostatic Molecular Dynamics for Living Cells ##     *
 !*     @nanoporAPG.f03 with the Poisson equation                 *
@@ -65,7 +65,7 @@
 !*  Main program and subroutines:                                *
 !*                                                               *
 !*   Program nanopore  MPI setup -> setups /Run_MD/ -> /moldyn/  *
-!*    param_APF.h (parameter), PORV41_config.start3 (config)     *     
+!*    param_APG.h (parameter), PORW21_config.start3 (config)     *     
 !*                                                               *
 !*   /moldyn/     Time cycles, Coulomb and EM fields, L.735-     *
 !*   /sht_forces/ Coulomb forces, L.1310, 1915-                  *
@@ -95,7 +95,7 @@
 !*  % mpif90 -mcmodel=medium -fpic -o a.out @nanoporAPF.f03 \    *
 !*    -I/opt/fftw3/include -L/opt/fftw3/lib -lfftw3 &> log       *
 !*                                                               *
-!*  Check the configuration file and execute by: 
+!*  Check the configuration file and execute by:                 *
 !*  % mpiexec -n 6 a.out &                                       *
 !*                                                               *
 !*****************************************************************
@@ -121,7 +121,7 @@
       call mpi_comm_rank (mpi_comm_world,rank,ierror)
       call mpi_comm_size (mpi_comm_world,size,ierror)
 !
-      ipar = 1 + rank             ! PE #
+      ipar = 1 + rank             ! this is my rank number 
 !
       io_pe= 0
       if(ipar.eq.1) io_pe= 1
@@ -134,7 +134,6 @@
 !     end if
 !
       suffix2  = '3'
-!
       kstart = 0              ! kstart= 1 for restart
 !     ++++++++++
 !
@@ -187,7 +186,6 @@
       integer(C_INT) rank,ipar,kstart,ifrgrod,ifrodco,kstart0, &
                      nframe,np,nq,nr,nCLp,npqr,size,cl_first,i
 !
-!     real(C_DOUBLE) t_recyc
       logical        first_recyc,ende
 !
       integer(C_INT) io_pe
@@ -198,8 +196,6 @@
                                 xg,yg,zg,vx,vy,vz,ch,am,ag,ep, &
                                 vxs,vys,vzs
       real(C_DOUBLE),dimension(npq0) :: vxc,vyc,vzc,fcx0,fcy0,fcz0
-!     real(C_DOUBLE),dimension(np0)  :: ftx,fty,ftz,fpx,fpy,fpz  !<- later
-!     real(C_DOUBLE),dimension(np0)  :: dox,doy,doz,doxc,doyc,dozc
       common/vsplit/ vxc,vyc,vzc
       common/vspli2/ vxs,vys,vzs
       common/fcxyz0/ fcx0,fcy0,fcz0 
@@ -877,7 +873,7 @@
                        dox,doy,doz,doxc,doyc,dozc
       common/macroin1/ dox,doy,doz,doxc,doyc,dozc
 !
-      real(C_DOUBLE) t_recyc
+      real(C_DOUBLE) t_recyc  !<- in /READ_CONF/
       common/trecyc/ t_recyc
       real(C_DOUBLE) wtime0,wtime1,wtime2,wtime3,wtime4,wtime5
 !
@@ -5725,13 +5721,74 @@
         stop
       end if
 !
-!*                       !!<-- emcof3, i and j periodic/bound
+!*                       !!<-- emcof3, i,j periodic/k bound
       do i= 0,mx-1 
-      do j= 0,my-1 
+!
+      if(i.eq.0) then
+        do j= 0,my-1 
+        do k= 0,my-1 
+!
+        lai(1) =  0 
+        laj(1) =  j  
+        lak(1) =  k 
+         ca(1) =  1.d0 
+!
+        lai(2)=   1
+        laj(2)=   j
+        lak(2)=   k
+         ca(2)=   1.d0 
+!*
+        lxyz= 0 +mx*(j +my*k)
+!
+        aa(lxyz,1) = ca(1) 
+        na(lxyz,1) = 0 +mx*(j +my*k)
+!            l    m           +          +
+        aa(lxyz,2) = ca(2) 
+        na(lxyz,2) = 1 +mx*(j +my*k) 
+! 
+        do m= 3,nob3
+        aa(lxyz,m)= 0
+        na(lxyz,m)= lxyz 
+        end do
+        end do
+        end do
+      end if
+!
+!***
+      do j= 0,my-1
+!
+      if(j.eq.0) then
+        do k= 0,mz-1
+        lai(1) =  i 
+        laj(1) =  0  
+        lak(1) =  k 
+         ca(1) =  1.d0 
+!
+        lai(2)=   i
+        laj(2)=   1
+        lak(2)=   k
+         ca(2)=   1.d0 
+!*
+        lxyz= i +mx*(0 +my*k)
+!
+        aa(lxyz,1) = ca(1) 
+        na(lxyz,1) = i +mx*(0 +my*k)
+!            l    m           +          +
+        aa(lxyz,2) = ca(2) 
+        na(lxyz,2) = i +mx*(1 +my*k) 
+! 
+        do m= 3,nob3
+        aa(lxyz,m)= 0
+        na(lxyz,m)= lxyz 
+        end do
+        end do
+!
+      end if
+!
 !***
       do k= 0,mz-1
       if(k.eq.0) then
-!**
+!
 !* (i,j-1,k)
         lai(1) =  i      ! number i=0: lai(1,0)=0
         laj(1) =  j      !  na(,)=0    laj(1,0)=0
@@ -5838,7 +5895,7 @@
       lxyz= i +mx*(j +my*k)
 !
       do m= 1,nob3
-      ii= lai(m)      ! periodic  pxc()
+      ii= lai(m)      ! if periodic  pxc()
       jj= laj(m)
       kk= lak(m)      !<-- bound 
 !
@@ -5873,11 +5930,73 @@
         aa(lxyz,m)= 0
         na(lxyz,m)= lxyz 
         end do
+!
+      end if
+      end do  !<- end of k
+!**
+!
+      if(j.eq.my-1) then
+        do k= 0,mz-1
+        lai(1) =  i 
+        laj(1) =  my-2  
+        lak(1) =  k 
+         ca(1) =  1.d0 
+!
+        lai(2)=   i
+        laj(2)=   my-1 
+        lak(2)=   k
+         ca(2)=   1.d0 
+!*
+        lxyz= i +mx*(my-1 +my*k)
+!
+        aa(lxyz,1) = ca(1) 
+        na(lxyz,1) = i +mx*(my-2 +my*k)
+!            l    m           +          +
+        aa(lxyz,2) = ca(2) 
+        na(lxyz,2) = i +mx*(my-1 +my*k) 
+! 
+        do m= 3,nob3
+        aa(lxyz,m)= 0
+        na(lxyz,m)= lxyz 
+        end do
+        end do
       end if
 !
-      end do 
-      end do 
-      end do 
+      end do  ! end of j
+!**
+!
+      if(i.eq.mx-1) then
+        do j= 0,my-1 
+        do k= 0,my-1 
+!
+        lai(1) =  mx-2 
+        laj(1) =  j  
+        lak(1) =  k 
+         ca(1) =  1.d0 
+!
+        lai(2)=   mx-1
+        laj(2)=   j
+        lak(2)=   k
+         ca(2)=   1.d0 
+!*
+        lxyz= mx-1 +mx*(j +my*k)
+!
+        aa(lxyz,1) = ca(1) 
+        na(lxyz,1) = mx-2 +mx*(j +my*k)
+!            l    m           +          +
+        aa(lxyz,2) = ca(2) 
+        na(lxyz,2) = mx-1 +mx*(j +my*k) 
+! 
+        do m= 3,nob3
+        aa(lxyz,m)= 0
+        na(lxyz,m)= lxyz 
+        end do
+!
+        end do
+        end do
+      end if 
+!
+      end do  !<- end of i
 !
       return
       end subroutine emcof3
