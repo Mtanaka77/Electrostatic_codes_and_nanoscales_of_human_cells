@@ -3405,8 +3405,9 @@
         OPEN (unit=11,file=praefixc//'.06'//suffix2,             &
               status='unknown',position='append',form='formatted')
 !
+        write(11,*) 'xleng,zleng=',xleng,zleng
+        write(11,*) 'Rpore,Hpore=',Rpore,Hpore
         write(11,*) 'diel2=',diel2
-        write(11,*) 'zleng=',zleng
         write(11,*) 'rcut_clf=',rcut_clf
         write(11,*) 'Bjerrum=',Bjerrum
 !
@@ -7406,7 +7407,7 @@
       common/sub_proc/ io_pe
 !
       integer(C_INT) i,k,kpl,ns,ia,ib,l
-      real(C_float) hh,Rpore4,Hpore4,Zcp4,Zcn4,Bjerrum4,Rod_len4, &
+      real(C_float) hh,Rpore4,Hpore4,Zcp4,Zcn4,Bjerrum4,xleng4,zleng4, &
                     Rmac4,Vtop4,fsize,hl,vd,pi,pha,tha,cph,sph,   &
                     cth,sth,xp,yp,zp,rmax1,ps,x1,y1,z1,xx,yy,dd,  &
                     xpp,ypp,zpp
@@ -7468,11 +7469,12 @@
       call symbol ( 5.5,16.0,hh,'Zcp=', 0.,4)
       call number ( 7.5,16.0,hh,Zcp4,0.,5)
       Bjerrum4 = Bjerrum
-      Rod_len4 = rod_leng
-      call symbol (10.5,16.0,hh,'gamm=', 0.,5)
+      xleng4 = xleng
+      zleng4 = zleng
+      call symbol (10.5,16.0,hh,'Gamma=', 0.,6)
       call number (13.0,16.0,hh,Bjerrum4,0.,5)
-      call symbol (16.0,16.0,hh,'L_rod=',0.,6)
-      call number (18.0,16.0,hh,Rod_len4,0.,5)
+      call symbol (16.0,16.0,hh,'xleng=',0.,6)
+      call number (18.0,16.0,hh,xleng4,0.,5)
 !
       Rmac4 = Rmac
       call symbol ( 0.5,15.3,hh,'Hpore=', 0.,6)
@@ -7481,8 +7483,8 @@
       call number ( 7.5,15.3,hh,Zcn4,0.,5)
       call symbol (10.5,15.3,hh,'np=', 0.,3)
       call number (13.0,15.3,hh,float(np),0.,5)
-      call symbol (16.0,15.3,hh,'r_rod=', 0.,6)
-      call number (18.0,15.3,hh,Rmac4,0.,5)
+      call symbol (16.0,15.3,hh,'zleng=', 0.,6)
+      call number (18.0,15.3,hh,zleng4,0.,5)
 !
       Vtop4= Vtop
       call symbol ( 0.5,14.6,hh,'Vtop=', 0.,5)
@@ -8583,8 +8585,8 @@
 !                       sym2= -1: odd   -1 0 (1) 2 3
 !                       sym2=  1: even  
       do ks= -1,0
-      do j= 0,my-1
       do i= 0,mx-1
+      do j= 0,my-1
       a(i,j,ks-1)= sym2 * q(i,j,1-ks)
       end do
       end do
@@ -8599,7 +8601,7 @@
       end do
 !
 !
-      do k= 0,mz-1
+      do k= 1,mz-2
       do j= 0,my-1
       do i= 0,mx-1
       kr = k+1
@@ -8720,6 +8722,7 @@
           k2 = ifix(u2)
           k3 = ifix(u3)
           k4 = ifix(u4)
+!
 !
           j1 = abs(k2-k1)
           j2 = abs(k3-k2)
@@ -9812,7 +9815,6 @@
 !
        return
        end subroutine number
-!
 !
 !-----------------------------------------------
        subroutine number2 (x0,y0,h0,anu,ang,n0)
