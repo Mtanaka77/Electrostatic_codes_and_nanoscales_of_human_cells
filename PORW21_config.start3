@@ -2,7 +2,7 @@
 # Non-neutral Pl (if =1)..............:            1
 # Maximum cpu time for run,.1430 Min..:   15.0000000000000000
 # Physikalische Endzeit...............:  800.0200000000000000
-# Diskretisierungs-Schritt............:    0.0100000000000000
+# Diskretisierungs-Schritt....0.01....:    0.0100000000000000
 # Write interval for time,    iwrt1...:   10.0000000000000000 
 # Write interval for restart, iwrt2,..:  200.0000000000000000 
 # Write interval for field,   iwrt3,..:   50.0000000000000000 
@@ -22,13 +22,13 @@
 # Box size: xleng...............6.0 nm:   58.0000000000000000
 # Box size: yleng...............6.0 nm:   58.0000000000000000
 # Box size: zleng..............12.0 nm:  120.0000000000000000
-# Potential of the top plate.Vtop.(kT):    1.5000000000000000
-#           the bottom plate..Vbottom.:   -1.5000000000000000
-# Boundary = 0 (fixed), 1 (smooth)....:            0
+# Potential of the top plate.Vtop.(kT):    0.0500000000000000
+#           the bottom plate..Vbottom.:   -0.0500000000000000
+# Boundary = 0 (closed), 1 (periodic).:            0
 # ifLJ    for attractive LJ.(cut).....:            1
 # ifrgrod for existing rod............:            0
 # ifrodco.............................:            0
-# t00     for initial start...........:   10.0000000000000000
+# t00     for initial start...........:  200.0000000000000000
 # t_recyc for recycling...............:   10.0000000000000000
 # Time to start moving PE.............:    3.0000000000000000
 # Time to start solving Poisson eq....:    1.0000000000000000

@@ -391,7 +391,7 @@
                a8,/,' date=',a10,'  time=',a8,/)
   610   format(' %Timings: t_pe    =',f7.1,/, &
                '           t_poisn =',f7.1,/  &
-               ' %Potential bias Vtop, Vbottom=',2f7.1,/)
+               ' %Potential bias Vtop, Vbottom=',2f8.3,/)
 !
         close(11)
       end if
@@ -7379,11 +7379,13 @@
       real(C_float),dimension(npqr0) ::  x,y,z
 !
       real(C_DOUBLE) xmax,ymax,zmax,xmin,ymin,zmin,         &
+                     pi,dt,axi,Gamma,rbmax,vth,tmax,        &
                      Bjerrum,qfrac,Rpore,Hpore,Zci,Zcp,Zcn, &
                      rod_leng,Rmac
       real(C_float)  phi,tht,dtwr1,dtwr2,dtwr3
       integer(C_INT) nsg,nseg,ifqq,nCLp,np,npqr,nq
 !
+      common/parm2/  pi,dt,axi,Gamma,rbmax,vth,tmax
       common/parm3/  xmax,ymax,zmax,xmin,ymin,zmin
       common/parm4/  phi,tht,dtwr1,dtwr2,dtwr3
       common /elsta/ Bjerrum
@@ -7408,9 +7410,9 @@
 !
       integer(C_INT) i,k,kpl,ns,ia,ib,l
       real(C_float) hh,Rpore4,Hpore4,Zcp4,Zcn4,Bjerrum4,xleng4,zleng4, &
-                    Rmac4,Vtop4,fsize,hl,vd,pi,pha,tha,cph,sph,   &
-                    cth,sth,xp,yp,zp,rmax1,ps,x1,y1,z1,xx,yy,dd,  &
-                    xpp,ypp,zpp
+                    Rmac4,Vtop4,Vbottom4,Gamma4,rod_leng4,fsize,hl,vd, &
+                    pha,tha,cph,sph,cth,sth,xp,yp,zp,rmax1,ps,         &
+                    x1,y1,z1,xx,yy,dd,xpp,ypp,zpp
       real(C_DOUBLE) xleng,yleng,zleng
       common/parm8/  xleng,yleng,zleng
       logical        first_ppl
@@ -7463,16 +7465,15 @@
       Hpore4= Hpore
       Zcp4  = Zcp
       Zcn4  = Zcn
+      xleng4 = xleng
+      zleng4 = zleng
 !
       call symbol ( 0.5,16.0,hh,'Rpore=', 0.,6)
       call number ( 2.5,16.0,hh,Rpore4,0.,5)
       call symbol ( 5.5,16.0,hh,'Zcp=', 0.,4)
       call number ( 7.5,16.0,hh,Zcp4,0.,5)
-      Bjerrum4 = Bjerrum
-      xleng4 = xleng
-      zleng4 = zleng
-      call symbol (10.5,16.0,hh,'Gamma=', 0.,6)
-      call number (13.0,16.0,hh,Bjerrum4,0.,5)
+      call symbol (10.5,16.0,hh,'np=', 0.,3)
+      call number (13.0,16.0,hh,float(np),0.,5)
       call symbol (16.0,16.0,hh,'xleng=',0.,6)
       call number (18.0,16.0,hh,xleng4,0.,5)
 !
@@ -7481,16 +7482,22 @@
       call number ( 2.5,15.3,hh,Hpore4,0.,5)
       call symbol ( 5.5,15.3,hh,'Zcn=', 0.,4)
       call number ( 7.5,15.3,hh,Zcn4,0.,5)
-      call symbol (10.5,15.3,hh,'np=', 0.,3)
-      call number (13.0,15.3,hh,float(np),0.,5)
+      call symbol (10.5,15.3,hh,'nq=', 0.,3)
+      call number (13.0,15.3,hh,float(nq),0.,5)
       call symbol (16.0,15.3,hh,'zleng=', 0.,6)
       call number (18.0,15.3,hh,zleng4,0.,5)
 !
       Vtop4= Vtop
-      call symbol ( 0.5,14.6,hh,'Vtop=', 0.,5)
-      call number ( 2.5,14.6,hh,Vtop4,0.,5)
-      call symbol ( 5.5,14.6,hh,'nq=', 0.,3)
-      call number ( 7.5,14.6,hh,float(nq),0.,5)
+      Vbottom4= Vbottom
+      Gamma4= Gamma
+      rod_leng4= rod_leng
+!
+      call symbol ( 0.5,14.6,hh,'V_tb=', 0.,5)
+      call number ( 2.5,14.6,hh,Vtop4-Vbottom4,0.,5)
+      call symbol ( 5.5,14.6,hh,'Gamma=', 0.,6)
+      call number ( 7.5,14.6,hh,Gamma4,0.,5)
+      call symbol (10.5,14.6,hh,'rod_l=', 0.,6)
+      call number (13.0,14.6,hh,rod_leng4,0.,5)
 !*
 !
       do i= 1,3
