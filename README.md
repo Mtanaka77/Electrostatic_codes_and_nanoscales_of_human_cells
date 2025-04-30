@@ -95,7 +95,7 @@ The file porw21.773.pdf for very small dielectric constant eps=3 in the pore reg
 In passing about the transvers (x,y) directions, the closed boundary condition may be better because a small distance in the periodic condition mixes up fictitious artifact.    
 
 
-### Coulomb and P3M or bound (non periodic) simulation codes ###
+### Coulomb and P3M (periodic) or Poisson (non periodic) simulation codes ###
 
 The short-range and long-range forces in periodic p3m_perform routines, 
 or the non-periodic system are used to study the charge inversion, and
