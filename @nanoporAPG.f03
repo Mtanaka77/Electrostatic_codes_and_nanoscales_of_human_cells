@@ -3,16 +3,16 @@
 !*   ## Electrostatic Molecular Dynamics for Living Cells ##     *
 !*     @nanoporAPG.f03 with the Poisson equation                 *
 !*                                                               *
-!*    Author: Motohiko Tanaka, Ph.D.                             *
-!*          Nature and Science Applications, Nagoya 464, Japan.  *
-!*    The code is permitted by GNU General Public License v3.0.  *
+!*   Author: Motohiko Tanaka, Ph.D.                              *
+!*         Nature and Science Applications, Nagoya 464, Japan.   *
+!*   The code is permitted by GNU General Public License v3.0.   *
 !*                                                               *
 !*     The short-range Coulomb forces of /moldyn/, L.1325, and   *
 !*   the long-range electrostatic effects by Poisson equation,   *
 !*   L.1345-, are treated in this simulation code.               *
 !*                                                               *
 !*     This molecular dynamics simulation of nanoscale pores     *
-!*   in 3D electrostatic effects is updated in April 2025.       *
+!*   in 3D electrostatic effects has been updated in April 2025. *
 !*                                                               *
 !*   References:                                                 *
 !*   1) Y.Rabin and M.Tanaka, DNA in nanopores: Counterion cond- * 
