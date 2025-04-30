@@ -22,8 +22,8 @@
 # Box size: xleng...............6.0 nm:   58.0000000000000000
 # Box size: yleng...............6.0 nm:   58.0000000000000000
 # Box size: zleng..............12.0 nm:  120.0000000000000000
-# Potential of the top plate.Vtop.(kT):    0.0250000000000000
-#           the bottom plate..Vbottom.:   -0.0250000000000000
+# Potential of the top plate.Vtop.(kT):    0.2500000000000000
+#           the bottom plate..Vbottom.:   -0.2500000000000000
 # Boundary = 0 (closed), 1 (periodic).:            0
 # ifLJ    for attractive LJ.(cut).....:            1
 # ifrgrod for existing rod............:            0

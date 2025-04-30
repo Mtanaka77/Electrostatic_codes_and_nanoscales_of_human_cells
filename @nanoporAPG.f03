@@ -134,11 +134,11 @@
 !     end if
 !
       suffix2  = '3'
-      kstart = 0              ! kstart= 1 for restart
+      kstart = 0                  ! kstart= 1 for restart
 !     ++++++++++
 !
       if(kstart.eq.0) then
-        first_recyc = .true.  ! only at fresh start
+        first_recyc = .true.      ! at fresh start
       else
         first_recyc = .false.
       end if
@@ -200,20 +200,19 @@
       common/vspli2/ vxs,vys,vzs
       common/fcxyz0/ fcx0,fcy0,fcz0 
 !
-      real(C_DOUBLE) pi,dt,axi,Gamma,rbmax,vth,tmax,Bjerrum,   &
-                     xmax,ymax,zmax,xmin,ymin,zmin,Temp,       &
+      real(C_DOUBLE) xmax,ymax,zmax,xmin,ymin,zmin,Temp,      &
                      xleng,yleng,zleng,aLJ,wwat,awat,tmax0
 !
       integer(C_INT) ifqq
       real(C_DOUBLE) qfrac,Rpore,Hpore,Zci,Zcp,Zcn
       common/cntion/ qfrac,Rpore,Hpore,Zci,Zcp,Zcn,ifqq
 !
-      real(C_DOUBLE) xgc,ygc,zgc,vxg,vyg,vzg,rod_leng,Rmac,  &
-                     Rhelix,q1,q2,q3,q4,angx,angy,angz,      &
+      real(C_DOUBLE) xgc,ygc,zgc,vxg,vyg,vzg,rod_leng,Rmac,   &
+                     Rhelix,q1,q2,q3,q4,angx,angy,angz,       &
                      ipx,ipy,ipz,tau_rot,gdump
       integer(C_INT) n_rodp,ifbase
 !
-      common/macroion/ xgc,ygc,zgc,vxg,vyg,vzg,rod_leng,Rmac,  &
+      common/macroion/ xgc,ygc,zgc,vxg,vyg,vzg,rod_leng,Rmac, &
                        Rhelix,n_rodp
       common/macroiov/ q1,q2,q3,q4,angx,angy,angz,ipx,ipy,ipz
       common/macrotat/ tau_rot,gdump
@@ -234,6 +233,7 @@
       common/headr2/ t,t00,xp_leng
 !
       integer(C_INT) it,is
+      real(C_DOUBLE) pi,dt,axi,Gamma,rbmax,vth,tmax
       real(C_float) phi,tht,dtwr1,dtwr2,dtwr3
       common/parm1/ it,is
       common/parm2/ pi,dt,axi,Gamma,rbmax,vth,tmax
@@ -259,7 +259,8 @@
                       itermax,filtx,filty,filtz
       common/cresm3/  ipr(10),rpr(10)
 !
-      real(C_DOUBLE)  rcut_clf,rcutlj,rcutlj2,r_fene,k_fene,r_fene2
+      real(C_DOUBLE)  rcut_clf,rcutlj,rcutlj2,r_fene,k_fene, &
+                      r_fene2,Bjerrum
       common /confdatar/ rcut_clf,rcutlj,rcutlj2,r_fene
       common /fenepara/  k_fene,r_fene2
       common /elsta/     Bjerrum
@@ -270,7 +271,7 @@
       real(C_DOUBLE) a_unit,w_unit,diel2,dielpr,aa
       common/parmd/  a_unit,w_unit
       common/dielec/ diel2,dielpr,aa
-      common/ewald2/ nCLp     ! ip0, paramAPG.h L.3920
+      common/ewald2/ nCLp     ! ip0, paramAPG.h L.4920
 !
       integer(C_INT) ifLJ
       real(C_DOUBLE) epsLJ,eps_Na,eps_Cl
@@ -306,7 +307,7 @@
 !
       call FLOPEN (nframe)
 !
-!     nCLp= npq0   ! np + nq; defined in /init/, L.5430
+!     nCLp= npq0   ! np + nq; defined in /init/, L.4920
 !     npqr= npqr0  ! total number of particles, READ_CONF in L.3785
 !**************************************************************
 !--------------------------------------------------------------
@@ -354,7 +355,7 @@
 !     +++++++++++++++++++++++++++++++++++++++++
 !
 !* Bjerrum = Gamma aLJ*kT = e**2/epsLJ  
-      Temp= 1.d0
+      Temp= 1.d0   ! T= 300 K
       Gamma= Bjerrum/(aLJ*Temp) 
 !
       istop = 0    ! signal for termination: istop= 1
@@ -514,7 +515,7 @@
           iwd= -1
         end if
 !
-!    nCLp= np +nq  !<-- defined in /init/
+!    nCLp= np +nq  !<-- defined in /init/ L.4920
 ! ------------------------
         if(io_pe.eq.1) then
           OPEN (unit=11,file=praefixc//'.06'//suffix2,             &
@@ -1471,18 +1472,24 @@
         do i= 1,np
         dtm= dt/am(i)
 !                                  Coulomb and PO_4
-        vxs(i)= vxs(i) +Gamma*((fcx(i) -fcx0(i) +fpx(i)) +fsx(i))*dtm  !<- Macroions 
-        vys(i)= vys(i) +Gamma*((fcy(i) -fcy0(i) +fpy(i)) +fsy(i))*dtm
-        vzs(i)= vzs(i) +Gamma*((fcz(i) -fcz0(i) +fpz(i)) +fsz(i))*dtm
+        vxs(i)= vxs(i) +(Gamma*(fcx(i) +fpx(i)) +fsx(i))*dtm  !<- Macroions 
+        vys(i)= vys(i) +(Gamma*(fcy(i) +fpy(i)) +fsy(i))*dtm
+        vzs(i)= vzs(i) +(Gamma*(fcz(i) +fpz(i)) +fsz(i))*dtm
+!       vxs(i)= vxs(i) +Gamma*((fcx(i) -fcx0(i) +fpx(i)) +fsx(i))*dtm  !<- Macroions 
+!       vys(i)= vys(i) +Gamma*((fcy(i) -fcy0(i) +fpy(i)) +fsy(i))*dtm
+!       vzs(i)= vzs(i) +Gamma*((fcz(i) -fcz0(i) +fpz(i)) +fsz(i))*dtm
         end do
       end if
 !
       do i= np+1,nCLp
       dtm= dt/am(i)
 !
-      vxs(i)= vxs(i) +Gamma*((fcx(i) -fcx0(i)) +fsx(i))*dtm  !<- Counter/co-ions
-      vys(i)= vys(i) +Gamma*((fcy(i) -fcy0(i)) +fsy(i))*dtm
-      vzs(i)= vzs(i) +Gamma*((fcz(i) -fcz0(i)) +fsz(i))*dtm
+      vxs(i)= vxs(i) +(Gamma*fcx(i) +fsx(i))*dtm  !<- Counter/co-ions
+      vys(i)= vys(i) +(Gamma*fcy(i) +fsy(i))*dtm
+      vzs(i)= vzs(i) +(Gamma*fcz(i) +fsz(i))*dtm
+!     vxs(i)= vxs(i) +Gamma*((fcx(i) -fcx0(i)) +fsx(i))*dtm  !<- Counter/co-ions
+!     vys(i)= vys(i) +Gamma*((fcy(i) -fcy0(i)) +fsy(i))*dtm
+!     vzs(i)= vzs(i) +Gamma*((fcz(i) -fcz0(i)) +fsz(i))*dtm
       end do
 !
       if(t8.le.t_pe+10.d0) then   ! retain salt until DNA contracts
@@ -1505,14 +1512,14 @@
 !* Limit and randomize velocity (happens after reflection)
 !---------------------------------------------------------------
 !
-!     do 480 i= 1,npqr
+!     do i= 1,npqr
 !     vv= sqrt(vx(i)**2 +vy(i)**2 +vz(i)**2)
 !     if(vv.gt.30.) then
 !       vx(i)= 0.1 *(ranff(0.d0) -0.5)
 !       vy(i)= 0.1 *(ranff(0.d0) -0.5)
 !       vz(i)= 0.1 *(ranff(0.d0) -0.5)
 !     end if
-! 480 continue 
+!     end do
 !
       do i= 1,nCLp
       vx(i)= vxc(i) +vxs(i)  !<-- Coulomb + LJ
@@ -1970,7 +1977,7 @@
 !     ++++++++++++++++++++++++++
 !
         do i= 1,nCLp      ! Clear the box register.
-        rcutcl2(i)= (ag(i) +2.d0*rcut_clf)**2
+        rcutcl2(i)= (ag(i) +rcut_clf)**2  !2.d0*rcut_clf)**2 (*)
         end do
 !
 !             ++++      ++++++++
