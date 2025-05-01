@@ -1453,12 +1453,6 @@
           end do
         end if
 !
-        do i= 1,nCLp
-        fcx0(i)= fcx(i)  !<- Defined from the steps it= 1,11,...
-        fcy0(i)= fcy(i)
-        fcz0(i)= fcz(i)
-        end do
-!
       end if
   370 continue  !<-- From L.1480-1620
 !
@@ -1472,12 +1466,9 @@
         do i= 1,np
         dtm= dt/am(i)
 !                                  Coulomb and PO_4
-        vxs(i)= vxs(i) +(Gamma*(fcx(i) +fpx(i)) +fsx(i))*dtm  !<- Macroions 
-        vys(i)= vys(i) +(Gamma*(fcy(i) +fpy(i)) +fsy(i))*dtm
-        vzs(i)= vzs(i) +(Gamma*(fcz(i) +fpz(i)) +fsz(i))*dtm
-!       vxs(i)= vxs(i) +Gamma*((fcx(i) -fcx0(i) +fpx(i)) +fsx(i))*dtm  !<- Macroions 
-!       vys(i)= vys(i) +Gamma*((fcy(i) -fcy0(i) +fpy(i)) +fsy(i))*dtm
-!       vzs(i)= vzs(i) +Gamma*((fcz(i) -fcz0(i) +fpz(i)) +fsz(i))*dtm
+        vxs(i)= vxs(i) +(Gamma*fcx(i) +fpx(i) +fsx(i))*dtm  !<- Macroions 
+        vys(i)= vys(i) +(Gamma*fcy(i) +fpy(i) +fsy(i))*dtm
+        vzs(i)= vzs(i) +(Gamma*fcz(i) +fpz(i) +fsz(i))*dtm
         end do
       end if
 !
@@ -1487,9 +1478,6 @@
       vxs(i)= vxs(i) +(Gamma*fcx(i) +fsx(i))*dtm  !<- Counter/co-ions
       vys(i)= vys(i) +(Gamma*fcy(i) +fsy(i))*dtm
       vzs(i)= vzs(i) +(Gamma*fcz(i) +fsz(i))*dtm
-!     vxs(i)= vxs(i) +Gamma*((fcx(i) -fcx0(i)) +fsx(i))*dtm  !<- Counter/co-ions
-!     vys(i)= vys(i) +Gamma*((fcy(i) -fcy0(i)) +fsy(i))*dtm
-!     vzs(i)= vzs(i) +Gamma*((fcz(i) -fcz0(i)) +fsz(i))*dtm
       end do
 !
       if(t8.le.t_pe+10.d0) then   ! retain salt until DNA contracts
@@ -2008,7 +1996,8 @@
       r2 = dx**2 + dy**2 + dz**2
       r  = sqrt(r2)
 !
-      forceV = f_cut(r,rcut_clf) *Gamma*ch(i)*ch(j)/r2       &
+!             Short-range forces
+      forceV = f_cut(r,rcut_clf) *Gamma*ch(i)*ch(j)/r2        &
                 *diel((xg(i)+xg(j))/2.d0,(yg(i)+yg(j))/2.d0,  &
                                          (zg(i)+zg(j))/2.d0)
 !
