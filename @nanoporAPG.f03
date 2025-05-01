@@ -274,8 +274,8 @@
       common/ewald2/ nCLp     ! ip0, paramAPG.h L.4920
 !
       integer(C_INT) ifLJ
-      real(C_DOUBLE) epsLJ,eps_Na,eps_Cl
-      common/parmlj/ epsLJ,eps_Na,eps_Cl
+      real(C_DOUBLE) epsLJ,eps_K,eps_Cl
+      common/parmlj/ epsLJ,eps_K,eps_Cl
       common/parmlj2/ ifLJ
 !
       real(C_float),dimension(ntmax) :: &
@@ -338,7 +338,7 @@
 !*  rbmax: maximum bond length for /sprmul/.
 !
       rbmax= 1.5
-      aLJ  = 1.0d0
+      aLJ  = 1.4d0
 !
 !  Water particles.
 ! ++++++++++++++++++++++++++++++++++++++++++++
@@ -484,7 +484,7 @@
 !                **** **** **** **** 
 !       read(12) xmax,ymax,zmax,xmin,ymin,zmin
         read(12) xleng,yleng,zleng
-        read(12) aLJ,epsLJ,eps_Na,eps_Cl,Vtop,Vbottom,ifLJ
+        read(12) aLJ,epsLJ,eps_K,eps_Cl,Vtop,Vbottom,ifLJ
         read(12) qfrac,Rpore,Hpore,Zci,Zcp,Zcn,ifqq
 !
 !   If there are rods
@@ -622,7 +622,7 @@
 !                 **** *** **** **** 
 !       write(12) xmax,ymax,zmax,xmin,ymin,zmin
         write(12) xleng,yleng,zleng
-        write(12) aLJ,epsLJ,eps_Na,eps_Cl,Vtop,Vbottom,ifLJ
+        write(12) aLJ,epsLJ,eps_K,eps_Cl,Vtop,Vbottom,ifLJ
         write(12) qfrac,Rpore,Hpore,Zci,Zcp,Zcn,ifqq
 !
         if(ifrgrod.eq.1) then
@@ -880,8 +880,8 @@
 !
       integer(C_INT) ifLJ
       real(C_float)  epsLJ4
-      real(C_DOUBLE) epsLJ,eps_Na,eps_Cl
-      common/parmlj/ epsLJ,eps_Na,eps_Cl
+      real(C_DOUBLE) epsLJ,eps_K,eps_Cl
+      common/parmlj/ epsLJ,eps_K,eps_Cl
       common/parmlj2/ ifLJ
 !
       logical    first_11/.true./,first_15/.true./, &
@@ -1874,7 +1874,7 @@
 !                 **** *** **** **** 
 !       write(12) xmax,ymax,zmax,xmin,ymin,zmin
         write(12) xleng,yleng,zleng
-        write(12) aLJ,epsLJ,eps_Na,eps_Cl,Vtop,Vbottom,ifLJ
+        write(12) aLJ,epsLJ,eps_K,eps_Cl,Vtop,Vbottom,ifLJ
         write(12) qfrac,Rpore,Hpore,Zci,Zcp,Zcn,ifqq
 !
 !   If rods are present
@@ -1965,8 +1965,10 @@
 !     ++++++++++++++++++++++++++
 !
         do i= 1,nCLp      ! Clear the box register.
-        rcutcl2(i)= (ag(i) +rcut_clf)**2  !2.d0*rcut_clf)**2 (*)
+        rcutcl2(i)= (ag(i) * rcut_clf)**2 
         end do
+!            a_phos: ag(i)= 4.1/(2*1.4)= 1.46
+!            rcut_clf= 5 -> rcutcl2(i)= 1.46*5 = 7.3 
 !
 !             ++++      ++++++++
         do i= ipar,nCLp,num_proc  ! Loop is not vectorized
@@ -2054,18 +2056,18 @@
 !
 !
 !----------------------------------------------------------------------
-      function f_cut (r,rcut)
+      function f_cut (r,rcut_clf)
 !----------------------------------------------------------------------
       use, intrinsic :: iso_c_binding 
 !
       implicit none
-      real(C_DOUBLE) f_cut,r,rcut
+      real(C_DOUBLE) f_cut,r,rcut_clf
 !
-      if(r.lt.rcut) then
+      if(r.lt.rcut_clf) then
         f_cut= 1.d0
       else
-        f_cut= exp(1.d0 -(r/rcut)**2)
-      end if
+        f_cut= exp(1.d0 -(r/rcut_clf)**2)
+      end if         ! rcut_clf=5 -> r/5=...  
 !
       return
       end function f_cut
@@ -2219,8 +2221,8 @@
 !
       integer(C_INT) ifLJ
       real(C_DOUBLE) rljcut,rljcut2
-      real(C_DOUBLE) epsLJ,eps_Na,eps_Cl
-      common/parmlj/ epsLJ,eps_Na,eps_Cl
+      real(C_DOUBLE) epsLJ,eps_K,eps_Cl
+      common/parmlj/ epsLJ,eps_K,eps_Cl
       common/parmlj2/ ifLJ
 !
       real(C_DOUBLE) xgc,ygc,zgc,vxg,vyg,vzg,rod_leng,Rmac, &
@@ -2240,7 +2242,7 @@
 !
       driwu2 = 1.25992104989487316476721060728d0  ! 2**(1/3)
       driwu  = sqrt(driwu2)
-      rcutlj = sqrt(rcutlj2)
+      rcutlj = sqrt(rcutlj2)  ! driwu
 !
       asc2 = (0.85d0*aLJ)**2
 !
@@ -2344,11 +2346,11 @@
       j= lipl(jj,i)
 !
 !  ----------------------------------------
-      rljcut= driwu   ! driwu  =1.12
+      rljcut= driwu         ! no dimension, driwu=1.12
 !
       if(ifLJ.eq.1) then
         if(i.le.nCLp .or. j.le.nCLp) then
-          rljcut= rcutlj
+          rljcut= rcutlj    ! no dimension, sigma/Ang
         end if
       end if
 !  ----------------------------------------
@@ -2459,15 +2461,14 @@
       integer(C_INT) iwrt1,iwrt2,iwrt3,iwrt4
       common/iotim/ iwrt1,iwrt2,iwrt3,iwrt4
 !
-!* Stiff bonds if r > rbmax.
 !
-      fgm0= 5.d0 ! 1.5d0/2.d0 ! 1.5d0/2.d0= 0.75d0
+      fgm0= 0.75d0 ! 1.5d0 ! 5.d0 ! 1.5d0/2.d0= 0.75d0
 !
       do ns= 1,nseg     !<-- nseg=1 single, nseg=2 double stranded
       ia= nsg(ns) +1    
       ib= nsg(ns+1)
 !
-      do i= ia,ib                  !<- ia--ib
+      do i= ia,ib 
       fpx(i)= 0
       fpy(i)= 0
       fpz(i)= 0
@@ -3213,8 +3214,8 @@
                      SubBox  
 !
       real(C_DOUBLE) rcut_clf,rcutlj,rcutlj2,r_fene,     &
-                     skin,rcut_clf2,rcps2,               &
-                     k_fene,Bjerrum,r_fene2,skin2
+                     skin,skin2,rcut_clf2,rcps2,         &
+                     k_fene,Bjerrum,r_fene2
       common /poly/    n_p,mpc,ladabst
       common /cutoffel/ rcut_clf2,rcps2
       common /fenepara/ k_fene,r_fene2
@@ -3228,7 +3229,8 @@
       real(C_DOUBLE) pi,dt,axi,Gamma,rbmax,vth,tmax,tmin, &
                      xmax,ymax,zmax,xmin,ymin,zmin,       &
                      xleng,yleng,zleng,qfrac,Rpore,Hpore, &
-                     Zci,Zcp,Zcn,acount,acoion
+                     Zci,Zcp,Zcn,acount,acoion,           &
+                     a_unit,w_unit   
       real(C_float)  phi,tht,dtwr1,dtwr2,dtwr3
       integer(C_INT) ifqq
 !
@@ -3239,6 +3241,7 @@
       common/parm8/  xleng,yleng,zleng
       common/cntion/ qfrac,Rpore,Hpore,Zci,Zcp,Zcn,ifqq
       common/ionsiz/ acount,acoion   
+      common/parmd/  a_unit,w_unit
 !
       integer(C_INT) ifLJ,ifrgrod,ifrodco
       common/parmlj2/ ifLJ
@@ -3298,17 +3301,22 @@
       read(08,'(a40,f20.0)') text1,dtwr3    ! Write out for iwrt3 
 !
       read(08,'(a40,f20.0)') text1,Rpore    ! Radius of a nanopore  5.4 Ang
-      read(08,'(a40,f20.0)') text1,Hpore    ! Height of a nanopore 35.8 Ang
+      read(08,'(a40,f20.0)') text1,Hpore    ! Height of a nanopore 56.0 Ang
       read(08,'(a40,f20.0)') text1,diel2    ! Dielectric constant of membrane diel2=2
+      Rpore = Rpore/a_unit  !!!
+      Hpore = Hpore/a_unit  !!!
 !
       read(08,'(a40,i12)') text1,n_p        ! Zahl der Polymere 0,1 or 2
       read(08,'(a40,i12)') text1,n_lp       ! Zahl der Ladungen pro Polymer 24
       read(08,'(a40,i12)') text1,ifbase     ! =1 if neutral base is attached
 !
-      read(08,'(a40,f20.0)') text1,Rmac     ! radius of a rod  Rmac= 3.d0
-      read(08,'(a40,f20.0)') text1,rod_leng ! length of a rod  rod_leng= 40.d0
-      read(08,'(a40,f20.0)') text1,Rhelix   ! Radius for rod charges !Rhelix  = 0.d0
+      read(08,'(a40,f20.0)') text1,Rmac     ! radius of a rod  Rmac= 3.9d0
+      read(08,'(a40,f20.0)') text1,rod_leng ! length of a rod  rod_leng= 42.0d0
+      read(08,'(a40,f20.0)') text1,Rhelix   ! Radius for rod charges Rhelix=4.9Ang 
       read(08,'(a40,f20.0)') text1,dielpr   ! Dielectric constant of water dielpr=79 
+      Rmac     = Rmac/a_unit      !!!
+      rod_leng = rod_leng/a_unit  !!!
+      Rhelix   = Rhelix/a_unit    !!!
 !
       Ladabst= 1
       qfrac= 0.d0 
@@ -3331,9 +3339,12 @@
       Zcp = v_g 
       Zcn = v_sm
 !
-      read(08,'(a40,f20.0)') text1,xleng    ! Box size: X
+      read(08,'(a40,f20.0)') text1,xleng    ! Box size: X  81 Ang
       read(08,'(a40,f20.0)') text1,yleng    ! Box size: Y
-      read(08,'(a40,f20.0)') text1,zleng    ! Box size: Z
+      read(08,'(a40,f20.0)') text1,zleng    ! Box size: Z 168 Ang
+      xleng = xleng/a_unit  !!!
+      yleng = yleng/a_unit  !!!
+      zleng = zleng/a_unit  !!!
 !
 !  -----------------------
 !   Symmetric of xmax and xmin 
@@ -3373,12 +3384,6 @@
 !
       read(08,'(a40,f20.0)') text1,t_pe     ! Time to start moving PE 3.
       read(08,'(a40,f20.0)') text1,t_poisn  ! Time to start solving Poisson eq  1.
-!     read(08,'(a40,f20.0)') text1,t_vreset ! Ion velocity rescaling until 0.
-!     read(08,'(a40,f20.0)') text1,t_intv1  !   time interval rescaling 20.
-
-!     read(08,'(a40,f20.0)') text1,t_sol    ! Change solvent vel rescaling at 10.
-!     read(08,'(a40,f20.0)') text1,t_intv2  !   time interval - early phase 2.
-!     read(08,'(a40,f20.0)') text1,t_intv3  !   time interval - late phase 10.
 !
       read(08,'(a40,i12)')   text1,itermax  ! Maximum of Poisson iterations 200
       read(08,'(a40,i12)')   text1,filtx    ! Number of spatial fileterings 1
@@ -3388,12 +3393,16 @@
       read(08,'(a40,i12)')   text1,SubBox   ! Subboxen pro Boxlaenge 1
       read(08,'(a40,f20.0)') text1,skin     ! Skin 1.166
 !
-      read(08,'(a40,f20.0)') text1,rcut_clf ! Ortsraum-Cutoff. =5.0
-      read(08,'(a40,f20.0)') text1,acount   ! Size of counterion 0.95
-      read(08,'(a40,f20.0)') text1,acoion   ! Size of coion      1.3
+!!      rcut_clf= no dimension               "position space"
+      read(08,'(a40,f20.0)') text1,rcut_clf ! Ortsraum-Cutoff. = 7 Ang 
+      read(08,'(a40,f20.0)') text1,acount   ! Size of counterion 1.33 Ang 0.95
+      read(08,'(a40,f20.0)') text1,acoion   ! Size of coion      1.82 Ang  1.3
+      acount  = acount  /a_unit  !!!
+      acoion  = acoion  /a_unit  !!!
 !
-      read(08,'(a40,f20.0)') text1,rcutlj   ! LJ-Cutoff 1.122
-      read(08,'(a40,f20.0)') text1,Bjerrum  ! Bjerrum-Laenge 5.0
+!!      rcutlj  = no dimension
+      read(08,'(a40,f20.0)') text1,rcutlj   ! LJ-Cutoff, no dimension=1.122
+      read(08,'(a40,f20.0)') text1,Bjerrum  ! Bjerrum-Laenge 7.0 Ang
 !
       close (unit=08)
 !*
@@ -3401,11 +3410,13 @@
         OPEN (unit=11,file=praefixc//'.06'//suffix2,             &
               status='unknown',position='append',form='formatted')
 !
-        write(11,*) 'xleng,zleng=',xleng,zleng
-        write(11,*) 'Rpore,Hpore=',Rpore,Hpore
+        write(11,*) 'xleng,zleng (Ang)=',a_unit*xleng,a_unit*zleng
+        write(11,*) 'Rpore,Hpore (Ang)=',a_unit*Rpore,a_unit*Hpore
         write(11,*) 'diel2=',diel2
+        write(11,*) 'Rmac,rod_leng (Ang)=',a_unit*Rmac,a_unit*rod_leng
+        write(11,*) 'acount,acoion (Ang)=',a_unit*acount,a_unit*acoion
         write(11,*) 'rcut_clf=',rcut_clf
-        write(11,*) 'Bjerrum=',Bjerrum
+        write(11,*) 'Bjerrum (Ang)=',Bjerrum
 !
         write(11,*) 'READ_CONF: parameter read... end'
         close(11)
@@ -3515,8 +3526,8 @@
       write(07,'("# Ortsraum-cutoff...............: ",f20.12)')rcut_clf
       write(07,'("# Size of counterions...........: ",f20.12)')acount
       write(07,'("# Size of coions................: ",f20.12)')acoion
-      write(07,'("# LJ-cutoff.....................: ",f20.12)')rcutlj
-      write(07,'("# Bjerrum-laenge................: ",f20.12)')Bjerrum
+      write(07,'("# LJ-cutoff, no dimension.......: ",f20.12)')rcutlj
+      write(07,'("# Bjerrum-laenge Ang............: ",f20.12)')Bjerrum
 !*********************************************************************
 !
       return
@@ -3715,7 +3726,7 @@
                      xmax,ymax,zmax,xmin,ymin,zmin,  &
                      xleng,yleng,zleng,hhl,hhm,hhn,  &
                      a_unit,w_unit,ww1,ww2,ddz,      &
-                     KJoule,KCal,mol,kbT,ranff   
+                     KJ,KCal,mol,kbT,ranff   
 !
       real(C_DOUBLE) dgaus2,vmax1,vmax2
       real(C_float)  phi,tht,dtwr1,dtwr2,dtwr3
@@ -3787,8 +3798,8 @@
                      itermax,filtx,filty,filtz
 !
       integer(C_INT) ifLJ,Ncc_1,Ncc_2,Ncc_3
-      real(C_DOUBLE) epsLJ,eps_Na,eps_Cl,rhow
-      common/parmlj/ epsLJ,eps_Na,eps_Cl
+      real(C_DOUBLE) epsLJ,eps_K,eps_Cl,rhow
+      common/parmlj/ epsLJ,eps_K,eps_Cl
       common/parmlj2/ ifLJ
       common/water1/ rhow(0:mx-1,0:my-1,0:mz-1)
 !
@@ -4159,8 +4170,8 @@
 !  Cl  .... 34/-e
 ! -----------------------
 !
-      ww1  = 38.d0  ! K
-      ww2  = 34.d0  ! Cl
+      ww1  = 38.d0  ! K,  2.27 Ang, K+ 2.98 Ang
+      ww2  = 34.d0  ! Cl, 1.75 Ang, Cl- 1.81 Ang
 !
       a_phos = 4.1d0   ! core 3.2 Ang, poc 2.6 Ang
       a_sugar= 3.6d0   ! core 2.2 Ang, csc 5.0 Ang
@@ -4171,26 +4182,26 @@
 !
 !* Lennard-Jones parameters
 !
-      KJoule = 1.d10          ! erg
-      KCal= 4.1868d0 *KJoule  ! 4.18 J/Cal
+      KJ  = 1.d+10              ! 1 KJ= 1.d10, per erg
+      KCal= 4.1868d0 *KJ        ! 4.18 J/Cal
       mol = 6.0220d23
-      kbT = 1.3807d-16 * 300. ! 300 Kelvin
+      kbT = 1.3807d-16 * 300.   ! at 300 Kelvin
 !
-      epsLJ = 0.65               ! KJ/mol for water= 6.6e-3 E.volt
-      eps_Na= 0.0148 * 4.1868d0  ! 4.18 x Kcal/mol= KJ/mol
-      eps_Cl= 0.1064 * 4.1868d0  ! 
+      epsLJ = 1.d+3  *kJ/mol     ! KJ/mol for water= 6.6e-3 E.volt
+      eps_K =  418.8 *kJ/mol       ! 0.0148 * 4.1868d0  ! 4.18 x Kcal/mol= KJ/mol
+      eps_Cl= 1251.2 *kJ/mol     ! 0.1064 * 4.1868d0  ! 
 !
 !* Represented in normalized values in kbT
-      epsLJ = epsLJ  *(KJoule/mol)/kbT
-      eps_Na= eps_Na *(KJoule/mol)/kbT
-      eps_Cl= eps_Cl *(KJoule/mol)/kbT
+      epsLJ = epsLJ  *1.d-3/kbT
+      eps_K = eps_K  *1.d-3/kbT
+      eps_Cl= eps_Cl *1.d-3/kbT
 !
       if(io_pe.eq.1) then
         OPEN (unit=11,file=praefixc//'.06'//suffix2,             &
               status='unknown',position='append',form='formatted')
 !
-        write(11,203) epsLJ,eps_Na,eps_Cl
-  203   format(/,'epsLJ, eps_Na, eps_Cl /kT=',3f8.3)
+        write(11,203) epsLJ,eps_K,eps_Cl
+  203   format(/,'epsLJ, eps_K, eps_Cl /kT=',3f8.3)
         close(11)
       end if
 !
@@ -4225,6 +4236,7 @@
         ag(i)=  a_phos/(2*a_unit)    ! Diameter= 4.1 Ang
         ep(i)=  epsLJ
       else
+!            ag(i)= 4.1/(2*1.4)= 1.46
 !
         ch(i)= 0.d0                  ! Sugar ring
         am(i)= 218.d0/w_unit
@@ -4569,25 +4581,27 @@
       if(i.gt.np .and. i.le.np+Nzi) then  ! Counterions to charge neutrality
           n1= n1 +1                       ! they are Nci=12
 !
+!     ww1  = 38.d0  ! K,  2.27 Ang, K+ 2.98 Ang
+!     ww2  = 34.d0  ! Cl, 1.75 Ang, Cl- 1.81 Ang
           ch(i)= Zcp                      ! due to PE=-12; that is i=37-48
-          am(i)= ww1/w_unit
-          ag(i)= acount 
-          ep(i)= eps_Na
+          am(i)= 38.d0/w_unit
+          ag(i)= 2.98/a_unit ! acount/a_unit 
+          ep(i)= 4.34 ! eV  eps_K
 !
       else if(i.ge.np+Nzi+1 .and. i.le.np+Nzi+nq/2) then
           n3= n3 +1
 !
           ch(i)=  Zcp
-          am(i)= ww1/w_unit
-          ag(i)= acount
-          ep(i)= eps_Na
+          am(i)= 38.d0/w_unit
+          ag(i)= 2.98/a_unit ! acount/a_unit
+          ep(i)= 4.34 ! eV
 !
       else if(i.ge.np+Nzi+nq/2+1 .and. i.le.np+nq) then
           n4= n4 +1
 !
           ch(i)=  Zcn
-          am(i)= ww2/w_unit
-          ag(i)= acoion 
+          am(i)= 34.d0/w_unit
+          ag(i)= 1.81/a_unit ! acoion/a_unit 
           ep(i)= eps_Cl
       end if
       end do
@@ -4602,15 +4616,15 @@
               status='unknown',position='append',form='formatted')
 !
         write(11,350) q_PE,Rpore,Hpore,Zcp,Zcn,cci,n1,n2
-        write(11,351) acount,acoion
-        write(11,352) epsLJ,eps_Na,eps_Cl
+        write(11,351) a_unit*acount,a_unit*acoion
+        write(11,352) epsLJ,eps_K,eps_Cl
         write(11,*)
   350   format(' q_PE, Rpore(radius), Hpore(height) =',3f7.2,/,  &
                ' Zcp, Zcn, cci(PE+count/co)= ',3f7.2,/,          &
                ' Number of counterions/coions= ',2i5)
-  351   format(' Size of counterion=',f7.2, &
-               '         coion     =',f7.2)
-  352   format(' LJ potential(water, Na, Cl)=',3f7.2)
+  351   format(' Size of counterion (Ang)=',f7.2, &
+               '         coion      (Ang)=',f7.2)
+  352   format(' LJ potential(water, Ka, Cl)=',3f7.2)
 !
         close(11)
       end if
@@ -4761,14 +4775,16 @@
       nn3= nn3 -1
       nn4= nn4 +1
 !
+!     ww1  = 38.d0  ! K,  2.27 Ang, K+ 2.98 Ang
+!     ww2  = 34.d0  ! Cl, 1.75 Ang, Cl- 1.81 Ang
       ch(nn3)=  Zcp
-      am(nn3)= ww1/w_unit
-      ag(nn3)= acount
-      ep(nn3)= eps_Na
+      am(nn3)= 38.d0/w_unit
+      ag(nn3)= acount/a_unit
+      ep(nn3)= eps_K
 !
       ch(nn4)=  Zcn
-      am(nn4)= ww2/w_unit
-      ag(nn4)= acoion 
+      am(nn4)= 34.d0/w_unit
+      ag(nn4)= acoion/a_unit 
       ep(nn4)= eps_Cl
       end do
 !
@@ -4818,9 +4834,9 @@
       end if
 !
 !
-      kl= xleng/2.90d0
-      km= yleng/2.90d0
-      kn= zleng/2.90d0
+      kl= xleng/(2.90d0/a_unit)
+      km= yleng/(2.90d0/a_unit)
+      kn= zleng/(2.90d0/a_unit)
 !
       if(io_pe.eq.1) then
         OPEN (unit=11,file=praefixc//'.06'//suffix2,             &
@@ -7411,6 +7427,9 @@
                     x1,y1,z1,xx,yy,dd,xpp,ypp,zpp
       real(C_DOUBLE) xleng,yleng,zleng
       common/parm8/  xleng,yleng,zleng
+!
+      real(C_DOUBLE) a_unit,w_unit
+      common/parmd/  a_unit,w_unit
       logical        first_ppl
 !
       fsize= 8.
@@ -7457,8 +7476,8 @@
       call symbol (15.9,1.0,hh,'t=', 0.,2)
       call number (999.,1.0,hh,t,0.,7)
 !
-      Rpore4= Rpore
-      Hpore4= Hpore
+      Rpore4= a_unit*Rpore
+      Hpore4= a_unit*Hpore
       Zcp4  = Zcp
       Zcn4  = Zcn
       xleng4 = xleng
@@ -8491,7 +8510,7 @@
       end do
       end do
       end do
-!                       sym= -1. : odd   -1 0 (1) 2 3
+!                       sym= -1. : odd   -2 -1 (0) 1 2 
 !                       sym=  1. : even  
       do is= -1,0
       do k= 0,mz-1
@@ -8500,7 +8519,7 @@
       end do
       end do
       end do
-!                            my-2 my-1 (my) my+1 my+2
+!                            mx-3 mx-2 (mx-1) mx mx+1 
       do is= 0,1
       do j= 0,my-1
       do k= 0,mz-1
@@ -8511,7 +8530,7 @@
 !
       do k= 0,mz-1
       do j= 0,my-1
-      do i= 0,mx-1
+      do i= 0,mx-1     ! odd for -2,-1,mx,mx+1
       ir = i+1
       il = i-1
       irr= i+2
@@ -8538,8 +8557,8 @@
       end do
       end do
       end do
-!                       sym= -1. : odd   -1 0 (1) 2 3
-!                       sym=  1. : even  
+!                   
+!                    
       do js= -1,0
       do k= 0,mz-1
       do i= 0,mx-1
@@ -8547,7 +8566,7 @@
       end do
       end do
       end do
-!                            my-2 my-1 (my) my+1 my+2
+!                
       do js= 0,1
       do i= 0,mx-1
       do k= 0,mz-1
@@ -8585,7 +8604,7 @@
       end do
       end do
       end do
-!                       sym2= -1: odd   -1 0 (1) 2 3
+!                       sym2= -1: odd   -2 -1 (0) 1 2 
 !                       sym2=  1: even  
       do ks= -1,0
       do i= 0,mx-1
@@ -8594,7 +8613,7 @@
       end do
       end do
       end do
-!                            my-2 my-1 (my) my+1 my+2
+!                        mz-3 mz-2 (mz-1) mz mz+1
       do ks= 0,1
       do j= 0,my-1
       do i= 0,mx-1

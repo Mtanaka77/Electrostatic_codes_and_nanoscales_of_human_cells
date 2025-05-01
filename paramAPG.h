@@ -5,10 +5,10 @@
                      mx,my,mz,mxy,mxyz,nbxs,ntmax,         &
                      ip0,mintpol,nob3,iblk3
 !
-      parameter  (num_proc=6,linux7=.true.)  ! 6, Linux
+      parameter  (num_proc=6,linux7=.true.)  ! 6 core, Linux
 !     parameter  (num_proc=8,linux7=.false.) 
 !                                              water
-      parameter  (np0=50,nq0=300,nr0=13000)  ! kl,km,kn=20x20x41
+      parameter  (np0=50,nq0=300,nr0=32000)  ! kl,km,kn=27x27x57
       parameter  (npq0=np0+nq0,npqr0=np0+nq0+nr0)
       parameter  (npio=np0+nq0)
 !
