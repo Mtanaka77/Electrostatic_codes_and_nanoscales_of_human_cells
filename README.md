@@ -112,8 +112,8 @@ the configure file CIMV13_config.START3 (ca. 5,100 lines)
 
 (3) Non-periodic (bound) system, DNA transport
 
-* @nanoporAPG.f03 (ca. 9,900 lines with graphics), with 
-the parameter file paramAPG.h and the configuration file PORV21_config.start3. 
+* @nanoporAPH.f03 (ca. 9,900 lines with graphics), with 
+the parameter file paramAPH.h and the configuration file PORV31_config.start3. 
 
 
 Anyone will be welcome to copy and rewrite these simulation codes under 
