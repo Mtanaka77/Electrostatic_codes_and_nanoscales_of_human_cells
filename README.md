@@ -89,7 +89,7 @@ m dv/dt = (Gamma q'q/r^2) (grad r/r) - fgm *(2 r(i)-r(i+1)-r(i-1)) +48 *(epsil_L
 The long-range potential forces with the meshes of (i,j,k) coordinates are solved by the Poisson equation, i.e.,
 div(eps(i,j,k) [grad pot(i,j,k)]) = - 4*pi* Gamma*rho(i,j,k). There are large potentials of positive V_top and negative V_bottom drops at end plates, and they are small otherwise.
 
-The simulation code is named @nanoporAPH.f03 (ca 9,900 lines with graphics), and the parameter file paramAPH.h and the configuration file PORW31_config.start3. The used subroutines are: RUN_MD, moldyn, sht-forces, LJ-forces, sprmul, reflecest_endpl, init, poissn, emcof3, cresmd, and graphics. There are many input items to run the simulation; they are the nanopore sizes of R_pore and H_pore, respectively, the number of DNA, counterions and coions, the Cartesian meshes of the Poisson equation, the time step of dt, the potential values of top and bottom plates, and the Bjerrum length at 300 K, etc. It has N_x= N_y= 80 and N_z= 100 meshes for L_x= L_y= 81 Ang, L_z= 168 Ang, that is approximately 26,000 particles. A test run of 15 minutes is executed by 6 cores/3.0 GHz for the time t=400 with the time step dt=0.01 (x 10^-14 s, Ref. 9). 
+The simulation code is named @nanoporAPG.f03 (ca 9,900 lines with graphics), and the parameter file paramAPG.h and the configuration file PORW31_config.start3. The used subroutines are: RUN_MD, moldyn, sht-forces, LJ-forces, sprmul, reflecest_endpl, init, poissn, emcof3, cresmd, and graphics. There are many input items to run the simulation; they are the nanopore sizes of R_pore and H_pore, respectively, the number of DNA, counterions and coions, the Cartesian meshes of the Poisson equation, the time step of dt, the potential values of top and bottom plates, and the Bjerrum length at 300 K, etc. It has N_x= N_y= 80 and N_z= 100 meshes for L_x= L_y= 81 Ang, L_z= 168 Ang, that is approximately 26,000 particles. A test run of 15 minutes is executed by 6 cores/3.0 GHz for the time t=400 with the time step dt=0.01 (x 10^-14 s, Ref. 9). 
 
 The file porw31.773.pdf for very small dielectric constant eps=3 in the pore region shows four plots of potentials, particles of DNA and ions, those of all particles (every 5 water molecules), and the velocity distributions. One can see that the DNA chain moves toward the positive z direction into the cell volume. Moreover, the low dielectric constant eps(\r) in the pore makes the DNA blob more concentrated because counterions easily find negatively-charged DNA, which accelerates it upward to the cell region.
 In passing about the transvers (x,y) directions, the closed boundary condition may be better because a small distance in the periodic condition mixes up fictitious artifact.    
@@ -112,8 +112,8 @@ the configure file CIMV13_config.START3 (ca. 5,100 lines)
 
 (3) Non-periodic (bound) system, DNA transport
 
-* @nanoporAPH.f03 (ca. 9,900 lines with graphics), with 
-the parameter file paramAPH.h and the configuration file PORV31_config.start3. 
+* @nanoporAPG.f03 (ca. 9,900 lines with graphics), with 
+the parameter file paramAPG.h and the configuration file PORV21_config.start3. 
 
 
 Anyone will be welcome to copy and rewrite these simulation codes under 
@@ -130,6 +130,6 @@ and 100 lines in (3) of the codes intact.
 6. M. Tanaka and M. Murakami, Comp.Phys.Commun., 241, pp. 56-63 (2019).
 7. M. Deserno and C. Holm, J.Chem.Phys. 109, 7694–7701 (1998).
 8. M. Tanaka, Collaboration at Institute of Polymerforchung, University of Mainz, Germany (1999).
-9. The simulation codes of this directory were updated in April, 2025.
+9. The simulation codes of this directory have been updated in April, 2025.
 
 
