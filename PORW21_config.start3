@@ -1,0 +1,44 @@
+# Praefix-String......................: PORW21
+# Non-neutral Pl (if =1)..............:            1
+# Maximum cpu time for run,.1430 Min..:   30.0000000000000000
+# Physikalische Endzeit...............:  500.1000000000000000
+# Diskretisierungs-Schritt....0.01....:    0.0100000000000000
+# Write interval for time,    iwrt1...:   10.0000000000000000 
+# Write interval for restart, iwrt2,..:  200.0000000000000000 
+# Write interval for field,   iwrt3,..:   50.0000000000000000 
+# Radius of a nanopore.radius  0.75 nm:    7.5000000000000000
+# Height of a nanopore.length  5.60 nm:   56.0000000000000000
+# Dielectric constant of membrane.....:    3.0000000000000000
+# Number of Polyelectrolyte (2).......:            1
+# Ladungen pro PE (per strand !)......:           24
+# Neutral base is attached if 1.ifbase:            1
+# Radius of a rod....Rmac......0.39 nm:    3.9000000000000000
+# Length of a rod....rod_leng..4.20 nm:   42.0000000000000000
+# Radius for rod charges.Rhelix0.35 nm:    3.5000000000000000
+# Pore's dielectric constant .........:   79.0000000000000000
+# Valenz der Gegenionen.......... Zp..:            1
+# Valenz der negativen Salzionen. Zn..:           -1
+# Teilchenzahl (including salt).......:          300
+# Box size: xleng...............8.1 nm:   81.0000000000000000
+# Box size: yleng...............8.1 nm:   81.0000000000000000
+# Box size: zleng..............16.8 nm:  168.0000000000000000
+# Potential of the top plate.Vtop.(kT):    1.0000000000000000
+#           the bottom plate..Vbottom.:   -1.0000000000000000
+# Boundary = 0 (closed), 1 (periodic).:            0
+# ifLJ    for attractive LJ.(cut).....:            1
+# ifrgrod for existing rod............:            0
+# ifrodco.............................:            0
+# t00     for initial start...........:  200.0000000000000000
+# t_recyc for recycling...............:   10.0000000000000000
+# Time to start moving PE.............:    3.0000000000000000
+# Time to start solving Poisson eq....:    1.0000000000000000
+# Maximum of Poisson iterations.......:          200
+# Number of spatial fileterings.......:            1
+# Subboxen pro Boxlaenge..............:            1
+# Skin..................sigma/Ang.....:    1.1666660000000000
+# Ortsraum-Cutoff.......sigma/Ang.....:    5.0000000000000000
+# Size of counterion....Ang...........:    1.3300000000000000
+# Size of coion.........Ang...........:    1.8200000000000000
+# LJ-Cutoff.............sigma/Ang.....:    1.1224620480000000
+# Bjerrum-Laenge......................:    7.0000000000000000
+
