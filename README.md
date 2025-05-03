@@ -116,7 +116,7 @@ the configure file CIMV13_config.START3 (ca. 5,100 lines)
 the parameter file paramAPG.h and the configuration file PORV21_config.start3. 
 
 
-Anyone will be welcome to copy and rewrite these simulation codes under 
+Anyone can read, copy and rewrite these simulation codes under 
 GNU General Public License v3.0, by keeping the first top 55 lines in (2) 
 and 100 lines in (3) of the codes intact.
 
