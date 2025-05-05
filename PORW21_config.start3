@@ -1,7 +1,7 @@
 # Praefix-String......................: PORW21
 # Non-neutral Pl (if =1)..............:            1
-# Maximum cpu time for run,.1430 Min..:   30.0000000000000000
-# Physikalische Endzeit...............:  500.1000000000000000
+# Maximum cpu time for run,.1430 Min..:   60.0000000000000000
+# Physikalische Endzeit...............:  800.1000000000000000
 # Diskretisierungs-Schritt....0.01....:    0.0100000000000000
 # Write interval for time,    iwrt1...:   10.0000000000000000 
 # Write interval for restart, iwrt2,..:  200.0000000000000000 
@@ -22,8 +22,8 @@
 # Box size: xleng...............8.1 nm:   81.0000000000000000
 # Box size: yleng...............8.1 nm:   81.0000000000000000
 # Box size: zleng..............16.8 nm:  168.0000000000000000
-# Potential of the top plate.Vtop.(kT):    1.0000000000000000
-#           the bottom plate..Vbottom.:   -1.0000000000000000
+# Potential of the top plate.Vtop.(kT):    0.1250000000000000
+#           the bottom plate..Vbottom.:   -0.1250000000000000
 # Boundary = 0 (closed), 1 (periodic).:            0
 # ifLJ    for attractive LJ.(cut).....:            1
 # ifrgrod for existing rod............:            0
