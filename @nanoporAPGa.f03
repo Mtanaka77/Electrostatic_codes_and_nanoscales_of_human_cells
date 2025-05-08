@@ -1912,7 +1912,7 @@
 !
       real(C_DOUBLE) pi,dt,axi,Gamma,rbmax,vth,tmax,       &
                      rcut_clf2,rcps2,rcut_clf,unif1,unif2, &
-                     e_c_s,e_c_pme,e_c_r,e_lj,e_elas,aLJ
+                     e_c_s,e_c_pme,e_c_r,e_lj,e_elas
 !
       integer(C_INT) i,j,k,l,itabl,ierror
       integer(C_INT) io_pe
@@ -4900,20 +4900,20 @@
       end do
       end do
 !
-!* Fold back to (-L/2,L/2)
-!
-      do i= 1,npqr
-      xg(i)= xg(i) - NINT(xg(i)/xleng)*xleng
-      yg(i)= yg(i) - NINT(yg(i)/yleng)*yleng
-      zg(i)= zg(i) - NINT(zg(i)/zleng)*zleng
-      end do
-!
 !***************************************************
       nCLp = np +nq      ! PE+AGCT, Counter/Coions
 !                   
       npqr= ll           ! ll: the total particles 
       nr  = npqr - nCLp  ! Water
 !***************************************************
+!
+!* Fold back to (-L/2,L/2)
+!
+      do i= 1,npqr0
+      xg(i)= xg(i) - NINT(xg(i)/xleng)*xleng
+      yg(i)= yg(i) - NINT(yg(i)/yleng)*yleng
+      zg(i)= zg(i) - NINT(zg(i)/zleng)*zleng
+      end do
 !
 !  Generate nq
       if(io_pe.eq.1) then
