@@ -4747,7 +4747,8 @@
       nn4= np+Nzi+nq
 !
 !     do k= 1,3
-      do k= 1,5  !<-- Look at numbers !
+!     do k= 1,5  !<-- Look at numbers !
+      do k= 1,6  !<-- Look at numbers !
 !
       n3= n3 -1
       n4= n4 +1
@@ -7071,10 +7072,11 @@
       common/cresm1/  aa(0:mxyz-1,nob3)
       common/cresma/  na(0:mxyz-1,nob3)
 !
-      integer(C_INT) io_pe,i3,i4,cnt_rec2,disp_rec2,disp_recv3(30), &
-                     disp_recv4(30),cnt_send,cnt_recv(30)
+      integer(C_INT) io_pe,i3,i4,cnt_rec2,disp_rec2
+      integer(C_INT) cnt_rec3,disp_rec3,disp_rec4,cnt_send
       common/sub_proc/ io_pe
       common/dat_typ2/ i3(30),i4(30),cnt_rec2(30),disp_rec2(30)
+      common/dat_typ3/ cnt_rec3(30),disp_rec3(30),disp_rec4(30)
 !
 !* Parallelization is faster by num_proc times !
 !
@@ -7086,10 +7088,10 @@
       if(num_proc.ne.1) then
 !
         do k= 1,num_proc
-        disp_recv3(k)= i3(k)
-        disp_recv4(k)= i4(k)-mxy+1
+        disp_rec3(k)= i3(k)
+        disp_rec4(k)= i4(k)-mxy+1
 !
-        cnt_recv(k)= mxy
+        cnt_rec3(k)= mxy
         end do
 !
         i00= i3(ipar)
@@ -7098,8 +7100,8 @@
         end do
 !
         cnt_send= mxy
-        call mpi_allgatherv (vv,cnt_send,           mpi_real8, &
-                             v8,cnt_recv,disp_recv3,mpi_real8, &
+        call mpi_allgatherv (vv,cnt_send,          mpi_real8, &
+                             v8,cnt_rec3,disp_rec3,mpi_real8, &
                              mpi_comm_world,ierror)
 !
         i00= i4(ipar)-mxy+1
@@ -7107,8 +7109,9 @@
         vv(i-i00)= v(i)
         end do
 !
-        call mpi_allgatherv (vv,cnt_send,           mpi_real8, &
-                             v8,cnt_recv,disp_recv4,mpi_real8, &
+        cnt_send= mxy
+        call mpi_allgatherv (vv,cnt_send,          mpi_real8, &
+                             v8,cnt_rec3,disp_rec4,mpi_real8, &
                              mpi_comm_world,ierror)
       end if
 !
