@@ -1419,7 +1419,7 @@
 !* Coulomb forces are calculated under a large stride.
 !
         do i= 1,nCLp
-        dtm= ntimes*Gamma*dt/am(i)
+        dtm= ntimes*dt/am(i)
 !
         vxc(i)= vxc(i) +fgx(i)*dtm  !<-- Coulomb forces
         vyc(i)= vyc(i) +fgy(i)*dtm
