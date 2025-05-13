@@ -1318,7 +1318,7 @@
 !     where  pot_p = sum q/(eps*r) defined on grids
 !                     
 ! ------------------------------------
-      if(t8.lt.t_poisn) go to 370       !<- L.1480-1620
+      if(t8.lt.t_poisn) go to 370 
 ! ------------------------------------
       ntimes= 10 
 ! 
@@ -1447,18 +1447,18 @@
         do i= 1,np
         dtm= dt/am(i)
 !                                  Coulomb and PO_4
-        vxs(i)= vxs(i) +(Gamma*fcx(i) +fpx(i) +fsx(i))*dtm  !<- Macroions 
-        vys(i)= vys(i) +(Gamma*fcy(i) +fpy(i) +fsy(i))*dtm
-        vzs(i)= vzs(i) +(Gamma*fcz(i) +fpz(i) +fsz(i))*dtm
+        vxs(i)= vxs(i) +(fcx(i) +fpx(i) +fsx(i))*dtm  !<- Macroions 
+        vys(i)= vys(i) +(fcy(i) +fpy(i) +fsy(i))*dtm
+        vzs(i)= vzs(i) +(fcz(i) +fpz(i) +fsz(i))*dtm
         end do
       end if
 !
       do i= np+1,nCLp
       dtm= dt/am(i)
 !
-      vxs(i)= vxs(i) +(Gamma*fcx(i) +fsx(i))*dtm  !<- Counter/co-ions
-      vys(i)= vys(i) +(Gamma*fcy(i) +fsy(i))*dtm
-      vzs(i)= vzs(i) +(Gamma*fcz(i) +fsz(i))*dtm
+      vxs(i)= vxs(i) +(fcx(i) +fsx(i))*dtm  !<- Counter/co-ions
+      vys(i)= vys(i) +(fcy(i) +fsy(i))*dtm
+      vzs(i)= vzs(i) +(fcz(i) +fsz(i))*dtm
       end do
 !
       if(t8.le.t_pe+10.d0) then   ! retain salt until DNA contracts
@@ -8364,6 +8364,7 @@
       nxz= npx * npz
       call daisho (a,nxz,wamin,wamax)
 !
+      if(.false.) then
         OPEN (unit=11,file=praefixc//'.06'//suffix2,             &
               status='unknown',position='append',form='formatted')
         write(11,*)
@@ -8383,6 +8384,7 @@
 !       end do
 !       write(11,*)
         close(11)
+      end if
 !
       if(wamax-wamin.gt.0.) then
         ncontr= 11
