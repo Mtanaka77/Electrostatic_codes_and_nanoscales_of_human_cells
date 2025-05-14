@@ -17,10 +17,10 @@
       parameter (praefixi='/home/mtanaka/MPI_nano/porw21') ! read(12) - common by nfs
       parameter (praefixc='/home/mtanaka/MPI_nano/porw21') ! write(13)
       parameter (praefixe='/home/mtanaka/MPI_nano/porw21') ! WRITE_CONF
-      parameter (suffix2='3a',suffix1='3a',suffix0='3', kstart=0)
-!     parameter (suffix2='3b',suffix1='3a',suffix0='3', kstart=1) ! for restart
+      parameter (suffix2='3a',suffix1='3a',suffix0='3',kstart=0)
+!     parameter (suffix2='3b',suffix1='3a',suffix0='3',kstart=1) ! for restart
 !
-      parameter (np0=50,nq0=300,nr0=32000)  ! kl,km,kn=27x27x57
+      parameter (np0=50,nq0=300,nr0=15000)  ! kl,km,kn=27x27x57
       parameter (npq0=np0+nq0,npqr0=np0+nq0+nr0)
       parameter (npio=np0+nq0)
 !

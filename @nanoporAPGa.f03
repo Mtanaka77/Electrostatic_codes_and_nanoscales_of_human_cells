@@ -270,17 +270,6 @@
       common/ehist/ ekin,ppot,ekn2,etot,z_pe,vzpe,vzco,vzct, &
                     vdtm,vpor,time,ecr,elj,espr
 !
-      real(C_float),dimension(ntmax) :: qzd,qzu,cjz
-      real(C_float),dimension(ntmax,3) :: qtop,qpor,qbot
-      common/ionpop/ qzd,qzu,cjz
-      common/ionpp2/ qtop,qpor,qbot
-!
-      real(C_float) qbot0,qtop0
-      real(C_float),dimension(npq0) :: z0
-      real(C_float),dimension(ntmax) :: cj1,cj2
-      common/ionpp3/ z0
-      common/ionpp4/ cj1,cj2
-!
       namelist/inp1/ phi,tht
       namelist/inp2/ dt,rbmax,aLJ,tmax,dtwr1,dtwr2,dtwr3
 !
@@ -452,8 +441,8 @@
         read(12) t,phi,tht,dtwr1,dtwr2,dtwr3,is
         read(12) ekin,ppot,ekn2,etot,z_pe,vzpe,vzco,vzct, &
                  vdtm,vpor,time,ecr,elj,espr
-        read(12) qzd,qzu,cjz,qtop,qpor,qbot
-        read(12) z0,cj1,cj2
+!       read(12) qzd,qzu,cjz,qtop,qpor,qbot
+!       read(12) z0,cj1,cj2
 !
         read(12) iwa,iwb,iwc,iwd
         read(12) nsg,nseg
@@ -590,8 +579,8 @@
         write(12) t,phi,tht,dtwr1,dtwr2,dtwr3,is
         write(12) ekin,ppot,ekn2,etot,z_pe,vzpe,vzco,vzct, &
                   vdtm,vpor,time,ecr,elj,espr
-        write(12) qzd,qzu,cjz,qtop,qpor,qbot
-        write(12) z0,cj1,cj2
+!       write(12) qzd,qzu,cjz,qtop,qpor,qbot
+!       write(12) z0,cj1,cj2
 !
         write(12) iwa,iwb,iwc,iwd
         write(12) nsg,nseg
@@ -711,8 +700,7 @@
 !
       real(C_DOUBLE),dimension(npqr0) :: &
                                       xg,yg,zg,vx,vy,vz,ch,am,ag,ep, &
-                                      vxs,vys,vzs
-      real(C_DOUBLE),dimension(npqr0) :: fsx,fsy,fsz
+                                      vxs,vys,vzs,fsx,fsy,fsz
       real(C_DOUBLE),dimension(npq0) ::  fcx,fcy,fcz,fgx,fgy,fgz, &
                                          vxc,vyc,vzc
       real(C_DOUBLE),dimension(np0)  ::  ftx,fty,ftz,fpx,fpy,fpz
@@ -760,18 +748,6 @@
 !
       real(C_float) vpr1,vpr2,rr
       integer(C_INT) npor,kp1,kp2
-!
-      real(C_float) qbot0,qtop0
-      real(C_float),dimension(npq0) :: z0
-      real(C_float),dimension(ntmax) :: cj1,cj2
-      common/ionpp3/ z0
-      common/ionpp4/ cj1,cj2
-!
-      integer(C_INT) ntop(2),nbot(2)
-      real(C_float),dimension(ntmax) :: qzd,qzu,cjz
-      real(C_float),dimension(ntmax,3) :: qtop,qpor,qbot
-      common/ionpop/ qzd,qzu,cjz
-      common/ionpp2/ qtop,qpor,qbot
 !
       integer(C_INT) it,is,iwa,iwb,iwc,iwd,iwrt1,iwrt2,iwrt3,iwrt4, &
                      nsg,nseg,istop,ifqq,iwrta,iwrtb,iwrtc,iwrtd,   &
@@ -1067,43 +1043,6 @@
       end do
 ! 700 continue
 !
-!* Set initial positions of ions   Symmetric of xmax and xmin 
-!     xg(i)-zg(i) in /init/
-!
-      if(first_recyc) then
-        ntop(1)= 0
-        ntop(2)= 0
-        nbot(1)= 0
-        nbot(2)= 0
-!
-        do i= np+1,np+nq
-!!      if(abs(zg(i)).gt.0.5*Hpore) then
-          z0(i)= zg(i)
-!!      else
-!!        z0(i)= 0   ! exclude pore ions
-!!      end if
-!
-        if(zg(i).gt. 0.5d0*Hpore) then
-          if(ch(i).gt.0.d0) ntop(1)= ntop(1) +ch(i)
-          if(ch(i).lt.0.d0) ntop(2)= ntop(2) -ch(i)
-        end if
-!
-        if(zg(i).lt.-0.5d0*Hpore) then
-          if(ch(i).gt.0.d0) nbot(1)= nbot(1) +ch(i)
-          if(ch(i).lt.0.d0) nbot(2)= nbot(2) -ch(i)
-        end if
-        end do
-!
-        do i= 1,ntmax
-        cj1(is)= 0.
-        cj2(is)= 0.
-        end do
-!
-        if(nq.ne.0) then
-          call recycle_ions (xg,yg,zg,ch,ag,ntop,nbot,np,nq,nCLp,npqr)
-        end if
-      end if
-!
 !-------------------------------------------------------
       if(io_pe.eq.1) then
         qfrac4 = qfrac
@@ -1375,7 +1314,7 @@
         e_grid = e_grid/float(mx*my*mz)
 !
 ! ----------------------------------------------------
-!         increment of time: dt*ntimes= 0.01x10 = 0.1
+!   increment of time: dt*ntimes= 0.01x10 = 0.1
         if(mod(istep,50).eq.0 .and. io_pe.eq.1) then   !  istep=50 for Dt=5 
 !
           OPEN (unit=11,file=praefixc//'.06'//suffix2,             &
@@ -1384,8 +1323,6 @@
           write(11,341) t8,ierr,e_grid,rsdl
   341     format('#(bcg-ps) t8, ierr=',f8.2,i6,'  e_grid,rsdl=',1p2d12.3)
           close(11)
- 
-!         go to 370 
         end if
 ! ----------------------------------------------------
 !
@@ -1831,8 +1768,8 @@
         write(12) t,phi,tht,dtwr1,dtwr2,dtwr3,is
         write(12) ekin,ppot,ekn2,etot,z_pe,vzpe,vzco,vzct, &
                   vdtm,vpor,time,ecr,elj,espr
-        write(12) qzd,qzu,cjz,qtop,qpor,qbot
-        write(12) z0,cj1,cj2
+!       write(12) qzd,qzu,cjz,qtop,qpor,qbot
+!       write(12) z0,cj1,cj2
 !
         write(12) iwa,iwb,iwc,iwd
         write(12) nsg,nseg
@@ -2791,7 +2728,7 @@
 !
       include   'paramAPGa.h'
 !
-      real(C_DOUBLE),dimension(npqr0) :: xg,yg,zg,ch,vx,vy,vz,am,ag 
+      real(C_DOUBLE),dimension(npqr0) :: xg,yg,zg,vx,vy,vz,ch,am,ag 
       real(C_DOUBLE) xmax1,ymax1,zmax1,xmin1,ymin1,zmin1, &
                      zm1_t,zm2_t,zm1_b,zm2_b,dr
 !
@@ -2818,15 +2755,8 @@
       real(C_DOUBLE) pi,dt,axi,Gamma,rbmax,vth,tmax
       common/parm2/  pi,dt,axi,Gamma,rbmax,vth,tmax
 !
-      real(C_float),dimension(ntmax) :: qzd,qzu,cjz
-      real(C_float),dimension(ntmax,3) :: qtop,qpor,qbot
-      common/ionpop/ qzd,qzu,cjz
-      common/ionpp2/ qtop,qpor,qbot
-!
-      real(C_float),dimension(npq0) :: z0
-      real(C_float),dimension(ntmax) :: cj1,cj2
+      real(C_float),dimension(npqr0) :: z0
       common/ionpp3/ z0
-      common/ionpp4/ cj1,cj2
 !
       real(C_float)  t,t00,xp_leng
       common/headr2/ t,t00,xp_leng
@@ -2937,231 +2867,6 @@
 !
       return
       end subroutine reflect_endpl 
-!
-!
-!----------------------------------------------------------------------
-      subroutine recycle_ions (xg,yg,zg,ch,ag,ntop,nbot,np,nq,nCLp,npqr)
-!----------------------------------------------------------------------
-!*  Balance the (initial) number of top/bottom cell ions 
-!*  This subroutine is used for the inital setting.
-!
-      use, intrinsic :: iso_c_binding 
-      implicit none
-!
-      include    'paramAPGa.h'
-!
-      integer(C_INT) np,nq,nCLp,npqr,ntop(2),nbot(2), &
-                     j,k,l
-      integer(C_INT) io_pe
-      common/sub_proc/ io_pe
-!
-      real(C_DOUBLE),dimension(npqr0) :: xg,yg,zg,ch,ag
-      real(C_DOUBLE) xmax,ymax,zmax,xmin,ymin,zmin, &
-                     qfrac,Rpore,Hpore,Zci,Zcp,Zcn, &
-                     xleng,yleng,zleng,zcomp,rr
-      common/parm8/  xleng,yleng,zleng
-      real(C_DOUBLE) ranff
-!
-      real(C_float)  phi,tht,dtwr1,dtwr2,dtwr3
-      integer(C_INT) ifqq,ina,icl,i
-      common/parm3/  xmax,ymax,zmax,xmin,ymin,zmin
-      common/parm4/  phi,tht,dtwr1,dtwr2,dtwr3
-      common/cntion/ qfrac,Rpore,Hpore,Zci,Zcp,Zcn,ifqq
-!
-      real(C_float),dimension(npq0) :: z0  !<- np0+nq0= npq0
-      real(C_float),dimension(ntmax) :: cj1,cj2
-      common/ionpp3/ z0
-      common/ionpp4/ cj1,cj2
-!
-!     xleng= xmax -xmin  !<-- Defined at /READ_CONF/
-!     yleng= ymax -ymin
-!     zleng= zmax -zmin
-      zcomp= (zleng -Hpore)/2.d0
-!
-!* Check the balance for cations and anions separately
-! 
-      ntop(1)= 0
-      nbot(1)= 0
-      ntop(2)= 0
-      nbot(2)= 0
-!
-      do k= 1,2    !<-- do 1
-!
-      if(k.eq.1) then
-!
-        do i= np+1,nCLp
-        if(zg(i).gt.0.5d0*Hpore) then
-          if(ch(i).gt.0) iNa= i  ! select
-          if(ch(i).lt.0) iCl= i
-        end if
-!
-        if(k.eq.1) j= iNa  ! from a larger one
-        if(k.eq.2) j= iCl
-!
-!* Recycling from top -> bottom compartments
-!
-        do l= 1,np+nq  !npqr
-        rr= sqrt((xg(i)-xg(l))**2 +(yg(i)-yg(l))**2 +(zg(i)-zg(l))**2)
-!
-        if(i.eq.l) go to 210            
-        if(rr.lt.ag(i)+ag(l)) go to 210 
-  210   continue
-        end do
-!
-!  At the first time step, ntop(), nbot() are recoded
-        ntop(1)= ntop(1) -1
-        nbot(1)= nbot(1) +1
-        end do
-!
-        if(io_pe.eq.1) then
-          OPEN (unit=11,file=praefixc//'.06'//suffix2,             &
-                status='unknown',position='append',form='formatted')
-!
-          write(11,*) '(1) At it=1, k,ntop,nbot=',k,ntop(1),nbot(1)
-          close(11)
-        end if
-!
-      else if(k.eq.2) then
-!
-        do i= np+1,nCLp
-        if(zg(i).lt.-0.5d0*Hpore) then
-          if(ch(i).gt.0) iNa= i  ! select
-          if(ch(i).lt.0) iCl= i
-        end if
-!
-        if(k.eq.1) j= iNa
-        if(k.eq.2) j= iCl
-!
-!* Recycling from bottom -> top compartments.
-!
-        do l= 1,np+nq  !npqr
-        rr= sqrt((xg(i)-xg(l))**2 +(yg(i)-yg(l))**2 +(zg(i)-zg(l))**2)
-!
-        if(i.eq.l) go to 410
-        if(rr.lt.ag(i)+ag(l)) go to 410
-  410   continue
-        end do
-!
-        ntop(2)= ntop(2) +1
-        nbot(2)= nbot(2) -1
-        end do
-!
-        if(io_pe.eq.1) then
-          OPEN (unit=11,file=praefixc//'.06'//suffix2,             &
-                status='unknown',position='append',form='formatted')
-!
-          write(11,*) '(2) At it=1, k,ntop,nbot=',k,ntop(2),nbot(2)
-          close(11)
-        end if
-!
-      end if
-      end do
-!
-      return
-      end subroutine recycle_ions 
-!
-!
-!------------------------------------------------------------------
-      subroutine cell_ions (xg,yg,zg,vz,ch,np,nq,nCLp,is)
-!------------------------------------------------------------------
-      use, intrinsic :: iso_c_binding 
-      implicit none
-!
-      include    'paramAPGa.h'
-!
-      real(C_DOUBLE),dimension(npqr0) :: xg,yg,zg,vz,ch
-      integer(C_INT) np,nq,nCLp,is,i,ifqq
-!
-      real(C_DOUBLE) qfrac,Rpore,Hpore,Zci,Zcp,Zcn
-      common/cntion/ qfrac,Rpore,Hpore,Zci,Zcp,Zcn,ifqq
-!
-      real(C_float)  q1d,q1p,q1u,q2d,q2p,q2u,q3d,q3p,q3u,Hpore2
-      real(C_float),dimension(ntmax) :: qzd,qzu,cjz
-      real(C_float),dimension(ntmax,3) :: qtop,qpor,qbot
-      common/ionpop/ qzd,qzu,cjz
-      common/ionpp2/ qtop,qpor,qbot
-!
-      real(C_float),dimension(npq0) :: z0
-      real(C_float),dimension(ntmax) :: cj1,cj2
-      common/ionpp3/ z0
-      common/ionpp4/ cj1,cj2
-!
-      q1d= 0
-      q1u= 0
-      q1p= 0
-      q2d= 0
-      q2u= 0
-      q2p= 0
-      q3d= 0
-      q3u= 0
-      q3p= 0
-!
-      Hpore2= 0.5*Hpore
-!
-!* Salt ions
-!
-      do i= np+1,nCLp
-      if(ch(i).gt.0.) then
-        if(zg(i).lt.-Hpore2) then
-            q1d= q1d +ch(i)  ! lower cell
-!
-        else
-          if(zg(i).gt. Hpore2) then
-            q1u= q1u +ch(i)  ! upper cell
-          else
-            q1p= q1p +ch(i)  ! pore
-          end if
-        end if
-      end if
-!
-      if(ch(i).lt.0.) then
-        if(zg(i).lt.-Hpore2) then
-            q2d= q2d +ch(i)  ! lower cell
-!
-        else
-          if(zg(i).gt. Hpore2) then
-            q2u= q2u +ch(i)  ! upper cell
-          else
-            q2p= q2p +ch(i)  ! pore
-          end if
-        end if
-      end if
-      end do
-!
-!* DNA (polyelectrolyte)
-!
-      do i= 1,np
-      if(ch(i).lt.0.) then
-        if(zg(i).lt.-Hpore2) then
-            q3d= q3d +ch(i)  ! lower cell
-!
-        else
-          if(zg(i).gt. Hpore2) then
-            q3u= q3u +ch(i)  ! upper cell
-          else
-            q3p= q3p +ch(i)  ! pore
-          end if
-        end if
-      end if
-      end do
-!
-      qtop(is,1)=  q1u
-      qtop(is,2)= -q2u
-      qtop(is,3)= -q3u
-      qpor(is,1)=  q1p
-      qpor(is,2)= -q2p
-      qpor(is,3)= -q3p
-      qbot(is,1)=  q1d
-      qbot(is,2)= -q2d
-      qbot(is,3)= -q3d
-!
-      qzd(is)= q1d +q2d
-      qzu(is)= q1u +q2u
-!
-      cjz(is)= cj1(is) +cj2(is) 
-!
-      return
-      end subroutine cell_ions 
 !
 !
 !  Read /write configuration data.
@@ -7136,15 +6841,8 @@
       common/ehist/ ekin,ppot,ekn2,etot,z_pe,vzpe,vzco,vzct, &
                     vdtm,vpor,time,ecr,elj,espr
 !
-      real(C_float),dimension(ntmax) :: qzd,qzu,cjz
-      real(C_float),dimension(ntmax,3) :: qtop,qpor,qbot
-      common/ionpop/ qzd,qzu,cjz
-      common/ionpp2/ qtop,qpor,qbot
-!
-      real(C_float),dimension(npq0) :: z0
-      real(C_float),dimension(ntmax) :: cj1,cj2
+      real(C_float),dimension(npqr0) :: z0
       common/ionpp3/ z0
-      common/ionpp4/ cj1,cj2
 !
       integer(C_INT) io_pe
       common/sub_proc/ io_pe
@@ -7182,18 +6880,6 @@
        elj(k1)= ( elj(k-1) + elj(k))/2
       espr(k1)= (espr(k-1) +espr(k))/2
 !
-       qzd(k1)= ( qzd(k-1) + qzd(k))/2
-       qzu(k1)= ( qzu(k-1) + qzu(k))/2
-       cjz(k1)= ( cjz(k-1) + cjz(k))/2
-!
-      do j= 1,3
-      qtop(k1,j)= (qtop(k-1,j) +qtop(k,j))/2
-      qpor(k1,j)= (qpor(k-1,j) +qpor(k,j))/2
-      qbot(k1,j)= (qbot(k-1,j) +qbot(k,j))/2
-      end do
-!
-       cj1(k1)= ( cj1(k-1) + cj1(k))/2
-       cj2(k1)= ( cj2(k-1) + cj2(k))/2
       end if
       end do
 !
@@ -7228,11 +6914,6 @@
                     vdtm,vpor,time,ecr,elj,espr
       common/ehist/ ekin,ppot,ekn2,etot,z_pe,vzpe,vzco,vzct, &
                     vdtm,vpor,time,ecr,elj,espr
-!
-      real(C_float),dimension(ntmax) :: qzd,qzu,cjz
-      real(C_float),dimension(ntmax,3) :: qtop,qpor,qbot
-      common/ionpop/ qzd,qzu,cjz
-      common/ionpp2/ qtop,qpor,qbot
 !
       real(C_float)  t,t00,xp_leng
       integer(C_INT) it,is,ILN,ILG,nsg,nseg
@@ -7286,31 +6967,6 @@
                  '  time  ',8,'        ',8)
 !     call lplot1 (3,6,is,time,espr,e3max,e3min,iln,'e_elas  ',8, &
 !                '  time  ',8,'        ',8)
-!------------------------
-      call chart
-!------------------------
-!
-      call lplmax ( cjz, cjz1, cjz2,is)
-      call lplmax ( qzd, qz11, qz12,is)
-      call lplmax ( qzu, qz21, qz22,is)
-!
-      call lplmax (vzpe,vzpe1,vzpe2,is)
-      call lplmax (vzct,vzct1,vzct2,is)
-      call lplmax (vzco,vzco1,vzco2,is)
-!
-      call lplot1 (2,4,is,time, cjz, cjz1, cjz2,iln,'sum.jz  ',8, &
-                 '        ',8,'        ',8)
-      call lplot1 (2,5,is,time, qzu, qz21, qz22,iln,'qz(top) ',8, &
-                 '        ',8,'        ',8)
-      call lplot1 (2,6,is,time, qzd, qz11, qz12,iln,'qz(bot) ',8, &
-                 '        ',8,'        ',8)
-!
-      call lplot1 (3,4,is,time,vzpe,vzpe1,vzpe2,iln,'vz(pe)  ',8, &
-                 '        ',8,'        ',8)
-      call lplot1 (3,5,is,time,vzct,vzct1,vzct2,iln,'vz(cnti)',8, &
-                 '        ',8,'        ',8)
-      call lplot1 (3,6,is,time,vzco,vzco1,vzco2,iln,'vz(coio)',8, &
-                 '  time  ',8,'        ',8)
 !------------------------
       call chart
 !------------------------
