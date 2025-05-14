@@ -114,7 +114,7 @@ the configure file CIMV13_config.START3 (ca. 5,100 lines)
 
 (3) Non-periodic (bound) system, DNA transport
 
-* @nanoporAPGa.f03 (ca. 9,900 lines with graphics), with 
+* @nanoporAPGa.f03 (ca. 9,500 lines with graphics), with 
 the parameter file paramAPGa.h and the configuration file PORV21_config.start3. 
 
 
