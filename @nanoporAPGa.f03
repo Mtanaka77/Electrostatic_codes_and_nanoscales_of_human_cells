@@ -4496,9 +4496,9 @@
       end if
 !
 !
-      kl= xleng/(3.0d0/a_unit)
-      km= yleng/(3.0d0/a_unit)
-      kn= zleng/(3.0d0/a_unit)
+      kl= xleng/(2.8d0/a_unit)
+      km= yleng/(2.8d0/a_unit)
+      kn= zleng/(2.8d0/a_unit)
 !
       if(io_pe.eq.1) then
         OPEN (unit=11,file=praefixc//'.06'//suffix2,             &
