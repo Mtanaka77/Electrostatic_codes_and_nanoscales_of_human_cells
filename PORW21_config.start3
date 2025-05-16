@@ -19,11 +19,11 @@
 # Valenz der Gegenionen.......... Zp..:            1
 # Valenz der negativen Salzionen. Zn..:           -1
 # Teilchenzahl (including salt).......:          300
-# Box size: xleng...........29..8.1 nm:   81.2000000000000000
-# Box size: yleng...........29..8.1 nm:   81.2000000000000000
-# Box size: zleng...........60.16.8 nm:  168.0000000000000000
-# Potential of the top plate.Vtop.(kT):    1.5000000000000000
-#           the bottom plate..Vbottom.:   -1.5000000000000000
+# Box size: xleng...........27x.8.1 nm:   81.2000000000000000
+# Box size: yleng...........27x.8.1 nm:   81.2000000000000000
+# Box size: zleng...........56x16.8 nm:  168.0000000000000000
+# Potential of the top plate.Vtop.(kT):    0.7500000000000000
+#           the bottom plate..Vbottom.:   -0.7500000000000000
 # Boundary = 0 (closed), 1 (periodic).:            0
 # ifLJ    for attractive LJ.(cut).....:            1
 # ifrgrod for existing rod............:            0
