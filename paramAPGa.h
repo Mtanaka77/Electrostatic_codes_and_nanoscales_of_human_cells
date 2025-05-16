@@ -20,7 +20,7 @@
       parameter (suffix2='3a',suffix1='3a',suffix0='3',kstart=0)
 !     parameter (suffix2='3b',suffix1='3a',suffix0='3',kstart=1) ! for restart
 !
-      parameter (np0=50,nq0=300,nr0=15000)  ! kl,km,kn=27x27x57
+      parameter (np0=50,nq0=300,nr0=29000)  ! kl,km,kn=27x27x57
       parameter (npq0=np0+nq0,npqr0=np0+nq0+nr0)
       parameter (npio=np0+nq0)
 !
