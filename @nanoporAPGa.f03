@@ -39,8 +39,8 @@
 !*            L_s                                                *
 !*                                                               *
 !*  System units:                                                *
-!*     length...... a= 1.5 Ang= 1.5 10^-8 cm                     *
-!*     mass........ 1 amu= 1.67 10^-24 g                         *
+!*     length...... a= 1.4 Ang= 1.4 10^-8 cm, diameter 2.8 Ang   *
+!*     mass........ m= 18*1.67 10^-24 g                          *
 !*     time........ t= 0.01 ps= 10^-14 s                         *
 !*     charge...... 4.8 10^-10 esu= 1.60 10^-19 C                *
 !*          with (1/2)M*(a/tau)**2= kT                           *
@@ -254,8 +254,7 @@
       integer(C_INT) np00,nnb,ist1,ist2
       common/pbase/  np00,nnb,ist1(100),ist2(100)
 !
-      real(C_DOUBLE) a_unit,w_unit,diel2,dielpr,aa
-      common/parmd/  a_unit,w_unit
+      real(C_DOUBLE) diel2,dielpr,aa
       common/dielec/ diel2,dielpr,aa
       common/ewald2/ nCLp     ! ip0, paramAPGa.h L.4920
 !
@@ -317,11 +316,8 @@
 !
 !  Water particles.
 ! ++++++++++++++++++++++++++++++++++++++++++++
-      a_unit = 1.4d0       ! Angstrom
-      w_unit = 1.d0        ! Hydrogen mass
-!
-      wwat = 18.d0/w_unit  ! Water mass
-      awat = 1.4d0/a_unit  !  radius
+      wwat = 18.d0         ! Water mass
+      awat = 1.4d0         !  radius
 ! ++++++++++++++++++++++++++++++++++++++++++++
 !
 !*  np,nq,nseg :  defined in /READ_CONF/.
@@ -331,7 +327,7 @@
 !
 !* Bjerrum = Gamma aLJ*kT = e**2/epsLJ  
       Temp= 1.d0   ! T= 300 K
-      Gamma= Bjerrum/(a_unit*Temp) 
+      Gamma= Bjerrum/(awat*Temp) 
 !
       istop = 0    ! signal for termination: istop= 1
 !-----------------------------------------------------
@@ -520,8 +516,8 @@
         OPEN (unit=11,file=praefixc//'.06'//suffix2,             &
               status='unknown',position='append',form='formatted')
 !
-        write(11,640) Gamma,a_unit
-  640   format('* Gamma, a_unit=',2f7.3)
+        write(11,640) Gamma,awat
+  640   format('* Gamma, awat=',2f7.3)
         close(11)
       end if
 !
@@ -705,8 +701,6 @@
       real(C_DOUBLE),dimension(npq0) ::  fcx,fcy,fcz,fgx,fgy,fgz, &
                                          vxc,vyc,vzc
       real(C_DOUBLE),dimension(np0)  ::  ftx,fty,ftz,fpx,fpy,fpz
-      real(C_DOUBLE) a_unit,w_unit
-      common/parmd/  a_unit,w_unit
 !
       integer(C_INT) ipar,np,nq,nCLp,nr,npqr
       integer(C_INT) io_pe,cnt_recv,disp_recv,i0,i2,i3,i4, &
@@ -1189,7 +1183,7 @@
       end if
 !
       Temp= 1.d0
-      Gamma= Bjerrum/(a_unit*Temp)
+      Gamma= Bjerrum/(awat*Temp) 
 !
 !*****************************
 !*  Step 2: Velocity update  *
@@ -2332,9 +2326,8 @@
 !    
       real(C_DOUBLE),dimension(npqr0) :: xg,yg,zg,ch,ag
       real(C_DOUBLE),dimension(np0) ::   fpx,fpy,fpz
-      real(C_DOUBLE) a_unit,w_unit,xleng,yleng,zleng,  &
+      real(C_DOUBLE) xleng,yleng,zleng,  &
                      fgm,fgm0,rr,rrmax
-      common/parmd/  a_unit,w_unit
       common/parm8/  xleng,yleng,zleng
 !
       integer(C_INT) nsg,nseg,np
@@ -2378,7 +2371,7 @@
       do i= ia,ib       !<- ia--ib
       fgm= fgm0
 !     rr= sqrt((xg(i)-xg(i+1))**2 +(yg(i)-yg(i+1))**2 +(zg(i)-zg(i+1))**2)
-!     rrmax= bond_ps/a_unit 
+!     rrmax= bond_ps
 !     fgm= fgm0*exp(-(rr/rrmax)**2) 
 !
       if(i.eq.ia) then
@@ -2890,8 +2883,7 @@
       real(C_DOUBLE) pi,dt,axi,Gamma,rbmax,vth,tmax,tmin, &
                      xmax,ymax,zmax,xmin,ymin,zmin,       &
                      xleng,yleng,zleng,qfrac,Rpore,Hpore, &
-                     Zci,Zcp,Zcn,acount,acoion,           &
-                     a_unit,w_unit   
+                     Zci,Zcp,Zcn,acount,acoion
       real(C_float)  phi,tht,dtwr1,dtwr2,dtwr3
       integer(C_INT) ifqq
 !
@@ -2902,7 +2894,6 @@
       common/parm8/  xleng,yleng,zleng
       common/cntion/ qfrac,Rpore,Hpore,Zci,Zcp,Zcn,ifqq
       common/ionsiz/ acount,acoion   
-      common/parmd/  a_unit,w_unit
 !
       integer(C_INT) ifLJ,ifrgrod,ifrodco
       common/parmlj2/ ifLJ
@@ -2964,8 +2955,6 @@
       read(08,'(a40,f20.0)') text1,Rpore    ! Radius of a nanopore  5.4 Ang
       read(08,'(a40,f20.0)') text1,Hpore    ! Height of a nanopore 56.0 Ang
       read(08,'(a40,f20.0)') text1,diel2    ! Dielectric constant of membrane diel2=2
-      Rpore = Rpore/a_unit  !!!
-      Hpore = Hpore/a_unit  !!!
 !
       read(08,'(a40,i12)') text1,n_p        ! Zahl der Polymere 0,1 or 2
       read(08,'(a40,i12)') text1,n_lp       ! Zahl der Ladungen pro Polymer 24
@@ -2975,9 +2964,6 @@
       read(08,'(a40,f20.0)') text1,rod_leng ! length of a rod  rod_leng= 42.0d0
       read(08,'(a40,f20.0)') text1,Rhelix   ! Radius for rod charges Rhelix=4.9Ang 
       read(08,'(a40,f20.0)') text1,dielpr   ! Dielectric constant of water dielpr=79 
-      Rmac     = Rmac/a_unit      !!!
-      rod_leng = rod_leng/a_unit  !!!
-      Rhelix   = Rhelix/a_unit    !!!
 !
       Ladabst= 1
       qfrac= 0.d0 
@@ -3003,9 +2989,6 @@
       read(08,'(a40,f20.0)') text1,xleng    ! Box size: X  81 Ang
       read(08,'(a40,f20.0)') text1,yleng    ! Box size: Y
       read(08,'(a40,f20.0)') text1,zleng    ! Box size: Z 168 Ang
-      xleng = xleng/a_unit  !!!
-      yleng = yleng/a_unit  !!!
-      zleng = zleng/a_unit  !!!
 !
 !  -----------------------
 !   Symmetric of xmax and xmin 
@@ -3058,8 +3041,6 @@
       read(08,'(a40,f20.0)') text1,rcut_clf ! Ortsraum-Cutoff. = 7 Ang 
       read(08,'(a40,f20.0)') text1,acount   ! Size of counterion 1.33 Ang 0.95
       read(08,'(a40,f20.0)') text1,acoion   ! Size of coion      1.82 Ang  1.3
-      acount  = acount  /a_unit  !!!
-      acoion  = acoion  /a_unit  !!!
 !
 !!      rcutlj  = no dimension
       read(08,'(a40,f20.0)') text1,rcutlj   ! LJ-Cutoff, no dimension=1.122
@@ -3071,11 +3052,11 @@
         OPEN (unit=11,file=praefixc//'.06'//suffix2,             &
               status='unknown',position='append',form='formatted')
 !
-        write(11,*) 'xleng,zleng (Ang)=',a_unit*xleng,a_unit*zleng
-        write(11,*) 'Rpore,Hpore (Ang)=',a_unit*Rpore,a_unit*Hpore
+        write(11,*) 'xleng,zleng (Ang)=',xleng,zleng
+        write(11,*) 'Rpore,Hpore (Ang)=',Rpore,Hpore
         write(11,*) 'diel2=',diel2
-        write(11,*) 'Rmac,rod_leng (Ang)=',a_unit*Rmac,a_unit*rod_leng
-        write(11,*) 'acount,acoion (Ang)=',a_unit*acount,a_unit*acoion
+        write(11,*) 'Rmac,rod_leng (Ang)=',Rmac,rod_leng
+        write(11,*) 'acount,acoion (Ang)=',acount,acoion
         write(11,*) 'rcut_clf=',rcut_clf
         write(11,*) 'Bjerrum (Ang)=',Bjerrum
 !
@@ -3386,7 +3367,7 @@
                      vth,tmax,                       &
                      xmax,ymax,zmax,xmin,ymin,zmin,  &
                      xleng,yleng,zleng,hhl,hhm,hhn,  &
-                     a_unit,w_unit,ww1,ww2,ddz,      &
+                     ww1,ww2,ddz,      &
                      KJ,KCal,mol,kbT,ranff   
 !
       real(C_DOUBLE) dgaus2,vmax1,vmax2
@@ -3401,7 +3382,6 @@
       common/parm4/ phi,tht,dtwr1,dtwr2,dtwr3
       common/parm8/ xleng,yleng,zleng
       common/psegm/ nsg(30),nseg
-      common/parmd/ a_unit,w_unit
 !
       real(C_DOUBLE) qfrac,Rpore,Hpore,Zci,Zcp,Zcn,Hpore2, &
                      wwat,awat,acount,acoion
@@ -3893,15 +3873,15 @@
         ch(i)= -1.d0                 ! PO_4
         if(ifbase.eq.2) ch(i)= 0.d0  !  neutral chain 
 !
-        am(i)=  94.d0/w_unit
-        ag(i)=  a_phos/(2*a_unit)    ! Diameter= 4.1 Ang
+        am(i)=  94.d0/wwat
+        ag(i)=  a_phos/2     ! Diameter= 4.1 Ang
         ep(i)=  epsLJ
       else
 !            ag(i)= 4.1/(2*1.5)= 1.37
 !
         ch(i)= 0.d0                  ! Sugar ring
-        am(i)= 218.d0/w_unit
-        ag(i)=  a_sugar/(2*a_unit)   ! Diameter= 3.6 Ang
+        am(i)= 218.d0/wwat
+        ag(i)=  a_sugar/2    ! Diameter= 3.6 Ang
         ep(i)=  epsLJ
       end if
 !
@@ -4117,8 +4097,8 @@
       nnb = nnb +1
 !
       ch(np00 +nnb)= 0.d0                ! base: AGCT,heavy,LJ
-      am(np00 +nnb)= 130.d0/w_unit 
-      ag(np00 +nnb)= a_base1/(2*a_unit)  ! Diameter
+      am(np00 +nnb)= 130.d0/wwat 
+      ag(np00 +nnb)= a_base1/2   ! Diameter
       ep(np00 +nnb)= epsLJ
 !
       ist1(nnb)= i
@@ -4245,24 +4225,24 @@
 !     ww1  = 38.d0  ! K,  2.27 Ang, K+ 2.98 Ang
 !     ww2  = 34.d0  ! Cl, 1.75 Ang, Cl- 1.81 Ang
           ch(i)= Zcp                      ! due to PE=-12; that is i=37-48
-          am(i)= 38.d0/w_unit
-          ag(i)= 2.98/a_unit ! acount/a_unit 
+          am(i)= 38.d0/wwat
+          ag(i)= 2.98 ! acount
           ep(i)= 4.34 ! eV  eps_K
 !
       else if(i.ge.np+Nzi+1 .and. i.le.np+Nzi+nq/2) then
           n3= n3 +1
 !
           ch(i)=  Zcp
-          am(i)= 38.d0/w_unit
-          ag(i)= 2.98/a_unit ! acount/a_unit
+          am(i)= 38.d0/wwat
+          ag(i)= 2.98 ! acount
           ep(i)= 4.34 ! eV
 !
       else if(i.ge.np+Nzi+nq/2+1 .and. i.le.np+nq) then
           n4= n4 +1
 !
           ch(i)=  Zcn
-          am(i)= 34.d0/w_unit
-          ag(i)= 1.81/a_unit ! acoion/a_unit 
+          am(i)= 34.d0/wwat
+          ag(i)= 1.81 ! acoion
           ep(i)= eps_Cl
       end if
       end do
@@ -4277,7 +4257,7 @@
               status='unknown',position='append',form='formatted')
 !
         write(11,350) q_PE,Rpore,Hpore,Zcp,Zcn,cci,n1,n2
-        write(11,351) a_unit*acount,a_unit*acoion
+        write(11,351) acount,acoion
         write(11,352) epsLJ,eps_K,eps_Cl
         write(11,*)
   350   format(' q_PE, Rpore(radius), Hpore(height) =',3f7.2,/,  &
@@ -4440,13 +4420,13 @@
 !     ww1  = 38.d0  ! K,  2.27 Ang, K+ 2.98 Ang
 !     ww2  = 34.d0  ! Cl, 1.75 Ang, Cl- 1.81 Ang
       ch(nn3)=  Zcp
-      am(nn3)= 38.d0/w_unit
-      ag(nn3)= acount/a_unit
+      am(nn3)= 38.d0/wwat
+      ag(nn3)= acount
       ep(nn3)= eps_K
 !
       ch(nn4)=  Zcn
-      am(nn4)= 34.d0/w_unit
-      ag(nn4)= acoion/a_unit 
+      am(nn4)= 34.d0/wwat
+      ag(nn4)= acoion
       ep(nn4)= eps_Cl
       end do
 !
@@ -4496,9 +4476,9 @@
       end if
 !
 !
-      kl= xleng/(2.8d0/a_unit)
-      km= yleng/(2.8d0/a_unit)
-      kn= zleng/(2.8d0/a_unit)
+      kl= xleng/2.8d0
+      km= yleng/2.8d0
+      kn= zleng/2.8d0
 !
       if(io_pe.eq.1) then
         OPEN (unit=11,file=praefixc//'.06'//suffix2,             &
@@ -4521,7 +4501,7 @@
       y0= ymin + hhm*(j -0.5)
       z0= zmin + hhn*(k -0.5)      !<- (-c,+c)
 !
-      Hpore2= 0.5d0*Hpore ! +awat
+      Hpore2= 0.5d0*Hpore 
 !
       if(z0.lt.zmin .or. z0.gt.zmax) go to 530
 !
@@ -4583,7 +4563,7 @@
 !***************************************************
       nCLp = np +nq      ! PE+AGCT, Counter/Coions
 !                   
-      npqr= ll           ! ll: the total particles 
+      npqr= ll           ! the total particles 
       nr  = npqr - nCLp  ! Water
 !***************************************************
 !
@@ -7031,8 +7011,8 @@
       real(C_DOUBLE) xleng,yleng,zleng
       common/parm8/  xleng,yleng,zleng
 !
-      real(C_DOUBLE) a_unit,w_unit
-      common/parmd/  a_unit,w_unit
+      real(C_DOUBLE) awat,wwat
+      common/parmd/  awat,wwat
       logical        first_ppl
 !
       fsize= 8.
@@ -7079,12 +7059,12 @@
       call symbol (15.9,1.0,hh,'t=', 0.,2)
       call number (999.,1.0,hh,t,0.,7)
 !
-      Rpore4= a_unit*Rpore
-      Hpore4= a_unit*Hpore
+      Rpore4= Rpore
+      Hpore4= Hpore
       Zcp4  = Zcp
       Zcn4  = Zcn
-      xleng4 = a_unit*xleng
-      zleng4 = a_unit*zleng
+      xleng4 = xleng
+      zleng4 = zleng
 !
       call symbol ( 0.5,16.0,hh,'Rpore=', 0.,6)
       call number ( 2.5,16.0,hh,Rpore4,0.,5)
@@ -7095,7 +7075,7 @@
       call symbol (16.0,16.0,hh,'xleng=',0.,6)
       call number (18.0,16.0,hh,xleng4,0.,5)
 !
-      Rmac4 = a_unit*Rmac
+      Rmac4 = Rmac
       call symbol ( 0.5,15.3,hh,'Hpore=', 0.,6)
       call number ( 2.5,15.3,hh,Hpore4,0.,5)
       call symbol ( 5.5,15.3,hh,'Zcn=', 0.,4)
@@ -7109,7 +7089,7 @@
       Vbottom4= Vbottom
       Gamma4= Gamma
       diel24= diel2
-      rod_leng4= a_unit*rod_leng
+      rod_leng4= rod_leng
 !
       call symbol ( 0.5,14.6,hh,'V_tb=', 0.,5)
       call number ( 2.5,14.6,hh,Vtop4-Vbottom4,0.,5)
