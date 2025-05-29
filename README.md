@@ -100,10 +100,9 @@ In passing about the transvers (x,y) directions, the closed boundary condition m
 ### Coulomb and P3M (periodic) or Poisson (non periodic) simulation codes ###
 
 The Coulomb forces in the periodic boundary condition is used to study water (Ref. 9, "vitroid").
-The short-range and long-range forces in periodic p3m_perform routines in a large system, and 
-also the non-periodic system are used to study the charge inversion and the DNA tranport phenomena 
-at high accuracy. 
-The simulation codes of this directory have recently been updated.
+In this directory, the short-range and long-range Coulomb forces in periodic p3m_perform routines 
+are used in a large system in (2), and the non-periodic system is used in (3), both at high accuracy.
+The simulation codes of this directory are recently updated.
 
 (1) Periodic system, prototype
 
