@@ -245,9 +245,9 @@
                       itermax,filtx,filty,filtz
       common/cresm3/  ipr(10),rpr(10)
 !
-      real(C_DOUBLE)  rcut_clf,rcutlj,rcutlj2,r_fene,k_fene, &
+      real(C_DOUBLE)  rcut_clf,rcutlj,r_fene,k_fene, &
                       r_fene2,Bjerrum
-      common /confdatar/ rcut_clf,rcutlj,rcutlj2,r_fene
+      common /confdatar/ rcut_clf,rcutlj,r_fene
       common /fenepara/  k_fene,r_fene2
       common /elsta/     Bjerrum
 !
@@ -780,9 +780,9 @@
       real(C_DOUBLE)  t_pe,t_poisn
       common/timings/ t_pe,t_poisn
 !
-      real(C_DOUBLE)  rcut_clf,rcutlj,rcutlj2,r_fene,Bjerrum,aLJ,qfrac, &
+      real(C_DOUBLE)  rcut_clf,rcutlj,r_fene,Bjerrum,aLJ,qfrac, &
                       Rpore,Hpore,Zci,Zcp,Zcn,wwat,awat
-      common /confdatar/ rcut_clf,rcutlj,rcutlj2,r_fene
+      common /confdatar/ rcut_clf,rcutlj,r_fene
       common /elsta/ Bjerrum
       common/shrgf/  aLJ
       common/cntion/ qfrac,Rpore,Hpore,Zci,Zcp,Zcn,ifqq
@@ -1243,9 +1243,6 @@
 !    pot = pot_q + pot_g
 !        pot_q: direct sum of coulomb forces
 !        pot_g: geometry correction (boundary)
-!  then,  
-!     div*(eps*grad pot_g) = -4*pi*rho - div*(eps*grad pot_q)
-!     where  pot_p = sum q/(eps*r) defined on grids
 !                     
 ! ------------------------------------
       if(t8.lt.t_poisn) go to 370 
@@ -1264,8 +1261,7 @@
         do k= 1,mz-2   ! inner points i= 1,mx-2
         do j= 1,my-2
         do i= 1,mx-2
-        rho(i,j,k)= -4.d0*pi*Gamma*rho(i,j,k)/ &
-                                   (dec2(i,j,k)*(ghx(i)*ghy(j)*ghz(k)))
+        rho(i,j,k)= -4.d0*pi*Gamma*rho(i,j,k)/dec2(i,j,k)
         pot(i,j,k)= 1.d-3*(ranff(0.d0) -0.5)  ! random seed
         end do 
         end do
@@ -1400,7 +1396,7 @@
       do i= nCLp+1,npqr
       dtm= dt/am(i)
 !
-      vxs(i)= vxs(i) +fsx(i)*dtm  !<- water particles
+      vxs(i)= vxs(i) +fsx(i)*dtm  !<- water (ball) 
       vys(i)= vys(i) +fsy(i)*dtm
       vzs(i)= vzs(i) +fsz(i)*dtm
       end do
@@ -1451,7 +1447,7 @@
       end do
 !
       do i= nCLp+1,npqr
-      vxs(i)= vx(i)          !<- Water particles
+      vxs(i)= vx(i)          !<- Water (ball)
       vys(i)= vy(i)
       vzs(i)= vz(i)
       end do
@@ -1640,8 +1636,7 @@
           do k= 0,mz-1
           do j= 0,my-1
           do i= 0,mx-1
-          rho(i,j,k)= -4.d0*pi*Gamma *rho(i,j,k)/(dec2(i,j,k)* &
-                                              (ghx(i)*ghy(j)*ghz(k)))
+          rho(i,j,k)= -4.d0*pi*Gamma *rho(i,j,k)/dec2(i,j,k)
           pot(i,j,k)= 1.d-3*( ranff(0.d0) -0.5)  ! random seed
           end do
           end do
@@ -2081,10 +2076,10 @@
       common/parm2/  pi,dt,axi,Gamma,rbmax,vth,tmax
       common/shrgf/  aLJ
 !
-      real(C_DOUBLE) rcut_clf,rcutlj2,rcutlj,r_fene, &
+      real(C_DOUBLE) rcut_clf,rcutlj,r_fene, &
                      eps_lj,addpot,                  &
                      e_c_s,e_c_pme,e_c_r,e_lj,e_elas
-      common /confdatar/ rcut_clf,rcutlj,rcutlj2,r_fene
+      common /confdatar/ rcut_clf,rcutlj,r_fene
       common /energy/ e_c_s,e_c_pme,e_c_r,e_lj,e_elas
 !
       real(C_DOUBLE) t8,cptot
@@ -2130,9 +2125,9 @@
 !*  Update interaction table in every << 5 steps.>> 
 !*---------------------------------------------------------
 !
+!     rcutlj <- common /confdatar/ rcut_clf,rcutlj,r_fene
       driwu2 = 1.25992104989487316476721060728d0  ! 2**(1/3)
       driwu  = sqrt(driwu2)
-      rcutlj = sqrt(rcutlj2) 
 !
       asc2 = (0.85d0*aLJ)**2
 !
@@ -2183,7 +2178,7 @@
 !
 !* Step 2.
 !
-         do i= i0(ipar),i2(ipar)
+         do i = i0(ipar),i2(ipar)
          nipl(i)= 0
          end do
 !
@@ -2867,7 +2862,7 @@
                      v_sp,v_sm,seed,Nzions,npartcls,           &
                      SubBox  
 !
-      real(C_DOUBLE) rcut_clf,rcutlj,rcutlj2,r_fene,     &
+      real(C_DOUBLE) rcut_clf,rcutlj,r_fene,     &
                      skin,skin2,rcut_clf2,rcps2,         &
                      k_fene,Bjerrum,r_fene2
       common /poly/    n_p,mpc,ladabst
@@ -2877,7 +2872,7 @@
       common /einles/ skin,skin2
 !
       common /confdatai/ n_lp,v_g,n_smol,v_sp,v_sm,seed
-      common /confdatar/ rcut_clf,rcutlj,rcutlj2,r_fene
+      common /confdatar/ rcut_clf,rcutlj,r_fene
       common /confdatas/ praefix
 !----------------------------------------------------------------
       real(C_DOUBLE) pi,dt,axi,Gamma,rbmax,vth,tmax,tmin, &
@@ -3078,8 +3073,8 @@
       integer(C_INT) ifbase,np,nq,npqr
       integer(C_INT) ifqq,mpc,ladabst,n_p,n_lp,v_g,n_smol, &
                      v_sp,v_sm,seed
-      real(C_DOUBLE) rcut_clf,rcutlj,rcutlj2,r_fene,   &
-                     rcut_clf2,rcps2,k_fene,skin,      &
+      real(C_DOUBLE) rcut_clf,rcutlj,r_fene,       &
+                     rcut_clf2,rcps2,k_fene,skin,  &
                      Bjerrum,r_fene2,skin2
       character   praefix*6
       logical     ende
@@ -3091,7 +3086,7 @@
       common /einles/ skin,skin2
 !
       common /confdatai/ n_lp,v_g,n_smol,v_sp,v_sm,seed
-      common /confdatar/ rcut_clf,rcutlj,rcutlj2,r_fene
+      common /confdatar/ rcut_clf,rcutlj,r_fene
       common /confdatas/ praefix
 !
       real(C_DOUBLE) qfrac,Rpore,Hpore,Zci,Zcp,Zcn
@@ -3205,7 +3200,7 @@
       common /fenepara/ k_fene,r_fene2
       common /confdatai/ n_lp,v_g,n_smol,v_sp,v_sm,seed
 
-      common /confdatar/ rcut_clf,rcutlj,rcutlj2,r_fene
+      common /confdatar/ rcut_clf,rcutlj,r_fene
       common /energy/ e_c_s,e_c_pme,e_c_r,e_lj,e_elas
       common /elsta/ Bjerrum
 !----------------------------------------------------------------
@@ -3390,9 +3385,9 @@
       common/ionsiz/ acount,acoion   
 !
       real(C_DOUBLE) pi2,q_PE,aLJ,cci,dnint,rr,x0,y0,z0, &
-                     rcut_clf,rcutlj,rcutlj2,r_fene
+                     rcut_clf,rcutlj,r_fene
       common/shrgf/ aLJ
-      common/confdatar/ rcut_clf,rcutlj,rcutlj2,r_fene
+      common/confdatar/ rcut_clf,rcutlj,r_fene
 !
       real(C_DOUBLE)fv,vv,dv
       common/gaus1/ fv(101),vv,dv
