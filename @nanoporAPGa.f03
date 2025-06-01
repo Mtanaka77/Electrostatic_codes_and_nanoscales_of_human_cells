@@ -1,4 +1,4 @@
-!************************************************** 2025/04/29 ***
+!************************************************** 2025/06/01 ***
 !*                                                               *
 !*   ## Electrostatic Molecular Dynamics for Living Cells ##     *
 !*     @nanoporAPG.f03 with the Coulomb and Poisson equation     *
@@ -7,9 +7,9 @@
 !*         Nature and Science Applications, Nagoya 464, Japan.   *
 !*   This code is permitted by GNU General Public License v3.0.  *
 !*                                                               *
-!*     The short-range Coulomb forces of /moldyn/, L.1325, and   *
+!*     The short-range Coulomb forces of /moldyn/, L.1220, and   *
 !*   the long-range electrostatic effects by Poisson equation,   *
-!*   L.1345-, are treated in this simulation code.               *
+!*   L.1275, are treated in this simulation code.                *
 !*                                                               *
 !*     This molecular dynamics simulation of nanoscale pores     *
 !*   in 3D electrostatic effects has been updated in April 2025. *
@@ -17,8 +17,8 @@
 !*   References:                                                 *
 !*   1) Y.Rabin and M.Tanaka, DNA in nanopores: Counterion cond- * 
 !*    ensation and..., Phys.Rev.Letters, vol.94, 148103 (2005).  *
-!*   2) M. Tanaka, https://github.com/Mtanaka77/                 *
-!*    Electrostatic_molecular_dynamics_of_living_human_cells     *
+!*   2) M.Tanaka, https://github.com/Mtanaka77/Electrostatic_    *
+!*    molecular_dynamics_of_living_human_cells, 2025, USA.       *
 !*                                                               *
 !*---------------------------------------------------------------*
 !*  >> Note: isize must be chosen such that the sub-box size     *
@@ -67,17 +67,16 @@
 !*   Program nanopore  MPI setup -> setups /Run_MD/ -> /moldyn/  *
 !*    param_APG.h (parameter), PORW21_config.start3 (config)     *     
 !*                                                               *
-!*   /moldyn/     Time cycles, Coulomb and EM fields, L.885-     *
-!*   /sht_forces/ Coulomb forces, L.1290, 1870-                  *
-!*   /LJ_forces/  Lennard-Jones potential, L.1295, 2120-         *
-!*   /sprmul/     Spring forces, L.1300, 2390-                   * 
-!*   /reflect_endpl/ Particles boundary, L.2770-                 *
+!*   /moldyn/     Time cycles, Coulomb and EM fields, L.685-     *
+!*   /sht_forces/ Coulomb forces and LJ potential, L.1220, 1790- *
+!*   /sprmul/     Spring forces, L.1230, 2530-                   * 
+!*   /reflect_endpl/ Particles boundary, L.1435, 2660-           *
 !*                                                               *
-!*   /init/       Setups from /RUN_MD/, L.3680-                  *
-!*   /poissn/     Poisson solver, L.5430-                        *
-!*   /emcof3/     EM forces, closed boundary, L.5560-            *
-!*     /bound_s/    for it > 1, L.6130                           * 
-!*   /cresmd/-/avmult/  Conjugate residual method, L.6660-       *
+!*   /init/       Setups from /RUN_MD/, L.3560-                  *
+!*   /poissn/     Poisson equation, L.5320-                      *
+!*   /emcof3/     EM forces, closed boundary, L.5450-            *
+!*     /bound_s/    for it > 1, L.5790                           * 
+!*   /cresmd/-/avmult/  Conjugate residual method, L.6560-       *
 !*    Graphics    /gopen/ (Adobe-2.0 postscript)                 *
 !*                                                               *
 !*** 2004/10/25 (Orig) **************************** 12/18/2006 ***
@@ -1883,9 +1882,8 @@
                        dox,doy,doz,doxc,doyc,dozc
       common/macroin1/ dox,doy,doz,doxc,doyc,dozc
 !*---------------------------------------------------------------
-! 
-!     rcut_clf= sqrt(rcut_clf2)
-!     rcutlj <- common /confdatar/ rcut_clf,rcutlj,r_fene
+!     rcut_clf= sqrt(rcut_clf2) <- from READ_CONF
+!     rcutlj <- common/confdatar/ rcut_clf,rcutlj, READ_CONF
 !
       driwu2 = 1.25992104989487316476721060728d0  ! 2**(1/3)
       driwu  = sqrt(driwu2)
@@ -1893,12 +1891,14 @@
       asc2 = (0.85d0*aLJ)**2
 !
 !*---------------------------------------------------------
-!*  Update interaction table in every 3-5 steps. 
+!*  Update interaction table in every 5 steps. 
 !*---------------------------------------------------------
 !
       itabl= t8/dt +0.1d0
       if(mod(itabl,5).eq.1) then
 !     ++++++++++++++++++++++++++
+!
+!* Step 0
 !
         do i= 1,nCLp      ! Clear the box register.
         rcutcl2(i)= (ag(i) * rcut_clf)**2 
@@ -1917,13 +1917,12 @@
         end do
         end do
 !
-!*---------------------------------------------------------
-!*  Update interaction table in every << 5 steps.>> 
-!*---------------------------------------------------------
-!
 !* Step 1.
-!    Note: Large macroions must be treated separately 
-!            (box method fails !!)
+! ------------------------------------------------
+!* Register all particles (include rod charges).
+! ------------------------------------------------
+!  Note: Large macroions must be treated separately 
+! 
 !     -----------------
          call Labels
 !     -----------------
@@ -1931,10 +1930,6 @@
          do k= 1,nc3
          ncel(k)= 0             !  Clear the cell register.
          end do
-!                               
-! ------------------------------------------------
-!* Register all particles (include rod charges).
-! ------------------------------------------------
 !
          do i = 1,npqr
          ibx(i) =  int(((xg(i) -xmin)/xleng)*isize + 1.0d0) &
@@ -2009,9 +2004,9 @@
 !*  ---------------------------------
       end if
 !
-!***************************
-!*  The Coulomb forces.    *
-!***************************
+!**********************************
+!* Step 4: The Coulomb forces.    *
+!**********************************
 !*  Round-robin partitioning is best for 'allreduce'
 !
       do i= ipar,nCLp,num_proc
@@ -2078,8 +2073,9 @@
         end if
       end if
 !
-!
-!* Step 3
+!*************************
+!* Step 5: LJ potential  *
+!*************************
 !
       do i = i0(ipar),i2(ipar) 
       do jj= 1,nipl(i) 
