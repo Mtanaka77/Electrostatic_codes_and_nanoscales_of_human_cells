@@ -104,16 +104,16 @@ In this directory, on the other hand, the short-range and long-range Coulomb for
 in periodic p3m_perform routines for a large system and high accuracy in (2), and also the non-periodic boundary 
 conditions are utilized in (3). The simulation codes of this directory are recently updated.
 
-[1] Periodic system, prototype
+[1] Periodic system, the prototype
 
 * @md3-para7.f03, with the parameter file paramE7.h (ca. 1,600 lines)
 
-[2] Periodic system, charge inversion
+[2] Periodic system, the charge inversion
 
 * @chginv3.f03, with the paramer file parm_inv13.h and 
 the configure file CIMV13_config.START3 (ca. 5,100 lines)
 
-[3] Non-periodic (bound) system, DNA transport
+[3] Non-periodic (bound) system, the transport of DNA molecule
 
 * @nanoporAPGa.f03 (ca. 9,500 lines with graphics), with 
 the parameter file paramAPGa.h and the configuration file PORV21_config.start3. 
