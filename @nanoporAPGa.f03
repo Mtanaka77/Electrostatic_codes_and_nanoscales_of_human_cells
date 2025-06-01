@@ -68,12 +68,12 @@
 !*    param_APG.h (parameter), PORW21_config.start3 (config)     *     
 !*                                                               *
 !*   /moldyn/     Time cycles, Coulomb and EM fields, L.685-     *
-!*   /sht_forces/ Coulomb forces and LJ potential, L.1220, 1790- *
+!*   /sht_forces/ Coulomb forces + LJ potential, L.1220, 1790-   *
 !*   /sprmul/     Spring forces, L.1230, 2530-                   * 
 !*   /reflect_endpl/ Particles boundary, L.1435, 2660-           *
 !*                                                               *
 !*   /init/       Setups from /RUN_MD/, L.3560-                  *
-!*   /poissn/     Poisson equation, L.5320-                      *
+!*   /poissn_eq/  Poisson equation, L.5320-                      *
 !*   /emcof3/     EM forces, closed boundary, L.5450-            *
 !*     /bound_s/    for it > 1, L.5790                           * 
 !*   /cresmd/-/avmult/  Conjugate residual method, L.6560-       *
@@ -1272,8 +1272,8 @@
 !  which occurs when rho() is large locally
 !
         ndim= 3
-        call poissn (rho,pot,ndim,itermax,iterp,ipar)
-!       +++++++++++++++++++++++++++++++++++++++++++++
+        call poissn_eq (rho,pot,ndim,itermax,iterp,ipar)
+!       +++++++++++++***++++++++++++++++++++++++++++++++
 !
 !       symp = -1.d0
 !       symp2=  1.d0
@@ -1638,10 +1638,10 @@
           end do
           end do
 !
-!* All PE must call /poissn/ (MPI wait!)
+!* All PE must call /poissn_eq/ (MPI wait!)
 !
           ndim= 3
-          call poissn (rho,pot,ndim,itermax,iterp,ipar)
+          call poissn_eq (rho,pot,ndim,itermax,iterp,ipar)
 !
           if(io_pe.eq.1) then
 !
@@ -5321,7 +5321,7 @@
 !*  The Poisson solver which uses /cressl/ or /bcgsts/ matrix solver   *
 !***********************************************************************
 !-----------------------------------------------------------------------
-      subroutine poissn (rho8,pot8,ndim,itrmax,iterp,ipar)
+      subroutine poissn_eq (rho8,pot8,ndim,itrmax,iterp,ipar)
 !-----------------------------------------------------------------------
 !***********************************************************************
 !*    << Poisson solver in 3-D : cresmd method >>                      *
@@ -5447,7 +5447,7 @@
 !     end if
 !
       return
-      end subroutine poissn 
+      end subroutine poissn_eq 
 !
 !
 !-----------------------------------------------------------------------
