@@ -62,19 +62,19 @@
 !*     The electrostatic coupling constant, Gamma=5 at T=300 K   *
 !*                                                               *
 !*****************************************************************
-!*  Main program and subroutines:                                *
+!*  [Main program and subroutines]                               *
 !*                                                               *
-!*   Program nanopore  MPI setup -> setups /Run_MD/ -> /moldyn/  *
+!*   Program /nanopore/ MPI setup -> setup /Run_MD/ -> /moldyn/  *
 !*    param_APG.h (parameter), PORW21_config.start3 (config)     *     
 !*                                                               *
-!*   /moldyn/     Time cycles, Coulomb and EM fields, L.685-     *
+!*   /moldyn/  Time cycles, Coulomb and EM fields, L.685-1780    *
 !*   /sht_forces/ Coulomb forces + LJ potential, L.1220, 1790-   *
 !*   /sprmul/     Spring forces, L.1230, 2530-                   * 
 !*   /reflect_endpl/ Particles boundary, L.1435, 2660-           *
 !*                                                               *
-!*   /init/       Setups from /RUN_MD/, L.3560-                  *
+!*   /init/    Setups called from /RUN_MD/, L.3560-              *
 !*   /poissn_eq/  Poisson equation, L.5320-                      *
-!*   /emcof3/     EM forces, closed boundary, L.5450-            *
+!*   /emcof3/     ES forces, closed boundary, L.5450-            *
 !*     /bound_s/    for it > 1, L.5790                           * 
 !*   /cresmd/-/avmult/  Conjugate residual method, L.6560-       *
 !*    Graphics    /gopen/ (Adobe-2.0 postscript)                 *
