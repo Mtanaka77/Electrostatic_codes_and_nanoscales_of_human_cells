@@ -39,7 +39,7 @@
 !*            L_s                                                *
 !*                                                               *
 !*  System units:                                                *
-!*     length...... a= 1.4 Ang= 1.4 10^-8 cm, diameter 2.8 Ang   *
+!*     length...... a= 1.0 Ang= 1.0 10^-8 cm                     *
 !*     mass........ m= 18*1.67 10^-24 g                          *
 !*     time........ t= 0.01 ps= 10^-14 s                         *
 !*     charge...... 4.8 10^-10 esu= 1.60 10^-19 C                *
@@ -79,7 +79,7 @@
 !*   /cresmd/-/avmult/  Conjugate residual method, L.6560-       *
 !*    Graphics    /gopen/ (Adobe-2.0 postscript)                 *
 !*                                                               *
-!*** 2004/10/25 (Orig) **************************** 12/18/2006 ***
+!*** 2004/10/25 *********************************** 12/18/2006 ***
 !*                                                               *
 !*  To get a free format of Fortan f90 or f03, convert f77       *
 !*  format into:                                                 *
