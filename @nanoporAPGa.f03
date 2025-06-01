@@ -1219,14 +1219,11 @@
         cl_first= 2
         call clocks (wtime1,size,cl_first)
 !
-      call sht_forces (xg,yg,zg,ch,ag,fcx,fcy,fcz,ipar, &
-                       np,nq,nCLp)
+      call sht_forces (xg,yg,zg,ch,am,ag,ep,fcx,fcy,fcz,  &
+                       fsx,fsy,fsz,ipar,np,nq,nCLp,npqr)
 !
         cl_first= 2
         call clocks (wtime2,size,cl_first)
-!
-      call LJ_forces (xg,yg,zg,ag,ep,fsx,fsy,fsz,ipar, &
-                      np,nq,nCLp,npqr)
 !
       call sprmul (xg,yg,zg,ch,ag,fpx,fpy,fpz,np)
 !
@@ -1791,8 +1788,8 @@
 !
 !
 !----------------------------------------------------------------
-      subroutine sht_forces (xg,yg,zg,ch,ag,fcx,fcy,fcz,ipar, &
-                             np,nq,nCLp)
+      subroutine sht_forces (xg,yg,zg,ch,am,ag,ep,fcx,fcy,fcz,  &
+                             fsx,fsy,fsz,ipar,np,nq,nCLp,npqr)
 !----------------------------------------------------------------
       use, intrinsic :: iso_c_binding 
       implicit  none
@@ -1800,9 +1797,11 @@
       include   'mpif.h'
       include   'paramAPGa.h'
 !
-      real(C_DOUBLE),dimension(npqr0) :: xg,yg,zg,ch,am,ag    
+      real(C_DOUBLE),dimension(npqr0) :: xg,yg,zg,ch,am,ag,ep,   &    
+                                         fsx,fsy,fsz,frx,fry,frz
       real(C_DOUBLE),dimension(npq0) ::  fcx,fcy,fcz,fdx,fdy,fdz 
-      integer(C_INT) ipar,np,nq,nCLp,istop,istp
+      integer(C_INT) ipar,np,nq,nCLp,npqr,istop,istp
+      common/abterm/ istop
 !
       real(C_DOUBLE) rcutcl2,rsq 
       real(C_DOUBLE) dx,dy,dz,r2,r,forceV,ff,f_cut,diel
@@ -1815,11 +1814,11 @@
       common/headr2/ time,t00,xp_leng
 !
       real(C_DOUBLE) pi,dt,axi,Gamma,rbmax,vth,tmax,       &
-                     rcut_clf2,rcps2,rcut_clf,unif1,unif2, &
+                     rcut_clf2,rcps2,unif1,unif2, &
                      e_c_s,e_c_pme,e_c_r,e_lj,e_elas
 !
-      integer(C_INT) i,j,k,l,itabl,ierror
-      integer(C_INT) io_pe
+      integer(C_INT) i,j,k,l,ibox,ibx(npqr0),itabl,neigh,  &
+                     ierror,io_pe
       common/sub_proc/ io_pe
 !-----------
       real(C_DOUBLE) gx,gy,gz,ghx,ghy,ghz,ghx2,ghy2,ghz2,  &
@@ -1837,9 +1836,61 @@
       common/parm2/  pi,dt,axi,Gamma,rbmax,vth,tmax
       common /cutoffel/ rcut_clf2,rcps2
       common /energy/   e_c_s,e_c_pme,e_c_r,e_lj,e_elas
+!
+!
+      integer(C_INT),dimension(30) :: i0,i2,cnt_recv,disp_recv
+      integer(C_INT) ifrodco,cnt_send,i00,jj
+      common/dat_typ0/ i0,i2,cnt_recv,disp_recv
+!
+      integer(C_INT) isize,isizeZ,isize2,isize4,nc3
+      parameter  (isize=12,isizeZ=24,nc3=isize**2*isizeZ)
+      parameter  (isize2=isize*isize,isize4=isize2+isize)
+!
+!                                         nbxs in paramAPGa.h
+      integer(C_INT)  ncel,lcel,nipl,lipl,ibind
+      common/LJ_list/ ncel(nc3), lcel(nbxs,nc3), &
+                      nipl(npqr0),lipl(nbxs,npqr0)
+      common /boxind/ ibind(27,nc3)
+!
+      real(C_DOUBLE) aLJ,asc2
+      common/shrgf/  aLJ
+!
+      real(C_DOUBLE) rcut_clf,rcutlj,r_fene,eps_lj,addpot
+      common /confdatar/ rcut_clf,rcutlj,r_fene
+!
+      real(C_DOUBLE) xmax,ymax,zmax,xmin,ymin,zmin, &
+                     xleng,yleng,zleng
+      real(C_float) phi,tht,dtwr1,dtwr2,dtwr3
+      common/parm3/ xmax,ymax,zmax,xmin,ymin,zmin
+      common/parm4/ phi,tht,dtwr1,dtwr2,dtwr3
+      common/parm8/ xleng,yleng,zleng
+!
+      real(C_DOUBLE) driwu,driwu2,rlj,rsi,snt, &
+                     ccel
+!
+      integer(C_INT) ifLJ
+      real(C_DOUBLE) rljcut,rljcut2
+      real(C_DOUBLE) epsLJ,eps_K,eps_Cl
+      common/parmlj/ epsLJ,eps_K,eps_Cl
+      common/parmlj2/ ifLJ
+!
+      real(C_DOUBLE) xgc,ygc,zgc,vxg,vyg,vzg,rod_leng,Rmac,Rhelix
+      integer(C_INT) n_rodp
+      common/macroion/ xgc,ygc,zgc,vxg,vyg,vzg,rod_leng,Rmac,Rhelix, &
+                       n_rodp
+!
+      real(C_DOUBLE),dimension(np0) :: &
+                       dox,doy,doz,doxc,doyc,dozc
+      common/macroin1/ dox,doy,doz,doxc,doyc,dozc
 !*---------------------------------------------------------------
- 
-      rcut_clf= sqrt(rcut_clf2)
+! 
+!     rcut_clf= sqrt(rcut_clf2)
+!     rcutlj <- common /confdatar/ rcut_clf,rcutlj,r_fene
+!
+      driwu2 = 1.25992104989487316476721060728d0  ! 2**(1/3)
+      driwu  = sqrt(driwu2)
+!
+      asc2 = (0.85d0*aLJ)**2
 !
 !*---------------------------------------------------------
 !*  Update interaction table in every 3-5 steps. 
@@ -1865,6 +1916,97 @@
         rsq(i,j) = dx**2 + dy**2 + dz**2
         end do
         end do
+!
+!*---------------------------------------------------------
+!*  Update interaction table in every << 5 steps.>> 
+!*---------------------------------------------------------
+!
+!* Step 1.
+!    Note: Large macroions must be treated separately 
+!            (box method fails !!)
+!     -----------------
+         call Labels
+!     -----------------
+!
+         do k= 1,nc3
+         ncel(k)= 0             !  Clear the cell register.
+         end do
+!                               
+! ------------------------------------------------
+!* Register all particles (include rod charges).
+! ------------------------------------------------
+!
+         do i = 1,npqr
+         ibx(i) =  int(((xg(i) -xmin)/xleng)*isize + 1.0d0) &
+                + isize *int(((yg(i) -ymin)/yleng)*isize)   &
+                + isize2*int(((zg(i) -zmin)/zleng)*isizeZ)
+!
+         ibox= ibx(i)
+         ncel(ibox)= ncel(ibox) +1
+         lcel(ncel(ibox),ibox)= i
+!
+         if(ncel(ibox).gt.nbxs) then
+           if(io_pe.eq.1) then
+           OPEN (unit=11,file=praefixc//'.06'//suffix2,             &
+                 status='unknown',position='append',form='formatted')
+!
+           write(11,*) 'full: ncel> nbxs !  i,ibox=',i,ibox
+           write(11,930) i,xg(i),yg(i),zg(i)
+  930      format('i=',i5,' xg,yg,zg=',1p3d12.3)
+!
+           close(11)
+           end if
+!
+           stop
+         end if
+         end do
+!
+!* Step 2.
+!
+         do i = i0(ipar),i2(ipar)
+         nipl(i)= 0
+         end do
+!
+         do i = i0(ipar),i2(ipar)    ! i0= 1,... i2=..., npqr
+!
+         ibox =  int(((xg(i) -xmin)/xleng)*isize + 1.0d0)  &
+                + isize *int(((yg(i) -ymin)/yleng)*isize)  &
+                + isize2*int(((zg(i) -zmin)/zleng)*isizeZ)
+!*
+         do k = 1,27
+         neigh= ibind(k,ibox)
+!
+         do l= 1,ncel(neigh)        ! Get water particles.
+         j= lcel(l,neigh)
+!
+         if(i.ne.j) then            ! Originating at i --> j.
+           nipl(i)= nipl(i) + 1
+           lipl(nipl(i),i)= j       ! i0(ipar),i2(ipar)
+         end if
+!
+         end do
+         end do
+         end do
+!
+!*  ---------------------------------
+         do i = i0(ipar),i2(ipar)
+         if(nipl(i).gt.nbxs) then
+!
+           if(io_pe.eq.1) then
+           OPEN (unit=11,file=praefixc//'.06'//suffix2,             &
+                 status='unknown',position='append',form='formatted')
+!
+           write(11,*) 'Stop: f_solvent, @ nipl> nbxs @  ipar=',ipar
+           write(11,*) '       i, nipl(i)=',i,nipl(i)
+           write(11,*) ' common/LJ_list/ lipl(nbxs,npqr0)'
+           close(11)
+           end if
+!
+           istop= 1
+           return
+         end if
+         end do
+!*  ---------------------------------
       end if
 !
 !***************************
@@ -1932,6 +2074,88 @@
                 status='unknown',position='append',form='formatted')
           write(11,*)
           write(11,*) 'e_c_r/(np+nq)=',e_c_r/(np+nq)
+          close(11)
+        end if
+      end if
+!
+!
+!* Step 3
+!
+      do i = i0(ipar),i2(ipar) 
+      do jj= 1,nipl(i) 
+      j= lipl(jj,i)
+!
+!  ----------------------------------------
+      rljcut= driwu         ! no dimension, driwu=1.12
+!
+      if(ifLJ.eq.1) then
+        if(i.le.nCLp .or. j.le.nCLp) then
+          rljcut= rcutlj    ! no dimension, sigma/Ang
+        end if
+      end if
+!  ----------------------------------------
+!
+      rljcut2= rljcut**3
+      addpot =  1.d0/rljcut2**4 - 1.d0/rljcut2**2
+
+      dx = xg(i) -xg(j)
+      dy = yg(i) -yg(j)
+      dz = zg(i) -zg(j)
+!
+!*  Lennard-Jones force.
+!   >> Energy unit: epsLJ (LJ energy).
+!   >> rlj= 1.0 when i and j are touching.
+!
+      r2 = dx**2 + dy**2 + dz**2
+      rlj = sqrt(r2)/(ag(i)+ag(j))
+!
+      if(rlj.le.rljcut) then
+        rsi = 1.d0/max(rlj**2,asc2)
+        snt = rsi*rsi*rsi
+!
+        eps_lj= sqrt(ep(i)*ep(j))
+        ccel  = 48.d0*eps_lj*snt*(snt-0.5d0)/r2
+!
+        fsx(i) = fsx(i) + ccel*dx
+        fsy(i) = fsy(i) + ccel*dy
+        fsz(i) = fsz(i) + ccel*dz
+!
+        e_lj = e_lj  + 4.d0*eps_lj*(snt*(snt - 1.d0) - addpot)
+      end if
+!
+      end do
+      end do
+!
+! --------------------
+!*  Unify the force.
+! --------------------
+!* Define packed arrays for mpi_allgatherv.
+!
+      if(num_proc.ne.1) then
+!
+        call mpi_allreduce (fsx,frx,npqr0,mpi_real8,mpi_sum, &
+                            mpi_comm_world,ierror)
+        call mpi_allreduce (fsy,fry,npqr0,mpi_real8,mpi_sum, &
+                            mpi_comm_world,ierror)
+        call mpi_allreduce (fsz,frz,npqr0,mpi_real8,mpi_sum, &
+                            mpi_comm_world,ierror)
+!
+        do i= 1,npqr
+        fsx(i)= frx(i)
+        fsy(i)= fry(i)
+        fsz(i)= frz(i)
+        end do
+!
+!
+        unif1= e_lj
+        call mpi_allreduce (unif1,unif2,1,mpi_real8,mpi_sum, &
+                            mpi_comm_world,ierror)
+        e_lj= unif2
+!
+        if(iwrt1.eq.0 .and. io_pe.eq.1) then
+          OPEN (unit=11,file=praefixc//'.06'//suffix2,             &
+                status='unknown',position='append',form='formatted')
+          write(11,*) 'e_lj/npqr=',e_lj/npqr
           close(11)
         end if
       end if
