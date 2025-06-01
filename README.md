@@ -32,7 +32,7 @@ Coulomb forces make the positive and negative species together within the sphere
 Code: @md3-para7.f03 with the parameter file paramE7.h, ca. 1600 lines.
 
 
-### (2) Simulation of charge inversion phenomena ###
+### (2.A) Simulation of charge inversion phenomena ###
 
 Charge inversion is about the macroions surrounded by the electrolyte of multivalent counterions 
 and monovalent coions.
@@ -63,7 +63,7 @@ shows a rather stationary macroion. The first peak of counterions at the top-lef
 panels exists very close to the macroion's surface at R= Rmac to (Rmac+5 Ang) of 
 cimv13_78.pdf - only the 20 Angstrom regime from the macroion is plotted. 
 
-### (2A) Short-range and long-range interactions ###
+### (2.B) Short-range and long-range interactions ###
 
 The Coulomb force by the positive charge $ Z_{p}*e_unit $ and negative charge $ Z_{n}*e_unit $
 is written $ -\nabla(Z_{p}*Z_{n}*e_unit^2/ r) $ in an infinite system (Ref. 6).
