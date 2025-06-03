@@ -103,6 +103,7 @@ The Coulomb forces in the periodic boundary condition are used to study water an
 In this directory, on the other hand, the short-range and long-range Coulomb forces are used 
 in periodic p3m_perform routines for a large system and high accuracy in Sec.(2), and also the non-periodic boundary 
 conditions are utilized in Sec.(3). The simulation codes of this directory are updated recently.
+
 [1] Periodic system, the prototype
 
 * @md3-para7.f03, with the parameter file paramE7.h (ca. 1,600 lines)
