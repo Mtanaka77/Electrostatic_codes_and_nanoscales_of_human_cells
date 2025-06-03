@@ -120,8 +120,8 @@ the parameter file paramAPGa.h and the configuration file PORV21_config.start3.
 
 
 Anyone can read, copy and rewrite these simulation codes under 
-GNU General Public License v3.0, by keeping the first top 55 lines in (2) 
-and 100 lines in (3) of the codes intact.
+GNU General Public License v3.0, by keeping the first top 55 lines in Sec.[2] 
+and 100 lines in Sec.[3] of the codes intact.
 
 
 ## References ##
