@@ -1,4 +1,4 @@
-## Electrostatic molecular dynamics for living human cells ##
+## Molecular dynamics for electrostatic living human cells ##
 
 The charge inversion and ion transport phenomena through nanopores are studied for 
 living cells. The electrostatic molecular dynamics simulations are execcuted (Refs. 1-5).
