@@ -1,18 +1,18 @@
-!************************************************** 2025/06/01 ***
+!************************************************** 2025/05/29 ***
 !*                                                               *
-!*   ## Electrostatic Molecular Dynamics for Living Cells ##     *
-!*     @nanoporAPG.f03 with the Coulomb and Poisson equation     *
+!*   ## Molecular Dynamics for Electrostatic Living Cells ##     *
+!*    @nanoporAPG.f03 with the Coulomb and Poisson equation      *
 !*                                                               *
 !*   Author: Motohiko Tanaka, Ph.D.                              *
 !*         Nature and Science Applications, Nagoya 464, Japan.   *
-!*   This code is permitted by GNU General Public License v3.0.  *
+!*         Permitted by GNU General Public License v3.0.         *
 !*                                                               *
 !*     The short-range Coulomb forces of /moldyn/, L.1220, and   *
-!*   the long-range electrostatic effects by Poisson equation,   *
-!*   L.1275, are treated in this simulation code.                *
+!*   the long-range effects by Poisson equation, L.1275, are     *
+!*   treated in this simulation code.                            *
 !*                                                               *
 !*     This molecular dynamics simulation of nanoscale pores     *
-!*   in 3D electrostatic effects has been updated in April 2025. *
+!*   in 3D electrostatic effects was updated in May, 2025.       *
 !*                                                               *
 !*   References:                                                 *
 !*   1) Y.Rabin and M.Tanaka, DNA in nanopores: Counterion cond- * 
@@ -51,9 +51,9 @@
 !*   m ---- = --------- ------ - fgm*(2*r(i)-r(i+1)-r(i-1))      *
 !*      dt       r^2      r                                      *
 !*                                                               *
-!*                      epsLJ       sigma       sigma            *
-!*                 + 48*----- grad[(-----)^12- (-----)^6]        *
-!*                       kT         r_ij        r_ij             *
+!*               epsLJ       sigma       sigma                   *
+!*          + 48*----- grad[(-----)^12- (-----)^6] + q E(i,j,k)  *
+!*                kT         r_ij        r_ij                    *
 !*                                                               *
 !*  Poisson equation:                                            *
 !*   div(eps(i,j,k) [grad pot(i,j,k)]) = - 4*pi*Gamma*rho(i,j,k) *
@@ -70,28 +70,28 @@
 !*   /moldyn/  Time cycles, Coulomb and EM fields, L.685-1780    *
 !*   /sht_forces/ Coulomb forces + LJ potential, L.1220, 1790-   *
 !*   /sprmul/     Spring forces, L.1230, 2530-                   * 
-!*   /reflect_endpl/ Particles boundary, L.1435, 2660-           *
+!*   /reflect_endpl/ Particles boundary, L.1435, 2920-           *
 !*                                                               *
-!*   /init/    Setups called from /RUN_MD/, L.3560-              *
-!*   /poissn_eq/  Poisson equation, L.5320-                      *
+!*   /init/    Setups called from /RUN_MD/, L.3565-              *
+!*   /poissn_eq/  Poisson equation, L.5325-                      *
 !*   /emcof3/     ES forces, closed boundary, L.5450-            *
 !*     /bound_s/    for it > 1, L.5790                           * 
 !*   /cresmd/-/avmult/  Conjugate residual method, L.6560-       *
 !*    Graphics    /gopen/ (Adobe-2.0 postscript)                 *
 !*                                                               *
-!*** 2004/10/25 *********************************** 12/18/2006 ***
+!*** 2004/10/25 ************************* First ed. 2006/12/18 ***
 !*                                                               *
 !*  To get a free format of Fortan f90 or f03, convert f77       *
 !*  format into:                                                 *
 !*    :%s/^c/!/  change 'c' of ALL column one to '!'             *
 !*    :%s/^C/!/                                                  *
-!*     tr 'A-Z' 'a-z' <@nanopor.f >@nanopor.f03"                 *
+!*     tr 'A-Z' 'a-z' <@nanopor.f >@nanopor.f03                  *
 !*                                                               *
 !*  For subroutines, write "use, intrinsic :: iso_c_binding",    *
 !*  "implicit none" is recommended for minimizing typoerrors.    *
 !*                                                               *
 !*  Compilation by Linux:                                        *
-!*  % mpif90 -mcmodel=medium -fpic -o a.out @nanoporAPF.f03 \    *
+!*  % mpif90 -mcmodel=medium -fpic -o a.out @nanoporAPG.f03 \    *
 !*    -I/opt/fftw3/include -L/opt/fftw3/lib -lfftw3 &> log       *
 !*                                                               *
 !*  Check the configuration file and execute by:                 *
