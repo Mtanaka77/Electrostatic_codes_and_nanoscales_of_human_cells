@@ -97,7 +97,7 @@ This file porw21.773a.pdf for the small potential gap V_top-V_bottom= 1.5 kT wit
 In passing about the transvers (x,y) directions, the closed boundary condition may be better because a small distance in the periodic condition mixes up fictitious artifact.    
 
 
-### (4) Coulomb and P3M (periodic) or Coulomb-Poisson (non periodic) simulations ###
+### (4) Coulomb-P3M (periodic) or Coulomb-Poisson (non periodic) simulations ###
 
 The Coulomb forces in the periodic boundary condition are used to study water and hydrate (Ref. 9, "vitroid").
 In this directory, on the other hand, the short-range and long-range Coulomb forces are used for a large system
