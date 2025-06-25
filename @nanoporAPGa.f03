@@ -1,7 +1,8 @@
-!************************************************** 2025/06/21 ***
+!************************************************** 2025/06/23 ***
 !*                                                               *
 !*   ## Molecular Dynamics of Electrostatic Living Cells ##      *
-!*     @nanoporAPG.f03 with the Coulomb and Poisson equation     *
+!*     @nanoporAPG.f03 - Short-range Coulomb and LJ forces       *
+!*   and long-range Poisson forces for ES living cells           *
 !*                                                               *
 !*   Author: Motohiko Tanaka, Ph.D.                              *
 !*         Nature and Science Applications, Nagoya 464, Japan.   *
@@ -68,32 +69,32 @@
 !*    param_APG.h (parameter), PORW21_config.start3 (config)     *     
 !*                                                               *
 !*   /moldyn/     Time cycles, Coulomb and EM fields, L.685-     *
-!*   /sht_forces/ Coulomb forces and LJ potential, L.1220, 1790- *
-!*   /sprmul/     Spring forces, L.1230, 2530-                   * 
+!*   /sht_forces/ Coulomb forces and LJ potential, L.1225, 1790- *
+!*   /sprmul/     Spring forces, L.1230, 2270-                   * 
 !*   /reflect_endpl/ Particles boundary, L.1435, 2660-           *
 !*                                                               *
-!*   /init/       Setups from /RUN_MD/, L.3560-                  *
-!*   /poissn/     Poisson equation, L.5320-                      *
-!*   /escof3/     EM forces, closed boundary, L.5450-            *
-!*     /bound_s/    for it > 1, L.5790                           * 
-!*   /cresmd/-/avmult/  Conjugate residual method, L.6560-       *
+!*   /init/       Setups from /RUN_MD/, L.385,3300-              *
+!*   /poissn/     Poisson equation, L.1280, 5060-                *
+!*   /escof3/     ES forces, closed boundary, L.5130,5190-       *
+!*     /bound_s/    for it > 1, L.5530                           * 
+!*   /cresmd/-/avmult/  Conjugate residual method, L.5140,6290-  *
 !*    Graphics    /gopen/ (Adobe-2.0 postscript)                 *
 !*                                                               *
 !*   First version : 2004/10/25                                  *
 !*   Second version: 2006/12/18 (Fortran 95)                     *
-!*   Third version : 2025/6/21  (Fortran 2003)                   *
+!*   Third version : 2025/06/21 (Fortran 2003)                   *
 !*                                                               *
 !*****************************************************************
 !*                                                               *
 !*  To get a free format of Fortan f90 or f03, convert f77 into  *
-!*    :%s/^c/!/  change 'c' of ALL column one to '!'             *
+!*    :%s/^c/!/  Change '~c' of ALL columns to '!'               *
 !*    :%s/^C/!/                                                  *
-!*    tr 'A-Z' 'a-z' <@nanopor.f >@nanopor.f03"                  *
+!*    tr 'A-Z' 'a-z' <@nanopor.f >@nanopor.f03                   *
 !*                                                               *
 !*  For subroutines, write "use, intrinsic :: iso_c_binding",    *
 !*  "implicit none" is recommended for minimizing typoerrors.    *
 !*                                                               *
-!*  Compilation by Linux:                                        *
+!*  Compilation by Linux (choose -O0, -O1,...):                  *
 !*  % mpif90 -mcmodel=medium -fpic -o a.out @nanoporAPG.f03 \    *
 !*    -I/opt/fftw3/include -L/opt/fftw3/lib -lfftw3 &> log       *
 !*                                                               *
@@ -241,11 +242,11 @@
       real(C_DOUBLE)  t_pe,t_poisn
       common/timings/ t_pe,t_poisn
 !
-      integer(C_INT)  fixedbc_x,fixedbc_y,itermax,filtx,filty,filtz,ipr
-      real(C_DOUBLE)  Vtop,Vbottom,rpr
-      common/espot/   Vtop,Vbottom,fixedbc_x,fixedbc_y, &
-                      itermax,filtx,filty,filtz
-      common/cresm3/  ipr(10),rpr(10)
+      real(C_DOUBLE) Vtop0,Vbot0,Vtop,Vbot,t_recyc,rpr
+      integer(C_INT) fixedbc_x,fixedbc_y,itermax,filtx,filty,filtz,ipr
+      common/espot/  Vtop0,Vbot0,Vtop,Vbot,fixedbc_x,fixedbc_y, &
+                     itermax,filtx,filty,filtz
+      common/cresm3/ ipr(10),rpr(10)
 !
       real(C_DOUBLE)  rcut_clf,rcutlj,r_fene,k_fene, &
                       r_fene2,Bjerrum
@@ -323,6 +324,7 @@
 ! ++++++++++++++++++++++++++++++++++++++++++++
 !
 !*  np,nq,nseg :  defined in /READ_CONF/.
+!   Vtop0,Vbot0,rpr(10) in READ_CONF
 !
       call READ_CONF (np,nq,npqr,ifbase)
 !     +++++++++++++++++++++++++++++++++++++++++
@@ -356,7 +358,7 @@
         write(11,*) '&inp2  rbmax .....'
         write(11,inp2)
 !*
-        write(11,610)   t_pe,t_poisn,Vtop,Vbottom
+        write(11,610)   t_pe,t_poisn,Vtop0,Vbot0
 !
 !*  System size (-l/2, l/2)
         write(11,*) '# Lx/2, Ly/2, Lz/2 = ',xmax,ymax,zmax
@@ -365,7 +367,7 @@
                a8,/,' date=',a10,'  time=',a8,/)
   610   format(' %Timings: t_pe    =',f7.1,/, &
                '           t_poisn =',f7.1,/  &
-               ' %Potential bias Vtop, Vbottom=',2f8.3,/)
+               ' %Potential bias Vtop0, Vbot0=',2f8.3,/)
 !
         close(11)
       end if
@@ -451,7 +453,7 @@
 !                **** **** **** **** 
 !       read(12) xmax,ymax,zmax,xmin,ymin,zmin
         read(12) xleng,yleng,zleng
-        read(12) aLJ,epsLJ,eps_K,eps_Cl,Vtop,Vbottom,ifLJ
+        read(12) aLJ,epsLJ,eps_K,eps_Cl,Vtop0,Vbot0,ifLJ
         read(12) qfrac,Rpore,Hpore,Zci,Zcp,Zcn,ifqq
 !
 !   If there are rods
@@ -589,7 +591,7 @@
 !                 **** *** **** **** 
 !       write(12) xmax,ymax,zmax,xmin,ymin,zmin
         write(12) xleng,yleng,zleng
-        write(12) aLJ,epsLJ,eps_K,eps_Cl,Vtop,Vbottom,ifLJ
+        write(12) aLJ,epsLJ,eps_K,eps_Cl,Vtop0,Vbot0,ifLJ
         write(12) qfrac,Rpore,Hpore,Zci,Zcp,Zcn,ifqq
 !
         if(ifrgrod.eq.1) then
@@ -718,7 +720,7 @@
       real*8   t1,t2,t3,d1,xx,yy,zz
       real(C_DOUBLE),dimension(0:ip0**3-1,0:npq0-1) :: ql
       real(C_DOUBLE),dimension(0:mx-1,0:my-1,0:mz-1) :: &
-                                    rho,ex,ey,ez,dec2,pot
+                                 rho,ex,ey,ez,dec2,pot,ez1
       real(C_DOUBLE) diel
       common/potsav/ pot,dec2
       logical     first_recyc 
@@ -804,11 +806,11 @@
                      pyr(-1:my+1),pyc(-1:my+1),pyl(-1:my+1), &
                      pzr(-1:mz+1),pzc(-1:mz+1),pzl(-1:mz+1)
 !
-      integer(C_INT) fixedbc_x,fixedbc_y,itermax,        &
-                     filtx,filty,filtz,ipr
-      real(C_DOUBLE) Vtop,Vbottom,Vtop0,Vbottom0,rpr
-      common/espot/  Vtop,Vbottom,fixedbc_x,fixedbc_y,   &
+      real(C_DOUBLE) Vtop0,Vbot0,Vtop,Vbot,t_recyc,rpr
+      integer(C_INT) fixedbc_x,fixedbc_y,itermax,filtx,filty,filtz,ipr
+      common/espot/  Vtop0,Vbot0,Vtop,Vbot,fixedbc_x,fixedbc_y, &
                      itermax,filtx,filty,filtz
+      common/trecyc/ t_recyc
       common/cresm3/ ipr(10),rpr(10)
 !
       real(C_DOUBLE) xgc,ygc,zgc,vxg,vyg,vzg,rod_leng,Rmac,  &
@@ -824,8 +826,6 @@
                        dox,doy,doz,doxc,doyc,dozc
       common/macroin1/ dox,doy,doz,doxc,doyc,dozc
 !
-      real(C_DOUBLE) t_recyc  !<- in /READ_CONF/
-      common/trecyc/ t_recyc
       real(C_DOUBLE) wtime0,wtime1,wtime2,wtime3,wtime4,wtime5
 !
       integer(C_INT) ifLJ
@@ -996,7 +996,7 @@
 !--------------------------
 !
       dt0= dt
-      if(kstart.le.0) then
+      if(kstart.eq.0) then
         t8= -dt 
         t = t8
 !
@@ -1021,10 +1021,6 @@
         vzs(i)= 0
         end do
       end if
-!
-!  Top and bottom plates
-      Vtop0    = Vtop
-      Vbottom0 = Vbottom
 !
 !
       do k= 0,mz-1
@@ -1162,16 +1158,34 @@
       iwrt4= iwrtd(t,  10.)   ! write(13), 10.
 !*
       if(t8.le.t00) then
-        Vtop    = 0.d0
-        Vbottom = 0.d0
+        Vtop = 0.d0
+        Vbot = 0.d0
+!
+        do k= 0,mz-1
+        do j= 0,my-1
+        do i= 0,mx-1
+        ez1(i,j,k)= 0
+        end do
+        end do
+        end do
+!
       else if(t8.gt.t00) then
-        Vtop    = Vtop0    *(1.d0 -exp(-(t8-t00)/100.d0))
-        Vbottom = Vbottom0 *(1.d0 -exp(-(t8-t00)/100.d0))
+        Vtop = Vtop0 *(1.d0 -exp(-(t8-t00)/100.d0))
+        Vbot = Vbot0 *(1.d0 -exp(-(t8-t00)/100.d0))
+!
+        do k= 0,mz-1
+        do j= 0,my-1
+        do i= 0,mx-1
+        ez1(i,j,k)=  - (Vtop-Vbot)/zleng  !<- ez1< 0, increse -10
+        end do                            !   (-e)ez1> 0
+        end do
+        end do
       end if
 !
       if(t8.le.t_recyc) then
         ifrecyc = 0         ! Equilibration phase
         first_recyc= .false.
+!
       else if(t8.gt.t_recyc) then
         ifrecyc = 1         ! Recycle phase
       end if
@@ -1289,7 +1303,7 @@
         do i= 1,mx-2
         ex(i,j,k)= -(pot(i+1,j,k) -pot(i-1,j,k))/ghx2(i)
         ey(i,j,k)= -(pot(i,j+1,k) -pot(i,j-1,k))/ghy2(j)
-        ez(i,j,k)= -(pot(i,j,k+1) -pot(i,j,k-1))/ghz2(k)
+        ez(i,j,k)= -(pot(i,j,k+1) -pot(i,j,k-1))/ghz2(k) +ez1(i,j,k)
 !
         e_grid = e_grid + &
                     sqrt(ex(i,j,k)**2 +ey(i,j,k)**2 +ez(i,j,k)**2)
@@ -1400,7 +1414,7 @@
       vzs(i)= vzs(i) +fsz(i)*dtm
       end do
 !
-!
+!  vxc() +vxs()
       do i= 1,nCLp
       vx(i)= vxc(i) +vxs(i)  !<-- Coulomb + LJ
       vy(i)= vyc(i) +vys(i)
@@ -1434,8 +1448,7 @@
 !* Reflection walls
 !---------------------
 ! 
-      call reflect_endpl (xg,yg,zg,vx,vy,vz,ch,am,ag,np,nq,nCLp,npqr, &
-                          ifrecyc,is)
+      call reflect_endpl (xg,yg,zg,vx,vy,vz,ch,am,ag,np,nq,npqr)
 !
 !* After the reflection, vx() -vxc() -> vxs()
 !
@@ -1472,7 +1485,7 @@
   991   format('i=',i5,3f7.1,2x,1p3d12.3)
         end do
 !
-        write(11,*) '##### t8,Vtop,Vbottom2=',t8,Vtop,Vbottom
+        write(11,*) '##### t8,Vtop,Vbot=',t8,Vtop,Vbot
         close(11)
       end if
 !
@@ -1758,7 +1771,7 @@
 !                 **** *** **** **** 
 !       write(12) xmax,ymax,zmax,xmin,ymin,zmin
         write(12) xleng,yleng,zleng
-        write(12) aLJ,epsLJ,eps_K,eps_Cl,Vtop,Vbottom,ifLJ
+        write(12) aLJ,epsLJ,eps_K,eps_Cl,Vtop0,Vbot0,ifLJ
         write(12) qfrac,Rpore,Hpore,Zci,Zcp,Zcn,ifqq
 !
 !   If rods are present
@@ -2655,8 +2668,7 @@
 !
 !
 !---------------------------------------------------------------------
-      subroutine reflect_endpl (xg,yg,zg,vx,vy,vz,ch,am,ag,np,nq,nCLp, &
-                                npqr,ifrecyc,is)
+      subroutine reflect_endpl (xg,yg,zg,vx,vy,vz,ch,am,ag,np,nq,npqr)
 !---------------------------------------------------------------------
       use, intrinsic :: iso_c_binding 
       implicit none
@@ -2664,8 +2676,7 @@
       include   'paramAPGa.h'
 !
       real(C_DOUBLE),dimension(npqr0) :: xg,yg,zg,ch,vx,vy,vz,am,ag 
-      real(C_DOUBLE) xmax1,ymax1,zmax1,xmin1,ymin1,zmin1, &
-                     zm1_t,zm2_t,zm1_b,zm2_b,dr
+      real(C_DOUBLE) xmax1,ymax1,zmax1,xmin1,ymin1,zmin1
 !
       integer(C_INT) io_pe
       common/sub_proc/ io_pe
@@ -2673,8 +2684,7 @@
       real(C_DOUBLE) t8,cptot
       common/headr3/ t8,cptot
 !
-      integer(C_INT) np,nq,nCLp,npqr,i,ifqq,ifrecyc,is,   &
-                     mode_rec,nrec,ina_t,icl_t,ina_b,icl_b
+      integer(C_INT) np,nq,npqr,i,ifqq,ifrecyc,is
       real(C_DOUBLE) xmax,ymax,zmax,xmin,ymin,zmin,      &
                      xleng,yleng,zleng,                  & 
                      Hpore2,rmax,ddx,ddy,ddz,dd,         &
@@ -2701,6 +2711,7 @@
 !
       ddx = 0.5d0* xleng/mx
       ddy = 0.5d0* yleng/my
+      ddz = 0.5d0* zleng/my
 !
       do i= 1,npqr
       Hpore2 = 0.5d0*Hpore           ! also modify /init/
@@ -2711,11 +2722,11 @@
 !
         xmax1 =  xmax -ddx -ag(i)
         ymax1 =  ymax -ddy -ag(i)
-        zmax1 =  zmax 
+        zmax1 =  zmax -ddz 
 !
         xmin1 =  xmin +ddx +ag(i)
         ymin1 =  ymin +ddy +ag(i)
-        zmin1 =  zmin 
+        zmin1 =  zmin +ddz
 !
 !* X,Y sides are closed
 !
@@ -2858,9 +2869,9 @@
       real(C_DOUBLE)  t_pe,t_poisn
       common/timings/ t_pe,t_poisn
 !
+      real(C_DOUBLE) Vtop0,Vbot0,Vtop,Vbot,t_recyc
       integer(C_INT) fixedbc_x,fixedbc_y,itermax,filtx,filty,filtz
-      real(C_DOUBLE) Vtop,Vbottom,t_recyc
-      common/espot/  Vtop,Vbottom,fixedbc_x,fixedbc_y, &
+      common/espot/  Vtop0,Vbot0,Vtop,Vbot,fixedbc_x,fixedbc_y, &
                      itermax,filtx,filty,filtz
       common/trecyc/ t_recyc
 !
@@ -2952,16 +2963,16 @@
       zmin= -0.5d0*zleng
 !  -----------------------
 !
-      read(08,'(a40,f20.0)') text1,Vtop     ! Potential of the top plate 0.
-      read(08,'(a40,f20.0)') text1,Vbottom  ! Potential of the bot plate -0.
+      read(08,'(a40,f20.0)') text1,Vtop0    ! Potential of the top plate 0.
+      read(08,'(a40,f20.0)') text1,Vbot0    ! Potential of the bot plate -0.
 !
-      if(Vtop.lt.Vbottom) then
+      if(Vtop0.lt.Vbot) then
 !
         if(io_pe.eq.1) then
         OPEN (unit=11,file=praefixc//'.06'//suffix2,             &
               status='unknown',position='append',form='formatted')
 !
-        write(11,*) '# error - Vtop < Vbottom, stop...'
+        write(11,*) '# error - Vtop0 < Vbot0, stop...'
         close(11)
         end if
 !
@@ -3051,10 +3062,9 @@
       real(C_DOUBLE) diel2,dielpr,aa
       common/dielec/ diel2,dielpr,aa
 !
-      integer(C_INT) fixedbc_x,fixedbc_y,itermax, &
-                     filtx,filty,filtz,ipr
-      real(C_DOUBLE) Vtop,Vbottom
-      common/espot/  Vtop,Vbottom,fixedbc_x,fixedbc_y, &
+      real(C_DOUBLE) Vtop0,Vbot0,Vtop,Vbot,t_recyc,rpr
+      integer(C_INT) fixedbc_x,fixedbc_y,itermax,filtx,filty,filtz,ipr
+      common/espot/  Vtop0,Vbot0,Vtop,Vbot,fixedbc_x,fixedbc_y, &
                      itermax,filtx,filty,filtz
 !----------------------------------------------------------------
       real(C_DOUBLE) pi,dt,axi,Gamma,rbmax,vth,tmax, &
@@ -3112,7 +3122,7 @@
       write(07,'("# Boxlaenge (x).................: ",f20.12)')xleng
       write(07,'("# Boxlaenge (y).................: ",f20.12)')yleng
       write(07,'("# Boxlaenge (z).................: ",f20.12)')zleng
-      write(07,'("# potential of the top plate....: ",f20.12)')Vtop
+      write(07,'("# potential of the top plate....: ",f20.12)')Vtop0
       write(07,'("# boundary at the sides.........: ",i12)')fixedbc_x
       write(07,'("# Number of poisson iterations..: ",i12)')itermax
       write(07,'("# Skin..........................: ",f20.12)')skin
@@ -3384,9 +3394,9 @@
       common/macroin1/ dox,doy,doz,doxc,doyc,dozc
       common/macroiov/ q1,q2,q3,q4,angx,angy,angz,ipx,ipy,ipz
 !
+      real(C_DOUBLE) Vtop0,Vbot0,Vtop,Vbot,t_recyc
       integer(C_INT) fixedbc_x,fixedbc_y,itermax,filtx,filty,filtz
-      real(C_DOUBLE) Vtop,Vbottom
-      common/espot/  Vtop,Vbottom,fixedbc_x,fixedbc_y, &
+      common/espot/  Vtop0,Vbot0,Vtop,Vbot,fixedbc_x,fixedbc_y, &
                      itermax,filtx,filty,filtz
 !
       integer(C_INT) ifLJ,Ncc_1,Ncc_2,Ncc_3
@@ -5081,9 +5091,9 @@
 !
       real(C_DOUBLE),dimension(0:mxyz-1) :: rho8,pot8,xx8
 !
-      real(C_DOUBLE) Vtop,Vbottom
+      real(C_DOUBLE) Vtop0,Vbot0,Vtop,Vbot,t_recyc
       integer(C_INT) fixedbc_x,fixedbc_y,itermax,filtx,filty,filtz
-      common/espot/  Vtop,Vbottom,fixedbc_x,fixedbc_y,itermax, &
+      common/espot/  Vtop0,Vbot0,Vtop,Vbot,fixedbc_x,fixedbc_y,  &
                      filtx,filty,filtz
 !*---------------------------------------------------------------------
       real(C_DOUBLE)  e_c_s,e_poisn,e_c_r,e_lj,e_elas
@@ -5128,7 +5138,7 @@
         call escof3 (aa,xx,ss,na,ndim)
         first= .false.
       else
-        call bound_s (xx,ss,Vtop,Vbottom)
+        call bound_s (xx,ss)
       end if
 !
       nobx = nob3
@@ -5204,9 +5214,9 @@
       real(C_DOUBLE),dimension(0:mx-1,0:my-1,0:mz-1) :: pot8,rho8,dec2
       integer(C_INT),dimension(nob3) :: lai,laj,lak
 !
-      real(C_DOUBLE) Vtop,Vbottom,ca(nob3)
+      real(C_DOUBLE) Vtop0,Vbot0,Vtop,Vbot,t_recyc,ca(nob3)
       integer(C_INT) fixedbc_x,fixedbc_y,itermax,filtx,filty,filtz
-      common/espot/  Vtop,Vbottom,fixedbc_x,fixedbc_y, &
+      common/espot/  Vtop0,Vbot0,Vtop,Vbot,fixedbc_x,fixedbc_y,  &
                      itermax,filtx,filty,filtz
 !*---------------------------------------------------------------------
 !
@@ -5524,7 +5534,7 @@
 !
 !
 !-----------------------------------------------------------------------
-      subroutine bound_s (pot8,rho8,Vtop,Vbottom)
+      subroutine bound_s (pot8,rho8)
 !----------------------------------------------------------------------
 ! ******************************
 ! * Boundary values for source *
@@ -5535,9 +5545,12 @@
       include    'paramAPGa.h'
 !     integer(C_INT) nob3   !<- paramAPGa.h
 !
-      integer(C_INT) i,j,k
       real(C_DOUBLE),dimension(0:mx-1,0:my-1,0:mz-1) :: pot8,rho8
-      real(C_DOUBLE) Vtop,Vbottom
+      real(C_DOUBLE) Vtop0,Vbot0,Vtop,Vbot,t_recyc,ca(nob3)
+      integer(C_INT) fixedbc_x,fixedbc_y,itermax,filtx,filty,filtz, &
+                     i,j,k
+      common/espot/  Vtop0,Vbot0,Vtop,Vbot,fixedbc_x,fixedbc_y,     &
+                     itermax,filtx,filty,filtz
 !*---------------------------------------------------------------------
 !
       do k= 0,mz-1
@@ -5557,12 +5570,12 @@
       end if
 !
 ! if z= zmin or zmax
-      if(k.eq.0 .or. k.eq.mz-1) then
-        if(k.eq.   0) pot8(i,j,k)= Vbottom
-        if(k.eq.mz-1) pot8(i,j,k)= Vtop
+!     if(k.eq.0 .or. k.eq.mz-1) then
+!       if(k.eq.   0) pot8(i,j,k)= - Vbot
+!       if(k.eq.mz-1) pot8(i,j,k)= - Vtop
 !
-        rho8(i,j,k)= 0.d0
-      end if
+!       rho8(i,j,k)= 0.d0
+!     end if
 !
       end do
       end do
@@ -6939,9 +6952,10 @@
       integer(C_INT) n_rodp,jj,np00,nnb,ist1,ist2
       common/pbase/  np00,nnb,ist1(100),ist2(100)
 !
-      real(C_DOUBLE) Vtop,Vbottom,diel2,dielpr,aa
-      integer(C_INT) fixedbc_x,fixedbc_y,itermax,filtx,filty,filtz
-      common/espot/  Vtop,Vbottom,fixedbc_x,fixedbc_y, &
+      real(C_DOUBLE) Vtop0,Vbot0,Vtop,Vbot,t_recyc,rpr
+      real(C_DOUBLE) diel2,dielpr,aa
+      integer(C_INT) fixedbc_x,fixedbc_y,itermax,filtx,filty,filtz,ipr
+      common/espot/  Vtop0,Vbot0,Vtop,Vbot,fixedbc_x,fixedbc_y, &
                      itermax,filtx,filty,filtz
       common/dielec/ diel2,dielpr,aa
 !
@@ -6955,7 +6969,7 @@
 !
       integer(C_INT) i,k,kpl,ns,ia,ib,l
       real(C_float)  hh,Rpore4,Hpore4,Zcp4,Zcn4,Bjerrum4,xleng4,zleng4, &
-                     Rmac4,Vtop4,Vbottom4,Gamma4,rod_leng4,diel24,      &
+                     Rmac4,Vtop4,Vbot4,Gamma4,rod_leng4,diel24,         &
                      fsize,hl,vd,pha,tha,cph,sph,cth,sth,xp,yp,zp,      &
                      rmax1,ps,x1,y1,z1,xx,yy,dd,xpp,ypp,zpp
       real(C_DOUBLE) xleng,yleng,zleng
@@ -7036,13 +7050,13 @@
       call number (18.0,15.3,hh,zleng4,0.,5)
 !
       Vtop4= Vtop
-      Vbottom4= Vbottom
+      Vbot4= Vbot
       Gamma4= Gamma
       diel24= diel2
       rod_leng4= rod_leng
 !
       call symbol ( 0.5,14.6,hh,'V_tb=', 0.,5)
-      call number ( 2.5,14.6,hh,Vtop4-Vbottom4,0.,5)
+      call number ( 2.5,14.6,hh,Vtop4-Vbot4,0.,5)
       call symbol ( 5.5,14.6,hh,'Gamma=', 0.,6)
       call number ( 7.5,14.6,hh,Gamma4,0.,5)
       call symbol (10.5,14.6,hh,'rod_l=', 0.,6)
