@@ -1107,15 +1107,13 @@
       vxs(i)= dgaus2(vmax2)
       vys(i)= dgaus2(vmax2)
       vzs(i)= dgaus2(vmax2)
+      end do
 !
-      if(i.le.nCLp+10 .and. io_pe.eq.1) then
-        OPEN (unit=11,file=praefixc//'.06'//suffix2,             &
-              status='unknown',position='append',form='formatted')
-        write(11,995) i,vmax2,vxs(i)
-  995   format('i,vmax2,vxs(i)=',i6,1p2d12.3)
-        close(11)
-      end if    
-      end do 
+      do i= 1,nCLp
+      fgx(i)= 0.d0
+      fgy(i)= 0.d0
+      fgz(i)= 0.d0
+      end do
 !
       end if
 !
@@ -1261,15 +1259,28 @@
       if(t8.lt.t_poisn) go to 370 
 ! ------------------------------------
       ntimes= 10 
-! 
-      if(mod(it,ntimes).eq.0) then
+      if(mod(it,ntimes).eq.1) then
 !**                       +++
         istep= istep +1  
 !         increment of time: dt*ntimes= 0.01x10 = 0.1
 !
+        do i= 1,nCLp
+        fgx(i)= 0.d0
+        fgy(i)= 0.d0
+        fgz(i)= 0.d0
+        end do
 !                     *** reset 
         call charges (rho,xg,yg,zg,ch,ql,g,ipar,nCLp)
 !       call water_dens (xg,yg,zg,ipar,nCLp,npqr)
+!
+        do i= 0,mx-1
+        do j= 0,my-1
+        do k= 0,mz-1
+        rho(i,j,k)= 0
+        pot(i,j,k)= 0
+        end do
+        end do
+        end do
 !
         do k= 1,mz-2   ! inner points i= 1,mx-2
         do j= 1,my-2
@@ -1326,12 +1337,6 @@
         end if
 ! ----------------------------------------------------
 !
-        do i= 1,nCLp
-        fgx(i)= 0.d0
-        fgy(i)= 0.d0
-        fgz(i)= 0.d0
-        end do
-!
         do i= 1,nCLp  !<-- only ions 
         m0= -1
 !
@@ -1356,11 +1361,11 @@
 !* Coulomb forces are calculated under a large stride.
 !
         do i= 1,nCLp
-        dtm= ntimes*dt/am(i)
+        dtm= dt/am(i)
 !
-        vxc(i)= vxc(i) +fgx(i)*dtm  !<-- Coulomb forces
-        vyc(i)= vyc(i) +fgy(i)*dtm
-        vzc(i)= vzc(i) +fgz(i)*dtm
+        vxc(i)= vxc(i) +ntimes*fgx(i)*dtm  !<-- Coulomb forces
+        vyc(i)= vyc(i) +ntimes*fgy(i)*dtm
+        vzc(i)= vzc(i) +ntimes*fgz(i)*dtm
         end do
 !
         if(t8.le.t_pe) then
