@@ -113,12 +113,12 @@ conditions are utilized in Sec.(3). The simulation codes of this directory are u
 * @chginv3.f03, with the paramer file parm_inv13.h and 
 the configure file CIMV13_config.START3 (ca. 5,100 lines)
 
-[3] Non-periodic (bound) system and periodic/bounded system, the transport of DNA molecule
+[3] The non-periodic and periodic/bounded systems, the transport of DNA molecule
 
 * @nanoporAPGa.f03 (ca. 9,500 lines with graphics), with 
 the parameter file paramAPGa.h and the configuration file PORV21_config.start3.
 
-* Also, the 5-atom TIP5P water simulation code @nanoporWPa.f03 with bounded Poisson equation is applied (11,000 lines),
+* The 5-atom TIP5P water simulation code @nanoporWPa.f03 with bounded Poisson equation is utilized (11,000 lines),
 with paramWatP.h and PORW31_config.start3. It runs with about 10 hours for t= 500 by 6 cores/3.0 GHz.. 
 
 
