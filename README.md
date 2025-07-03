@@ -83,19 +83,19 @@ a_unit= 1.00d-08 cm, and \epsilon=78 at 27 deg Celsius.)
 
 ### (3) Transportation of DNA molecule through nanopores ###
 
-The transport of DNA with counterions and coions is studied where a narrow nanopore along the z-direction seperates wide downside and upside regions (Ref. 5). The cylinder of the pore is assumed 1.5 nm wide and 5.6 nm high, embedded in 8.1 nm in the x,y directions and 16.8 nm in the z direction. The short-range Coulomb and Lennard-Jones forces are treated, i.e., 
-m dv/dt = (Gamma q'q/r^2) (grad r/r) - fgm *(2 r(i)-r(i+1)-r(i-1)) +48 *(epsil_LJ/kT) grad[(sigma/r_ij)^12 -(sigma/r_ij)^6] with the coupling constant Gamma=5 at T= 300 K.
+The transport of DNA with counterions and coions is studied, where a narrow nanopore in the z-direction seperates downside and upside regions (Ref. 5). The cylinder of the pore is assumed 1.5 nm wide and 5.6 nm high, which is embedded in 7.4 nm in the x,y directions and 15.5 nm in the z direction. The short-range Coulomb and Lennard-Jones forces are treated, i.e., 
+m dv/dt = Sum (Gamma q'q/r^2) (grad r/r) - fgm *(2 r(i)-r(i+1)-r(i-1)) 
++48 *(epsil_LJ/kT) grad[(sigma/r_ij)^12 -(sigma/r_ij)^6] +qE
+with the coupling constant Bjerrum= Gamma*a_LJ =7 at T= 300 K.
 
-The long-range potential forces with the meshes of (i,j,k) coordinates are solved by the Poisson equation, i.e.,
+The long-range potential forces with the mesh (i,j,k) coordinates are solved by the Poisson equation, i.e.,
 div(eps(i,j,k) [grad pot(i,j,k)]) = - 4*pi* Gamma*rho(i,j,k). The operator positions of div, grad and eps(i,j,k) are 
-important. There are large potentials of positive V_top and negative V_bottom drops at end plates, and they are small otherwise.
+important. There are large potentials of positive V_top and negative V_bottom drops at the end plates, and they are small otherwise.
 
-The simulation code is named @nanoporAPGa.f03 (ca 9,500 lines with graphics), and the parameter file paramAPGa.h and the configuration file PORW21_config.start3. The used subroutines are: RUN_MD, moldyn, sht-forces, sprmul, reflecest_endpl, init, poissn, escof3, cresmd, and graphics. There are many input items to run the simulation; they are the nanopore sizes of R_pore and H_pore, respectively, the number of DNA, counterions and coions, the Cartesian meshes of the Poisson equation, the time step of dt, the potential values of top and bottom plates, and the Gamma= 5 at 300 K, etc. It has N_x= N_y= 80 and N_z= 100 meshes for L_x= L_y= 81 Ang and L_z= 168 Ang, that is approximately 14,000 particles (Ref. 9). 
+The simulation code is named @nanoporAPGa.f03 (ca 9,500 lines with graphics), and the parameter file paramAPGa.h and the configuration file PORW21_config.start3. The used subroutines are: RUN_MD, moldyn, sht-forces, sprmul, reflecest_endpl, init, poissn, escof3, cresmd, and graphics. There are many input items to run the simulation; they are the nanopore sizes of R_pore and H_pore, respectively, the number of DNA, counterions and coions, the Cartesian meshes of the Poisson equation, the time step of dt, the potential values of top and bottom plates, and the Gamma value at 300 K, etc. It has N_x= N_y= 80 and N_z= 100 meshes for L_x= L_y= 74 Ang and L_z= 155 Ang, that is approximately 14,000 particles (Ref. 9), and 95,000 particles for TIP5P simulation code. 
 
 A run of 15 minutes by the 6 cores/3.0 GHz machine is executed for t= 500 with the time step dt=0.01 (x 10^-14 s). 
 This file porw21.773a.pdf for the small potential gap V_top-V_bottom= 1.5 kT with the dielectric constant eps=3 in the pore region shows four plots of potentials, particles of DNA and ions, those of all particles (every 5 water molecules), and the velocity distributions. One can see that the DNA chain moves toward the positive z direction into the cell volume. Moreover, the low dielectric constant eps(\r) in the pore makes the DNA blob more concentrated because counterions easily find negatively-charged DNA, which accelerates it upward to the cell region.
-In passing about the transvers (x,y) directions, the closed boundary condition may be better because a small distance in the periodic condition mixes up fictitious artifact.    
-
 
 ### (4) Coulomb-P3M (periodic) or Coulomb-Poisson (non periodic) simulations ###
 
@@ -113,10 +113,13 @@ conditions are utilized in Sec.(3). The simulation codes of this directory are u
 * @chginv3.f03, with the paramer file parm_inv13.h and 
 the configure file CIMV13_config.START3 (ca. 5,100 lines)
 
-[3] Non-periodic (bound) system, the transport of DNA molecule
+[3] Non-periodic (bound) system and periodic/bounded system, the transport of DNA molecule
 
 * @nanoporAPGa.f03 (ca. 9,500 lines with graphics), with 
-the parameter file paramAPGa.h and the configuration file PORV21_config.start3. 
+the parameter file paramAPGa.h and the configuration file PORV21_config.start3.
+
+* Also, the 5-atom TIP5P water simulation code @nanoporWPa.f03 with bounded Poisson equation is applied (11,000 lines),
+with paramWatP.h and PORW31_config.start3. It runs with about 10 hours for t= 500. 
 
 
 Anyone may read, copy and rewrite these simulation codes under 
@@ -124,7 +127,7 @@ GNU General Public License v3.0, by keeping the first top 55 lines in Sec.[2]
 and 100 lines in Sec.[3] of the codes being intact.
 
 
-## References ##
+#paramWatPa.h# References ##
 1. M. Tanaka and A.Yu Grosberg, J.Chem.Phys., vol.115, 567-574 (2001).
 2. M. Tanaka and A.Yu Grosberg, Euro.Phys.J., E7, 371-379 (2002).
 3. M. Tanaka, Phys.Reviews., E68, 061501 (2003).
