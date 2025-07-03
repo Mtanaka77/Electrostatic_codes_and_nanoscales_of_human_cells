@@ -86,7 +86,7 @@ a_unit= 1.00d-08 cm, and \epsilon=78 at 27 deg Celsius.)
 The transport of DNA with counterions and coions is studied, where a narrow nanopore in the z-direction seperates downside and upside regions (Ref. 5). The cylinder of the pore is assumed 1.5 nm wide and 5.6 nm high, which is embedded in 7.4 nm in the x,y directions and 15.5 nm in the z direction. The short-range Coulomb and Lennard-Jones forces are treated, i.e., 
 m dv/dt = Sum (Gamma q'q/r^2) (grad r/r) - fgm *(2 r(i)-r(i+1)-r(i-1)) 
 +48 *(epsil_LJ/kT) grad[(sigma/r_ij)^12 -(sigma/r_ij)^6] +qE
-with the coupling constant Bjerrum= Gamma*a_LJ =7 at T= 300 K.
+with the coupling constant Bjerrum= Gamma * a_LJ =7 at T= 300 K.
 
 The long-range potential forces with the mesh (i,j,k) coordinates are solved by the Poisson equation, i.e.,
 div(eps(i,j,k) [grad pot(i,j,k)]) = - 4*pi* Gamma*rho(i,j,k). The operator positions of div, grad and eps(i,j,k) are 
