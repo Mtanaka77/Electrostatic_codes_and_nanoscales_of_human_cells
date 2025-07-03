@@ -1,8 +1,8 @@
-!************************************************** 2025/06/23 ***
+!************************************************** 2025/7/03 ****
 !*                                                               *
 !*   ## Molecular Dynamics of Electrostatic Living Cells ##      *
-!*     @nanoporAPG.f03 - Short-range Coulomb and LJ forces       *
-!*   and long-range Poisson forces for ES living cells           *
+!*     @nanoporAPG.f03 - Short-range Coulomb and LJ forces and   *
+!*     long-range Poisson forces for electrostatic living cells  *
 !*                                                               *
 !*   Author: Motohiko Tanaka, Ph.D.                              *
 !*         Nature and Science Applications, Nagoya 464, Japan.   *
@@ -41,7 +41,7 @@
 !*                                                               *
 !*  System units:                                                *
 !*     length...... a= 1.0 Ang= 1.0 10^-8 cm                     *
-!*     mass........ m= 18*1.67 10^-24 g                          *
+!*     mass........ m= 1.67 10^-24 g                             *
 !*     time........ t= 0.01 ps= 10^-14 s                         *
 !*     charge...... 4.8 10^-10 esu= 1.60 10^-19 C                *
 !*          with (1/2)M*(a/tau)**2= kT                           *
@@ -53,14 +53,14 @@
 !*      dt       r^2      r                                      *
 !*                                                               *
 !*                      epsLJ       sigma       sigma            *
-!*                 + 48*----- grad[(-----)^12- (-----)^6]        *
+!*               + 48*----- grad[(-----)^12- (-----)^6] -qE      *
 !*                       kT         r_ij        r_ij             *
 !*                                                               *
 !*  Poisson equation:                                            *
 !*   div(eps(i,j,k) [grad pot(i,j,k)]) = - 4*pi*Gamma*rho(i,j,k) *
 !*                                                               *
 !*   Gamma = Bjerrum/(a*kT) = e**2/(epsLJ*aLJ*kT)                *
-!*     The electrostatic coupling constant, Gamma=5 at T=300 K   *
+!*     The electrostatic coupling constant, Bjerrum=7 at T=300 K *
 !*                                                               *
 !*****************************************************************
 !*  Main program and subroutines:                                *
@@ -69,20 +69,20 @@
 !*    param_APG.h (parameter), PORW21_config.start3 (config)     *     
 !*                                                               *
 !*   /moldyn/     Time cycles, Coulomb and EM fields, L.685-     *
-!*   /sht_forces/ Coulomb forces and LJ potential, L.1225, 1790- *
-!*   /sprmul/     Spring forces, L.1230, 2270-                   * 
-!*   /reflect_endpl/ Particles boundary, L.1435, 2660-           *
+!*   /sht_forces/ Coulomb forces and LJ potential, L.1225, 1815- *
+!*   /sprmul/     Spring forces, L.1230, 2290-                   * 
+!*   /reflect_endpl/ Particles boundary, L.1455, 2680-           *
 !*                                                               *
-!*   /init/       Setups from /RUN_MD/, L.385,3300-              *
-!*   /poissn/     Poisson equation, L.1280, 5060-                *
-!*   /escof3/     ES forces, closed boundary, L.5130,5190-       *
-!*     /bound_s/    for it > 1, L.5530                           * 
-!*   /cresmd/-/avmult/  Conjugate residual method, L.5140,6290-  *
+!*   /init/       Setups from /RUN_MD/, L.385,3320-              *
+!*   /poissn/     Poisson equation, L.1300, 5080-                *
+!*   /escof3/     ES forces, closed boundary, L.5150,5210-       *
+!*     /bound_s/    for it > 1, L.5550                           * 
+!*   /cresmd/-/avmult/  Conjugate residual method, L.5170,6320-  *
 !*    Graphics    /gopen/ (Adobe-2.0 postscript)                 *
 !*                                                               *
 !*   First version : 2004/10/25                                  *
 !*   Second version: 2006/12/18 (Fortran 95)                     *
-!*   Third version : 2025/06/21 (Fortran 2003)                   *
+!*   Third version : 2025/06/23 (Fortran 2003)                   *
 !*                                                               *
 !*****************************************************************
 !*                                                               *
@@ -985,7 +985,7 @@
               status='unknown',position='append',form='formatted')
 !
         write(11,117) k,i3(k),i4(k)
-  117   format('# k=',i6,'  i3,i4=',2i6)
+  117   format('# k=',i6,'  i3,i4=',2i8)
 !
         close(11)
       end if
@@ -1131,8 +1131,8 @@
       cl_first= 2
       call clocks (wtime0,size,cl_first)
 !
-      if(t8.gt.tmax) go to 2000
-      if((wtime0/60.d0).gt.cptot) go to 2000
+!     if(t8.gt.tmax) go to 2000
+!     if((wtime0/60.d0).gt.cptot) go to 2000
 !
       if(istop.ge.1) then
         if(io_pe.eq.1) then
@@ -1259,7 +1259,7 @@
       if(t8.lt.t_poisn) go to 370 
 ! ------------------------------------
       ntimes= 10 
-      if(mod(it,ntimes).eq.1) then
+      if(mod(it,ntimes).eq.0) then
 !**                       +++
         istep= istep +1  
 !         increment of time: dt*ntimes= 0.01x10 = 0.1
@@ -1269,7 +1269,7 @@
         fgy(i)= 0.d0
         fgz(i)= 0.d0
         end do
-!                     *** reset 
+!
         call charges (rho,xg,yg,zg,ch,ql,g,ipar,nCLp)
 !       call water_dens (xg,yg,zg,ipar,nCLp,npqr)
 !
@@ -1282,7 +1282,7 @@
         end do
         end do
 !
-        do k= 1,mz-2   ! inner points i= 1,mx-2
+        do k= 1,mz-2   ! inner points for i= 1,mx-2
         do j= 1,my-2
         do i= 1,mx-2
         rho(i,j,k)= -4.d0*pi*Gamma*rho(i,j,k)/dec2(i,j,k)
@@ -1361,11 +1361,11 @@
 !* Coulomb forces are calculated under a large stride.
 !
         do i= 1,nCLp
-        dtm= dt/am(i)
+        dtm= ntimes*dt/am(i)
 !
-        vxc(i)= vxc(i) +ntimes*fgx(i)*dtm  !<-- Coulomb forces
-        vyc(i)= vyc(i) +ntimes*fgy(i)*dtm
-        vzc(i)= vzc(i) +ntimes*fgz(i)*dtm
+        vxc(i)= vxc(i) +fgx(i)*dtm  !<-- Coulomb forces
+        vyc(i)= vyc(i) +fgy(i)*dtm  !    once in ntimes steps
+        vzc(i)= vzc(i) +fgz(i)*dtm
         end do
 !
         if(t8.le.t_pe) then
@@ -1455,7 +1455,7 @@
 ! 
       call reflect_endpl (xg,yg,zg,vx,vy,vz,ch,am,ag,np,nq,npqr)
 !
-!* After the reflection, vx() -vxc() -> vxs()
+!* After the reflection, separate vx() -vxc() -> vxs()
 !
       do i= 1,nCLp
       vxs(i)= vx(i) -vxc(i)  !<- Charged species
@@ -1480,15 +1480,14 @@
                       wtime3-wtime2,wtime4-wtime3,wtime5-wtime4
   612   format(' t8,wtime=',f6.1,f8.2,' 1-5=',5f7.4)
 !*
+!       write(11,*)
+!       write(11,*) '# t8=',t8
 !
-        write(11,*)
-        write(11,*) '# t8=',t8
-!
-        write(11,*) 'xg - zg, vx - vz...'
-        do i= 1,np+nq
-        write(11,991) i,xg(i),yg(i),zg(i),vx(i),vy(i),vz(i)
-  991   format('i=',i5,3f7.1,2x,1p3d12.3)
-        end do
+!       write(11,*) 'xg - zg, vx - vz...'
+!       do i= 1,np+nq
+!       write(11,991) i,xg(i),yg(i),zg(i),vx(i),vy(i),vz(i)
+! 991   format('i=',i5,3f7.1,2x,1p3d12.3)
+!       end do
 !
         write(11,*) '##### t8,Vtop,Vbot=',t8,Vtop,Vbot
         close(11)
@@ -1790,6 +1789,10 @@
         close(12)
       end if
 ! --------------------------------------- On major node --------------
+      if(mod(it,10).eq.0) then
+        if(t8.gt.tmax) go to 2000
+        if((wtime0/60.d0).gt.cptot) go to 2000
+      end if
       go to 1000
 !
  2000 continue
@@ -1820,7 +1823,7 @@
       real(C_DOUBLE),dimension(npqr0) :: xg,yg,zg,ch,ag,ep,   &    
                                          fsx,fsy,fsz,frx,fry,frz
       real(C_DOUBLE),dimension(npq0) ::  fcx,fcy,fcz,fdx,fdy,fdz 
-      integer(C_INT) ipar,np,nq,nCLp,npqr,istop,istp
+      integer(C_INT) ipar,np,nq,nCLp,npqr,istop
       common/abterm/ istop
 !
       real(C_DOUBLE) rcutcl2,rsq 
@@ -1863,7 +1866,7 @@
       common/dat_typ0/ i0,i2,cnt_recv,disp_recv
 !
       integer(C_INT) isize,isizeZ,isize2,isize4,nc3
-      parameter  (isize=12,isizeZ=24,nc3=isize**2*isizeZ)
+      parameter  (isize=13,isizeZ=25,nc3=isize**2*isizeZ)
       parameter  (isize2=isize*isize,isize4=isize2+isize)
 !
 !                                         nbxs in paramAPGa.h
@@ -1938,9 +1941,9 @@
          end do
 !
          do i = 1,npqr
-         ix= int(isize* (xg(i)-xmin)/xleng +1.0001)
-         iy= int(isize* (yg(i)-ymin)/yleng +1.0001)
-         iz= int(isizeZ*(zg(i)-zmin)/zleng +1.0001)
+         ix= int(isize* (xg(i)-xmin)/xleng +1.5001)
+         iy= int(isize* (yg(i)-ymin)/yleng +1.5001)
+         iz= int(isizeZ*(zg(i)-zmin)/zleng +1.5001)
          if(ix.le.1 .or. ix.ge.isize ) go to 100
          if(iy.le.1 .or. iy.ge.isize ) go to 100
          if(iz.le.1 .or. iz.ge.isizeZ) go to 100
@@ -1971,9 +1974,9 @@
          do i= i0(ipar),i2(ipar)
          nipl(i)= 0
 !
-         ix= int(isize* (xg(i)-xmin)/xleng +1.0001)
-         iy= int(isize* (yg(i)-ymin)/yleng +1.0001)
-         iz= int(isizeZ*(zg(i)-zmin)/zleng +1.0001)
+         ix= int(isize* (xg(i)-xmin)/xleng +1.5001)
+         iy= int(isize* (yg(i)-ymin)/yleng +1.5001)
+         iz= int(isizeZ*(zg(i)-zmin)/zleng +1.5001)
          if(ix.le.1 .or. ix.ge.isize ) go to 210
          if(iy.le.1 .or. iy.ge.isize ) go to 210
          if(iz.le.1 .or. iz.ge.isizeZ) go to 210
@@ -2418,7 +2421,7 @@
       include    'mpif.h'
       include    'paramAPGa.h'
 !
-      integer(C_INT) ipar  !,mintpol  L.4000
+      integer(C_INT) ipar 
 !
       real(C_DOUBLE),dimension(0:mx-1,0:my-1,0:mz-1) :: rho,rho2 
       real(C_DOUBLE),dimension(0:npqr0-1) :: x,y,z,ch
@@ -2569,8 +2572,8 @@
 !
       integer(C_INT) isize,isizeZ,isize2,isize4,nc3
       integer(C_INT) ibind
-      parameter (isize=12,isizeZ=24,nc3=isize**2*isizeZ, &
-                 isize2=isize*isize,isize4=isize2+isize)
+      parameter  (isize=13,isizeZ=25,nc3=isize**2*isizeZ)
+      parameter  (isize2=isize*isize,isize4=isize2+isize)
       common /boxind/ ibind(27,nc3)
 !
       icmax= nc3 + 1
@@ -2578,20 +2581,20 @@
       do i = 1,isize
       ip = i + 1
       im = i - 1
-      if (i.eq.isize) ip = icmax ! 1     ! must be excluded 
-      if (i.eq.1) im = icmax     ! isize ! - otherwise, double counted
+      if (i.eq.isize) ip = isize ! 1     ! must be excluded 
+      if (i.eq.1) im = 1     ! isize ! - otherwise, double counted
 !
       do j = 1,isize
       jp = j + 1
       jm = j - 1
-      if (j.eq.isize) jp= icmax  ! 1 
-      if (j.eq.1) jm= icmax      ! isize 
+      if (j.eq.isize) jp= isize 
+      if (j.eq.1) jm= 1 
 !
       do k = 1,isizeZ
       kp = k + 1
       km = k - 1
-      if (k.eq.isizeZ) kp= icmax   ! icmax   ! kp = 1
-      if (k.eq.1) km = icmax       ! icmax   ! kp = isizeZ
+      if (k.eq.isizeZ) kp= isizeZ
+      if (k.eq.1) km = 1
 !
       n = i + isize*(j-1) + isize2*(k-1)
 !
@@ -2681,7 +2684,11 @@
       include   'paramAPGa.h'
 !
       real(C_DOUBLE),dimension(npqr0) :: xg,yg,zg,ch,vx,vy,vz,am,ag 
-      real(C_DOUBLE) xmax1,ymax1,zmax1,xmin1,ymin1,zmin1
+      real(C_DOUBLE) xmax3,ymax3,zmax3,xmin3,ymin3,zmin3
+!
+      integer(C_INT) isize,isizeZ,isize2,isize4,nc3
+      parameter  (isize=13,isizeZ=25,nc3=isize**2*isizeZ)
+      parameter  (isize2=isize*isize,isize4=isize2+isize)
 !
       integer(C_INT) io_pe
       common/sub_proc/ io_pe
@@ -2714,9 +2721,8 @@
 !* Particle box is smaller than the field box.
 !* grids i= 0, ..., (mx-1)
 !
-      ddx = 0.5d0* xleng/mx
-      ddy = 0.5d0* yleng/my
-      ddz = 0.5d0* zleng/my
+      ddx = 0.5d0* xleng/isize
+      ddy = 0.5d0* yleng/isize
 !
       do i= 1,npqr
       Hpore2 = 0.5d0*Hpore           ! also modify /init/
@@ -2725,31 +2731,31 @@
 ! 
       if(abs(zg(i)).gt.Hpore2) then  ! Outside region
 !
-        xmax1 =  xmax -ddx -ag(i)
-        ymax1 =  ymax -ddy -ag(i)
-        zmax1 =  zmax -ddz 
+        xmax3 =  xmax -ddx -ag(i)
+        ymax3 =  ymax -ddy -ag(i)
+        zmax3 =  zmax -0.5d0* zleng/isizeZ
 !
-        xmin1 =  xmin +ddx +ag(i)
-        ymin1 =  ymin +ddy +ag(i)
-        zmin1 =  zmin +ddz
+        xmin3 =  xmin +ddx +ag(i)
+        ymin3 =  ymin +ddy +ag(i)
+        zmin3 =  zmin +0.5d0* zleng/isizeZ
 !
 !* X,Y sides are closed
 !
-        if(xg(i).lt.xmin1) then
-          xg(i) = 2.d0*xmin1 -xg(i)
+        if(xg(i).lt.xmin3) then
+          xg(i) = 2.d0*xmin3 -xg(i)
           vx(i)= -vx(i)
 !
-        else if(xg(i).gt.xmax1) then
-          xg(i) = 2.d0*xmax1 -xg(i)
+        else if(xg(i).gt.xmax3) then
+          xg(i) = 2.d0*xmax3 -xg(i)
           vx(i)= -vx(i)
         end if
 !
-        if(yg(i).lt.ymin1) then
-          yg(i) = 2.d0*ymin1 -yg(i)
+        if(yg(i).lt.ymin3) then
+          yg(i) = 2.d0*ymin3 -yg(i)
           vy(i)= -vy(i)
 !
-        else if(yg(i).gt.ymax1) then
-          yg(i) = 2.d0*ymax1 -yg(i)
+        else if(yg(i).gt.ymax3) then
+          yg(i) = 2.d0*ymax3 -yg(i)
           vy(i)= -vy(i)
         end if
 !*
@@ -2758,25 +2764,25 @@
 !
 !       if(i.le.np+nq) then
 !
-          if(zg(i).lt.zmin1) then
-            zg(i) = 2.d0*zmin1 -zg(i)
+          if(zg(i).lt.zmin3) then
+            zg(i) = 2.d0*zmin3 -zg(i)
             vz(i)= -vz(i)
 !
-          else if(zg(i).gt.zmax1) then
-            zg(i) = 2.d0*zmax1 -zg(i)
+          else if(zg(i).gt.zmax3) then
+            zg(i) = 2.d0*zmax3 -zg(i)
             vz(i)= -vz(i)
           end if
 !
 !       else if(i.gt.np+nq) then
 !
-!         if(zg(i).lt.zmin1) then
-!           zg(i)= zg(i) +zmax1
+!         if(zg(i).lt.zmin3) then
+!           zg(i)= zg(i) +zmax3
 !
-!         else if(zg(i).gt.zmax1) then
-!           zg(i)= zg(i) +zmin1
+!         else if(zg(i).gt.zmax3) then
+!           zg(i)= zg(i) +zmin3
 !         end if
-!*
 !       end if
+!*
 !
 ! 2) Within the pore region
 !     Specular reflection: v'= v - 2*v_para
@@ -3332,15 +3338,15 @@
       real(C_DOUBLE) ch8,abin,pi,dt,axi,Gamma,rbmax, &
                      vth,tmax,                       &
                      xmax,ymax,zmax,xmin,ymin,zmin,  &
-                     xleng,yleng,zleng,hhl,hhm,hhn,  &
-                     ww1,ww2,ddz,      &
+                     xleng,yleng,zleng,xcent,ycent,zcent, &
+                     ww1,ww2,ddz,awat_diam,          &
                      KJ,KCal,mol,kbT,ranff   
 !
       real(C_DOUBLE) dgaus2,vmax1,vmax2
       real(C_float)  phi,tht,dtwr1,dtwr2,dtwr3
       integer(C_INT) it,is,i,j,k,l,nsg,nseg,ifqq,nps,k1,       &
                      Nzi,Nci,Ncc_pore,Ncc_wide,n0,n1,n2,n3,n4, &
-                     nn3,nn4,ntried,i0,i1,ll,kl,km,kn
+                     nn3,nn4,ntried,i0,i1,ll,kl,km,kn,istp
 !
       common/parm1/ it,is
       common/parm2/ pi,dt,axi,Gamma,rbmax,vth,tmax
@@ -4441,32 +4447,37 @@
         close(11)
       end if
 !
+      xcent= xleng/2.d0
+      ycent= yleng/2.d0
+      zcent= zleng/2.d0
 !
-      kl= xleng/2.8d0
-      km= yleng/2.8d0
-      kn= zleng/2.8d0
+      awat_diam= 3.10d0   !<- diameter
+      kl= 24
+      km= 24
+      kn= 50
+      istp= 0
 !
+      do k= 1,kn  ! 17,34     !<-- (i,j,k) are used for cells 
+      do j= 1,km
+      do i= 1,kl
+      istp= istp +1
+!
+      x0= awat_diam*(i -0.5d0) -xcent  !<- middle center of water
+      y0= awat_diam*(j -0.5d0) -ycent
+      z0= awat_diam*(k -0.5d0) -zcent
+!
+      if(i.eq.1 .and. j.eq.1 .and. (k.le.5 .or. k.ge.kn-4)) then
       if(io_pe.eq.1) then
         OPEN (unit=11,file=praefixc//'.06'//suffix2,             &
               status='unknown',position='append',form='formatted')
 !
-        write(11,*) ' Solvent: kl, km, kn=',kl,km,kn
+        write(11,701) istp,i,j,k,x0,y0,z0
+  701   format(' Solvent: istp,kl,km,kn,x0-z0=',i8,3i5,3f7.2)
         close(11)
+      end if
       end if
 !
 !----------------------------
-      hhl= xleng/kl
-      hhm= yleng/km
-      hhn= zleng/kn
-!
-      do k= 1,kn
-      do j= 1,km
-      do i= 1,kl  !<-- (i,j,k) are used for cells 
-!
-      x0= xmin + hhl*(i -0.5) 
-      y0= ymin + hhm*(j -0.5)
-      z0= zmin + hhn*(k -0.5)      !<- (-c,+c)
-!
       Hpore2= 0.5d0*Hpore 
 !
       if(z0.lt.zmin .or. z0.gt.zmax) go to 530
@@ -5575,12 +5586,12 @@
       end if
 !
 ! if z= zmin or zmax
-!     if(k.eq.0 .or. k.eq.mz-1) then
-!       if(k.eq.   0) pot8(i,j,k)= - Vbot
-!       if(k.eq.mz-1) pot8(i,j,k)= - Vtop
+      if(k.eq.0 .or. k.eq.mz-1) then
+        if(k.eq.   0) pot8(i,j,k)= Vbot
+        if(k.eq.mz-1) pot8(i,j,k)= Vtop
 !
-!       rho8(i,j,k)= 0.d0
-!     end if
+        rho8(i,j,k)= 0.d0
+      end if
 !
       end do
       end do
@@ -6883,9 +6894,9 @@
       ILN= 1
       ILG= 2
 !
-      call lplot1 (2,4,is,time,ekin,emax,0.0,iln,'kin ions',8, &
+      call lplot1 (2,4,is,time,ekin,emax1,0.0,iln,'kin ions',8, &
                  '        ',8,'        ',8)
-      call lplot1 (2,5,is,time,ekn2,emax,0.0,iln,'kin solv',8, &
+      call lplot1 (2,5,is,time,ekn2,emax2,0.0,iln,'kin solv',8, &
                  '        ',8,'        ',8)
       call lplot1 (2,6,is,time,ppot,pmax,pmin,iln,'es ener ',8, &
                  '  time  ',8,'        ',8)
