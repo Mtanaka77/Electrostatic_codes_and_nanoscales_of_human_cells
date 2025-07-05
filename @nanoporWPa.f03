@@ -1,8 +1,8 @@
 !************************************************** 2025/07/03 ***
 !*                                                               *
 !*   ## Molecular Dynamics for ElectroStatic Living Cells ##     *
-!*     @nanoporWatPa.f03 - Short-range Coulomb and LJ forces     *
-!*     and long-range Poisson forces for electrostatic forces    *
+!*     @nanoporWPa.f03 - Short-range Coulomb and LJ forces, and  *
+!*     long-range electrostatic forces of Poisson equation       *
 !*                                                               *
 !*   Author: Motohiko Tanaka, Ph.D.                              *
 !*           Nature and Science Applications, Nagoya 464, Japan. *
@@ -26,11 +26,12 @@
 !*---------------------------------------------------------------*
 !*  >> Note: isize must be chosen such that the sub-box size     *
 !*            Lx/isize > ag(counter) +ag(water)                  *
+!*    ch() charge, am() mass, ag() raduis                        *
+!*    Restriction: p_max = 3                                     *
 !*                                                               *
-!*     ch(1),  am(1),  ag(1)                                     *
-!*     charge  mass    radius                                    *
-!*                                                               *
-!*   Restriction:  p_max = 3                                     *
+!*    a) Upper and lower cells, and middle nanopore region       *
+!*    b) Constant electric field ez1<0, for DNA (-e)*ez1>0       *
+!*    c) Molecular dynamics, dt=0.01, a run about t=500,         *
 !*                                                               *
 !*     x----x-----x-----x    sub-boxes can be used if            *
 !*     |    |   q |     |     1) L_s > rcut_pme (avoid mishit)   *
@@ -46,7 +47,6 @@
 !*     mass........ m= 1.67 10^-24 g, mass of hydrogen           *
 !*     time........ t= 0.01 ps= 10^-14 s                         *
 !*     charge...... 4.8 10^-10 esu= 1.60 10^-19 C                *
-!*          with (1/2)M*(a/tau)**2= kT                           *
 !*                                                               *
 !*  Equation of motion:                                          *
 !*                                                               *
@@ -60,9 +60,7 @@
 !*                                                               *
 !*  Poisson equation:                                            *
 !*   div(eps(i,j,k) [grad pot(i,j,k)]) = - 4*pi*Gamma*rho(i,j,k) *
-!*                                                               *
-!*   Gamma = Bjerrum/(a*kT) = e**2/(epsLJ*aLJ*kT)                *
-!*     The electrostatic coupling constant, Bjerrum=7 at T=300 K *
+!*  Gamma=Bjerrum/(a*kT)=e**2/(epsLJ*aLJ*kT), Bjerrum=7, T=300 K *
 !*                                                               *
 !*****************************************************************
 !*  Main program and subroutines:                                *
@@ -84,7 +82,6 @@
 !*   Graphics    /gopen/ (Adobe-2.0 postscript)                  *
 !*                                                               *
 !*****************************************************************
-!*                                                               *
 !*  Set for a free format of Fortan f90 or f03, convert f77 to,  *
 !*    :%s/^c/!/  change 'c' to ALL columns to '!'                *
 !*    :%s/^C/!/                                                  *
@@ -93,16 +90,14 @@
 !*  For subroutines, write "use, intrinsic :: iso_c_binding",    *
 !*  "implicit none" is recommended for minimizing typoerrors.    *
 !*                                                               *
-!*  Compilation by Linux:                                        *
+!*  Compilation by Linux, and an execution by mpiexec:           *
 !*  % mpif90 -mcmodel=medium -fpic -O2 -o a.out @nanoporWatP.f03 *
 !*    -I/opt/fftw3/include -L/opt/fftw3/lib -lfftw3 &> log       *
-!*                                                               *
-!*  Check the configuration file and execute by:                 *
 !*  % mpiexec -n 6 a.out &                                       *
 !*                                                               *
 !*  First version.  2004/10/25                                   *
 !*  Second version; 2006/12/18 (Complete F90)                    *
-!*  This version;   2025/07/03 (Fortran 2003)                    *
+!*  Third version;  2025/07/03 (Fortran 2003)                    *
 !*                                                               *
 !*****************************************************************
 !
