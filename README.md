@@ -92,7 +92,7 @@ The long-range potential forces with the mesh (i,j,k) coordinates are solved by 
 div(eps(i,j,k) [grad pot(i,j,k)]) = - 4*pi* Gamma*rho(i,j,k). The operator positions of div, grad and eps(i,j,k) are 
 important. There are large potentials of positive V_top and negative V_bottom drops at the end plates, and they are small otherwise.
 
-The simulation code is named @nanoporAPGa.f03 (ca 9,500 lines with graphics), and the parameter file paramAPGa.h and the configuration file PORW21_config.start3. The used subroutines are: RUN_MD, moldyn, sht-forces, sprmul, reflecest_endpl, init, poissn, escof3, cresmd, and graphics. There are many input items to run the simulation; they are the nanopore sizes of R_pore and H_pore, respectively, the number of DNA, counterions and coions, the Cartesian meshes of the Poisson equation, the time step of dt, the potential values of top and bottom plates, and the Gamma value at 300 K, etc. It has N_x= N_y= 80 and N_z= 100 meshes for L_x= L_y= 74 Ang and L_z= 155 Ang, that is approximately 14,000 particles (Ref. 9), and 95,000 particles for TIP5P simulation code (Ref. 10). 
+The simulation code is named @nanoporAPGa.f03 (ca 9,500 lines with graphics), and the parameter file paramAPGa.h and the configuration file PORW21_config.start3. The used subroutines are: RUN_MD, moldyn, sht-forces, sprmul, reflecest_endpl, init, poissn, escof3, cresmd, and graphics. There are many input items to run the simulation; they are the nanopore sizes of R_pore and H_pore, respectively, the number of DNA, counterions and coions, the Cartesian meshes of the Poisson equation, the time step of dt, the potential values of top and bottom plates, and the Gamma value at 300 K, etc. It has N_x= N_y= 80 and N_z= 100 meshes for L_x= L_y= 74 Ang and L_z= 155 Ang, that is approximately 14,000 particles (Ref. 9), and 95,000 particles for the 5-atom TIP5P code (Ref. 10). 
 
 A run of 15 minutes by the 6 cores/3.0 GHz machine is executed for t= 500 with the time step dt=0.01 (x 10^-14 s). 
 This file porw21.773a.pdf for the small potential gap V_top-V_bottom= 1.5 kT with the dielectric constant eps=3 in the pore region shows four plots of potentials, particles of DNA and ions, those of all particles (every 5 water molecules), and the velocity distributions. One can see that the DNA chain moves toward the positive z direction into the cell volume. Moreover, the low dielectric constant eps(\r) in the pore makes the DNA blob more concentrated because counterions easily find negatively-charged DNA, which accelerates it upward to the cell region.
@@ -102,7 +102,7 @@ This file porw21.773a.pdf for the small potential gap V_top-V_bottom= 1.5 kT wit
 The Coulomb forces in the periodic boundary condition are used to study water and hydrate (Ref. 9, "vitroid").
 In this directory, on the other hand, the short-range and long-range Coulomb forces are used for a large system
 in periodic p3m_perform routines with high accuracy in Sec.(2), and also the non-periodic boundary 
-conditions are utilized in Sec.(3). The simulation codes of this directory are updated recently.
+conditions are utilized in Sec.(3). The simulation codes of this directory are updated.
 
 [1] Periodic system, the prototype
 
@@ -118,14 +118,14 @@ the configure file CIMV13_config.START3 (ca. 5,100 lines)
 * @nanoporAPGa.f03 (ca. 9,500 lines with graphics), with 
 the parameter file paramAPGa.h and the configuration file PORV21_config.start3.
 
-* The 5-atom TIP5P water simulation code using bounded Poisson equation is utilized, @nanoporWPa.f03 
-(11,000 lines), with paramWatP.h and PORW31_config.start3. It advances the 5-atom water model of HH-O-LL,
-L being the dummy charge sites, and runs about 10 hours for t= 500 by 6 cores/3.0 GHz. 
+* The 5-atom TIP5P water code using the bounded Poisson equation is utilized, @nanoporWPa.f03 
+(11,000 lines), with paramWatP.h and PORW31_config.start3. It advances the 5-atom water model HH-O-LL,
+L being the dummy charge sites, and a run about 10 hours for t= 500 by 6 cores/3.0 GHz. 
 
 
 Anyone may read, copy and rewrite these simulation codes under 
-GNU General Public License v3.0, by keeping the first top 55 lines in Sec.[2] 
-and 100 lines in Sec.[3] of the codes being intact.
+GNU General Public License v3.0, by keeping intact the first top 55 lines in Sec.[2] 
+and 100 lines in Sec.[3] of the codes.
 
 
 #paramWatPa.h# References ##
