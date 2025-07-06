@@ -118,7 +118,7 @@ the configure file CIMV13_config.START3 (ca. 5,100 lines)
 * @nanoporAPGa.f03 (ca. 9,500 lines with graphics), with 
 the parameter file paramAPGa.h and the configuration file PORV21_config.start3.
 
-* The 5-atom TIP5P water code using the bounded Poisson equation is utilized, @nanoporWPa.f03 
+* The five-atom TIP5P water code using the bounded Poisson equation is utilized, @nanoporWPa.f03 
 (11,000 lines), with paramWatP.h and PORW31_config.start3. It advances the 5-atom water model HH-O-LL,
 L being the dummy charge sites, and a run about 10 hours for t= 500 by 6 cores/3.0 GHz. 
 
