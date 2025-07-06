@@ -1,8 +1,7 @@
 ## Molecular electrostatic dynamics for living human cells ##
 
 The TIP5P water model is selected in the nanopore problem.
-The charge inversion and ion transport phenomena are studied for living cells, and  
-the electrostatic molecular dynamics simulations are execcuted (Refs. 1-5).
+The charge inversion and ion transport phenomena are studied for living cells, and the electrostatic molecular dynamics simulations are execcuted (Refs. 1-5).
 We first talk about the electrostatic code to properly execute molecular dynamics simulation. 
 Back to the theme, the charge inversion and "DNA in nanopores" are simulated.
 The former deals with the periodic boundary system, while the latter treats the 3D non-periodic 
