@@ -3,6 +3,7 @@
 The five-atom TIP5P water model is used to apply the electric field in the nanopore region.
 The charge inversion and ion transport phenomena are studied for living cells, and the 
 molecular electrostatic dynamics is execcuted (Refs. 1-5, 10).
+
 We first talk about the electrostatic code to properly execute molecular dynamics simulation. 
 Back to the theme, the charge inversion and "DNA in nanopores" are simulated.
 The former deals with the periodic boundary system, while the latter treats the 3D non-periodic 
