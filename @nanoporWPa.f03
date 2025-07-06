@@ -1,8 +1,10 @@
 !************************************************** 2025/07/03 ***
 !*                                                               *
-!*   ## Molecular Dynamics for ElectroStatic Living Cells ##     *
-!*     @nanoporWPa.f03 - Short-range Coulomb and LJ forces, and  *
-!*     long-range electrostatic forces of Poisson equation       *
+!*   ## Molecular ElectroStatic Dynamics for Living Cells ##     *
+!*     The electric field is applied to move DNA along the pore. *
+!*     Short-range Coulomb and LJ forces, and electrostatic      *
+!*     long-range forces by the Poisson equation. The five-atom  *
+!*     TIP5P wateer model is used, @nanoporWPa.f03.              *
 !*                                                               *
 !*   Author: Motohiko Tanaka, Ph.D.                              *
 !*           Nature and Science Applications, Nagoya 464, Japan. *
@@ -60,7 +62,7 @@
 !*                                                               *
 !*  Poisson equation:                                            *
 !*   div(eps(i,j,k) [grad pot(i,j,k)]) = - 4*pi*Gamma*rho(i,j,k) *
-!*  Gamma=Bjerrum/(a*kT)=e**2/(epsLJ*aLJ*kT), Bjerrum=7, T=300 K *
+!*   Gamma= Bjerrum/(epsLJ*aLJ*kT), Bjerrum= 7 for T= 300 K      *
 !*                                                               *
 !*****************************************************************
 !*  Main program and subroutines:                                *
@@ -97,7 +99,7 @@
 !*                                                               *
 !*  First version.  2004/10/25                                   *
 !*  Second version; 2006/12/18 (Complete F90)                    *
-!*  Third version;  2025/07/03 (Fortran 2003)                    *
+!*  Third version;  2025/07/03 (Fortran 2003, TIP5P code)        *
 !*                                                               *
 !*****************************************************************
 !
