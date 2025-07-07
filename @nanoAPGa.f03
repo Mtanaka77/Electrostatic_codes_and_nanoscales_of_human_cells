@@ -51,9 +51,9 @@
 !*   m ---- = Sum --------- ------ - fgm*(2*r(i)-r(i+1)-r(i-1))  *
 !*      dt           r^2      r                                  *
 !*                                                               *
-!*                      epsLJ       sigma       sigma            *
+!*                    epsLJ       sigma       sigma              *
 !*               + 48*----- grad[(-----)^12- (-----)^6] -qE      *
-!*                       kT         r_ij        r_ij             *
+!*                     kT         r_ij        r_ij               *
 !*                                                               *
 !*  Poisson equation:                                            *
 !*   div(eps(i,j,k) [grad pot(i,j,k)]) = - 4*pi*Gamma*rho(i,j,k) *
