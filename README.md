@@ -1,8 +1,8 @@
 ## Molecular electrostatic dynamics of living cells ##
 
 The five-atom water model is used to apply the electric field in the nanopore region.
-The charge inversion and ion transport phenomena are studied for living cells, and the 
-molecular electrostatic dynamics is executed (Refs. 1-5, 10).
+The charge inversion and DNA transport phenomena are studied for living cells, and the 
+molecular electrostatic dynamics is simulated (Refs. 1-5, 10).
 We first talk about the electrostatic code to properly execute molecular dynamics simulation, 
 and the charge inversion and finally the DNA transport are simulated.
 The former deals with the periodic boundaries, while the latter treats the 3D non-periodic 
