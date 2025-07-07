@@ -47,9 +47,9 @@
 !*                                                               *
 !*  Equation of motion:                                          *
 !*                                                               *
-!*      dv    Gamma*q'q grad r                                   *
-!*   m ---- = --------- ------ - fgm*(2*r(i)-r(i+1)-r(i-1))      *
-!*      dt       r^2      r                                      *
+!*      dv        Gamma*q'q grad r                               *
+!*   m ---- = Sum --------- ------ - fgm*(2*r(i)-r(i+1)-r(i-1))  *
+!*      dt           r^2      r                                  *
 !*                                                               *
 !*                      epsLJ       sigma       sigma            *
 !*               + 48*----- grad[(-----)^12- (-----)^6] -qE      *
