@@ -43,7 +43,6 @@
 !*     mass........ m= 1.67 10^-24 g                             *
 !*     time........ t= 0.01 ps= 10^-14 s                         *
 !*     charge...... 4.8 10^-10 esu= 1.60 10^-19 C                *
-!*          with (1/2)M*(a/tau)**2= kT                           *
 !*                                                               *
 !*  Equation of motion:                                          *
 !*                                                               *
@@ -59,7 +58,7 @@
 !*   div(eps(i,j,k) [grad pot(i,j,k)]) = - 4*pi*Gamma*rho(i,j,k) *
 !*                                                               *
 !*   Gamma = Bjerrum/(a*kT) = e**2/(epsLJ*aLJ*kT)                *
-!*     The electrostatic coupling constant, Bjerrum=7 at T=300 K *
+!*   The electrostatic coupling constant, Bjerrum=7 at T=300 K   *
 !*                                                               *
 !*****************************************************************
 !*  Main program and subroutines:                                *
@@ -84,7 +83,6 @@
 !*   Third version : 2025/06/23 (Fortran 2003)                   *
 !*                                                               *
 !*****************************************************************
-!*                                                               *
 !*  To get a free format of Fortan f90 or f03, convert f77 into  *
 !*    :%s/^c/!/  Change '~c' of ALL columns to '!'               *
 !*    :%s/^C/!/                                                  *
@@ -94,7 +92,7 @@
 !*  "implicit none" is recommended for minimizing typoerrors.    *
 !*                                                               *
 !*  Compilation by Linux (choose -O0, -O1,...):                  *
-!*  % mpif90 -mcmodel=medium -fpic -o a.out @nanoporAPG.f03 \    *
+!*  % mpif90 -mcmodel=medium -fpic -o a.out @nanoAPGa.f03 \      *
 !*    -I/opt/fftw3/include -L/opt/fftw3/lib -lfftw3 &> log       *
 !*                                                               *
 !*  Check the configuration file and execute by:                 *
