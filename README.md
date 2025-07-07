@@ -1,8 +1,8 @@
-## Molecular electrostatic dynamics for living human cells ##
+## Molecular electrostatic dynamics of living cells ##
 
 The five-atom TIP5P water model is used to apply the electric field in the nanopore region.
 The charge inversion and ion transport phenomena are studied for living cells, and the 
-molecular electrostatic dynamics is execcuted (Refs. 1-5, 10).
+molecular electrostatic dynamics is executed (Refs. 1-5, 10).
 
 We first talk about the electrostatic code to properly execute molecular dynamics simulation. 
 Back to the theme, the charge inversion and "DNA in nanopores" are simulated.
