@@ -97,10 +97,9 @@
 !*                                                               *
 !*  Check the configuration file and execute by:                 *
 !*  % mpiexec -n 6 a.out &                                       *
-!*                                                               *
 !*****************************************************************
 !
-      program nanopore
+      program nanoAPGa
       use, intrinsic :: iso_c_binding 
 !
       include    'mpif.h'
@@ -160,7 +159,7 @@
       call mpi_finalize (ierror)
 !*
       stop
-      end program nanopore
+      end program nanoAPGa
 !
 !
 !--------------------------------------------------------------------
