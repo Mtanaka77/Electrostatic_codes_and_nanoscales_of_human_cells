@@ -1,8 +1,7 @@
 !************************************************** 2025/7/03 ****
-!*                                                               *
-!*   ## Molecular Dynamics of Electrostatic Living Cells ##      *
-!*     @nanoporAPG.f03 - Short-range Coulomb and LJ forces and   *
-!*     long-range Poisson forces for electrostatic living cells  *
+!*   ## Molecular Electrostatic Dynamics for Living Cells ##     *
+!*    @nanoAPGa.f03 - Short-range Coulomb and LJ forces, and     *
+!*    long-range Poisson equation for electrostatic living cells *
 !*                                                               *
 !*   Author: Motohiko Tanaka, Ph.D.                              *
 !*         Nature and Science Applications, Nagoya 464, Japan.   *
