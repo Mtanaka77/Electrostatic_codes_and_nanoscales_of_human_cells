@@ -97,8 +97,8 @@ This file porw21.773a.pdf for the small potential gap V_top-V_bottom= 1.5 kT wit
 
 ### (4) Coulomb-P3M (periodic) or Coulomb-Poisson (non periodic) simulations ###
 
-The Coulomb forces in the periodic boundary condition are used to study water and hydrate (Ref. 9, "vitroid").
-In this directory, on the other hand, the short-range and long-range Coulomb forces are used for a large system
+The Coulomb forces are used to study water and hydrate (Ref. 9, "vitroid").
+In this directory, the short-range and long-range Coulomb forces are used for a large system
 in periodic p3m_perform routines with high accuracy in Sec.(2), and also the non-periodic boundary 
 conditions are utilized in Sec.(3). The simulation codes of this directory are updated periodically.
 
