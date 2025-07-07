@@ -1,4 +1,4 @@
-## Molecular electrostatic dynamics of living cells ##
+## Molecular electrostatic dynamics for living cells ##
 
 The five-atom water model is made to apply the electric field in the nanopore region.
 The charge inversion and DNA transport phenomena are studied for living cells, and the 
@@ -88,12 +88,12 @@ with the coupling constant Bjerrum= Gamma * a_LJ =7 at T= 300 K.
 
 The long-range potential forces with the mesh (i,j,k) coordinates are solved by the Poisson equation, i.e.,
 div(eps(i,j,k) [grad pot(i,j,k)]) = - 4*pi* Gamma*rho(i,j,k). The operator positions of div, grad and eps(i,j,k) are 
-important. There are large potentials of positive V_top and negative V_bottom drops at the end plates, and they are small otherwise.
+important. There are large potentials of positive V_top and negative V_bot drops at the end plates, and they are small otherwise.
 
-The simulation code is named @nanoporAPGa.f03 (ca 9,500 lines with graphics), and the parameter file paramAPGa.h and the configuration file PORW21_config.start3. The used subroutines are: RUN_MD, moldyn, sht-forces, sprmul, reflecest_endpl, init, poissn, escof3, cresmd, and graphics. There are many input items to run the simulation; they are the nanopore sizes of R_pore and H_pore, respectively, the number of DNA, counterions and coions, the Cartesian meshes of the Poisson equation, the time step of dt, the potential values of top and bottom plates, and the Gamma value at 300 K, etc. It has N_x= N_y= 80 and N_z= 100 meshes for L_x= L_y= 74 Ang and L_z= 155 Ang, that is approximately 14,000 particles (Ref. 9), and 95,000 particles for the five-atom TIP5P model of water (Ref. 10). 
+The simulation code is named @nanoAPGa.f03 (ca 9,500 lines with graphics), and the parameter file paramAPGa.h and the configuration file PORW21_config.start3. The used subroutines are: RUN_MD, moldyn, sht-forces, sprmul, reflecest_endpl, init, poissn, escof3, cresmd, and graphics. There are many input items to run the simulation; they are the nanopore sizes of R_pore and H_pore, respectively, the number of DNA, counterions and coions, the Cartesian meshes of the Poisson equation, the time step of dt, the potential values of top and bottom plates, and the Gamma value at 300 K, etc. It has N_x= N_y= 80 and N_z= 100 meshes for L_x= L_y= 74 Ang and L_z= 155 Ang, that is approximately 14,000 particles (Ref. 9), and 95,000 particles for the five-atom TIP5P model of water (Ref. 10). 
 
 A run of 15 minutes by the 6 cores/3.0 GHz machine is executed for t= 500 with the time step dt=0.01 (x 10^-14 s), while for 10 hours in the TIP5P simulation code. 
-This file porw21.773a.pdf for the small potential gap V_top-V_bottom= 1.5 kT with the dielectric constant eps=3 in the pore region shows four plots of potentials, particles of DNA and ions, those of all particles (every 5 water molecules), and the velocity distributions. One can see that the DNA chain moves toward the positive z direction into the cell volume. Moreover, the low dielectric constant eps(\r) in the pore makes the DNA blob more concentrated because counterions easily find negatively-charged DNA, which accelerates it upward to the cell region.
+This file porw21.773a.pdf for the small potential gap V_top-V_bot= 1.5 kT with the dielectric constant eps=3 in the pore region shows four plots of potentials, particles of DNA and ions, those of all particles (every 5 water molecules), and the velocity distributions. One can see that the DNA chain moves toward the positive z direction into the cell volume. Moreover, the low dielectric constant eps(\r) in the pore makes the DNA blob more concentrated because counterions easily find negatively-charged DNA, which accelerates it upward to the cell region.
 
 ### (4) Coulomb-P3M (periodic) or Coulomb-Poisson (non periodic) simulations ###
 
@@ -113,10 +113,10 @@ the configure file CIMV13_config.START3 (ca. 5,100 lines)
 
 [3] The non-periodic and periodic/bounded systems, the transport of DNA molecule
 
-* @nanoporAPGa.f03 (ca. 9,500 lines with graphics), with 
+* @nanoAPGa.f03 (ca. 9,500 lines with graphics), with 
 the parameter file paramAPGa.h and the configuration file PORV21_config.start3.
 
-* The five-atom TIP5P water code using the bounded Poisson equation is utilized, @nanoWatPa.f03 
+* The five-atom TIP5P water model using the bounded Poisson equation is utilized, @nanoWatPa.f03 
 (11,000 lines), with paramWatP.h and PORW31_config.start3. It advances the 5-atom water model HH-O-LL,
 L being the dummy charge sites, and a run about 10 hours for t= 500 by 6 cores/3.0 GHz. 
 
