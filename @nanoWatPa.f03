@@ -1,10 +1,10 @@
 !************************************************** 2025/07/03 ***
 !*                                                               *
 !*   ## Molecular ElectroStatic Dynamics for Living Cells ##     *
-!*     The electric field is applied to move DNA along the pore. *
+!*     The electric field to move DNA along the pore is applied. *
 !*     Short-range Coulomb and LJ forces, and electrostatic      *
-!*     long-range forces by the Poisson equation. The five-atom  *
-!*     TIP5P wateer model is used, @nanoWatPa.f03.               *
+!*     long-range forces by the Poisson equation are executed.   *
+!*     The five-atom TIP5P water model is made, @nanoWatPa.f03.  * 
 !*                                                               *
 !*   Author: Motohiko Tanaka, Ph.D.                              *
 !*           Nature and Science Applications, Nagoya 464, Japan. *
@@ -72,15 +72,16 @@
 !*    param_WatPa.h (parameter), PORW31_config.start3 (config)   *     
 !*                                                               *
 !*   /moldyn/     Time cycles, Coulomb and ES fields, L.670-     *
-!*   /realteil/   Coulomb ans LJ forces, L.1665, 2270-           *
-!*   /sprmul/     Spring forces, L.1670, 3350-                   * 
-!*   /reflect_endpl/ Particles boundary, L.1895, 3770-           *
+!*   /realteil/   Coulomb ans LJ forces, L.1660, 2270-           *
+!*   /sprmul/     Spring forces, L.1665, 3350-                   * 
+!*   /reflect_endpl/ Particles boundary, L.1890, 3760-           *
 !*                                                               *
-!*   /init/       Initial setup by /RUN_MD/,/init/, L.430,4430-  *
+!*   /init/       Initial setup from /RUN_MD/, L.430,4420-       *
+!*                For the short DNA, an order AGCT is assumed.   *
 !*   /poissn_eq/  Poisson solver, L.1730, 6710-                  *
-!*   /escof3/     Large-scale electrostatics, L.6780,6840-       *
+!*   /escof3/     Large-scale electrostatics, L.6780,6830-       *
 !*     /bound_s/    for it >= 1, L.6780,7060                     * 
-!*   /cresmd/-/avmult/  Conjugate residual method, L.6790,7810-  *
+!*   /cresmd/-/avmult/  Conjugate residual method, L.6790,7820-  *
 !*   Graphics    /gopen/ (Adobe-2.0 postscript)                  *
 !*                                                               *
 !*****************************************************************
@@ -99,7 +100,7 @@
 !*                                                               *
 !*  First version.  2004/10/25                                   *
 !*  Second version; 2006/12/18 (Complete F90)                    *
-!*  Third version;  2025/07/03 (Fortran 2003, TIP5P code)        *
+!*  Third version;  2025/07/03 (Fortran 2003, TIP5P model)       *
 !*                                                               *
 !*****************************************************************
 !
@@ -4969,12 +4970,14 @@
         write(11,*) '    np= n_p*n_lp (READ_CONF)'
         close(11)
       end if
-!*
+!
+! --------------------------------------------------------
+!*  PO_4 and sugar ring, mod(i,2) <- 1,2, 3,4,... 
+! --------------------------------------------------------
+!
       q_PE= 0.d0
 !
       do i= 1,np
-!   PO_4 and sugar ring, mod(i,2) <- 1,2, 3,4,... 
-!
       if(mod(i,2).eq.1) then   
         ch(i)= -1.d0                 ! PO_4
         if(ifbase.eq.2) ch(i)= 0.d0  !  neutral chain 
