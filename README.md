@@ -1,6 +1,6 @@
 ## Molecular electrostatic dynamics for living cells ##
 
-The five-atom water model is made to apply the electric field in the nanopore region.
+The five-atom water model is used to apply the electric field in the nanopore region.
 The charge inversion and DNA transport phenomena are studied for living cells, and the 
 molecular electrostatic dynamics is simulated (Refs. 1-5, 10).
 We first mention the electrostatic code to execute molecular dynamics, 
