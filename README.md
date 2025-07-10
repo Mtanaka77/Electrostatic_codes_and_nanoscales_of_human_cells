@@ -1,6 +1,7 @@
 ## Molecular electrostatic dynamics for living cells ##
 
-The five-atom water model is used to apply the electric field in the nanopore region.
+The five-atom water model is applied to see the electric field in the nanopore region
+(the Sec.3 below).
 The charge inversion and DNA transport phenomena are studied for living cells, and the 
 molecular electrostatic dynamics is simulated (Refs. 1-5, 10).
 We first mention the electrostatic code to execute molecular dynamics, 
@@ -79,7 +80,7 @@ which is a different area from the molecular dynamics simulation.
 a_unit= 1.00d-08 cm, and \epsilon=78 at 27 deg Celsius.)
 
 
-### (3) Transportation of DNA molecule through nanopores ###
+### (3) DNA molecule transport through nanopores ###
 
 The transport of DNA with counterions and coions is studied, where a narrow nanopore in the z-direction seperates downside and upside regions (Ref. 5, Ref. 10 below). The cylinder of the pore is assumed 1.5 nm wide and 5.6 nm high, which is embedded in 7.4 nm in the x,y directions and 15.5 nm in the z direction. The short-range Coulomb and Lennard-Jones forces are treated, i.e., 
 m_i dv_i/dt = Sum_i (Gamma q'q_i/r_ij^2) (grad r/r) - fgm *(2 r(i)-r(i+1)-r(i-1)) 
@@ -87,13 +88,13 @@ m_i dv_i/dt = Sum_i (Gamma q'q_i/r_ij^2) (grad r/r) - fgm *(2 r(i)-r(i+1)-r(i-1)
 with the coupling constant Bjerrum= Gamma * a_LJ =7 at T= 300 K.
 
 The long-range potential forces with the mesh (i,j,k) coordinates are solved by the Poisson equation, i.e.,
-div(eps(i,j,k) [grad pot(i,j,k)]) = - 4*pi* Gamma*rho(i,j,k). The operator positions of div, grad and eps(i,j,k) are 
-important. There are large potentials of positive V_top and negative V_bot drops at the end plates, and they are small otherwise.
+div(eps(i,j,k) [grad pot(i,j,k)]) = - 4*pi* Gamma*rho(i,j,k). The operator positions of div, grad and eps(i,j,k) are important. There are large potentials of positive V_top and negative V_bot drops at the end plates, and they are small otherwise.
 
 The simulation code is named @nanoAPGa.f03 (ca 9,500 lines with graphics), and the parameter file paramAPGa.h and the configuration file PORW21_config.start3. The used subroutines are: RUN_MD, moldyn, sht-forces, sprmul, reflecest_endpl, init, poissn, escof3, cresmd, and graphics. There are many input items to run the simulation; they are the nanopore sizes of R_pore and H_pore, respectively, the number of DNA, counterions and coions, the Cartesian meshes of the Poisson equation, the time step of dt, the potential values of top and bottom plates, and the Gamma value at 300 K, etc. It has N_x= N_y= 80 and N_z= 100 meshes for L_x= L_y= 74 Ang and L_z= 155 Ang, that is approximately 14,000 particles (Ref. 9, 10), and 95,000 particles for the five-atom TIP5P model of water (Ref. 10). 
 
 A run of 15 minutes by the 6 cores/3.0 GHz machine is executed for t= 500 with the time step dt=0.01 (x 10^-14 s), while for 10 hours in the TIP5P simulation code. 
 This file porw21.773a.pdf for the small potential gap V_top-V_bot= 1.5 kT with the dielectric constant eps=3 in the pore region shows four plots of potentials, particles of DNA and ions, those of all particles (every 5 water molecules), and the velocity distributions. One can see that the DNA chain moves toward the positive z direction into the cell volume. Moreover, the low dielectric constant eps(\r) in the pore makes the DNA blob more concentrated because counterions easily find negatively-charged DNA, which accelerates it upward to the cell region.
+The water molecules are important by using the five-water water model @nanoWatPa.f03 because they are accelerated to the z-directions by electric potentials, shown in porw31.773a.pdf. 
 
 ### (4) Coulomb-P3M (periodic) or Coulomb-Poisson (non periodic) simulations ###
 
