@@ -1,7 +1,7 @@
 ## Molecular electrostatic dynamics for living human cells ##
 
 To know the behavior of the long-range electrics (Poisson equation) in the living cells, 
-the five-atom water model TIP5P is used (the Sec.3 below). You can skip Sec.1 and Sec.2 
+the five-atom water model TIP5P is used in the Sec.3 below. You can skip Sec.1 and Sec.2 
 in your choice.
 
 The charge inversion and DNA transport phenomena are studied for living cells, and the 
