@@ -1,7 +1,8 @@
 ## Molecular electrostatic dynamics for living cells ##
 
-The five-atom water model is applied to see the electric field in the nanopore region
-(the Sec.3 below).
+To know the behavior of the electrics of Poisson equation in the nanopore region, 
+the five-atom water model TIP5P is used (the Sec.3 below). You can skip Sec.1 and Sec.2.
+
 The charge inversion and DNA transport phenomena are studied for living cells, and the 
 molecular electrostatic dynamics is simulated (Refs. 1-5, 10).
 We first mention the electrostatic code to execute molecular dynamics, 
