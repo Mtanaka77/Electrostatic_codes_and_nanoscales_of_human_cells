@@ -94,7 +94,7 @@ The simulation code is named @nanoAPGa.f03 (ca 9,500 lines with graphics), and t
 
 A run of 15 minutes by the 6 cores/3.0 GHz machine is executed for t= 500 with the time step dt=0.01 (x 10^-14 s), while for 10 hours in the TIP5P simulation code. 
 This file porw21.773a.pdf for the small potential gap V_top-V_bot= 1.5 kT with the dielectric constant eps=3 in the pore region shows four plots of potentials, particles of DNA and ions, those of all particles (every 5 water molecules), and the velocity distributions. One can see that the DNA chain moves toward the positive z direction into the cell volume. Moreover, the low dielectric constant eps(\r) in the pore makes the DNA blob more concentrated because counterions easily find negatively-charged DNA, which accelerates it upward to the cell region.
-The water molecules are important by using the five-water water model @nanoWatPa.f03 because they are accelerated to the z-directions by electric potentials, shown in porw31.773a.pdf. 
+The water molecules are important by using the five-water water model @nanoWatPa.f03 because they are accelerated to the z-direction by electric potentials, shown in porw31.773a.pdf. 
 
 ### (4) Coulomb-P3M (periodic) or Coulomb-Poisson (non periodic) simulations ###
 
