@@ -1,6 +1,6 @@
 ## Molecular electrostatic dynamics for living cells ##
 
-To know the behavior of the electrics of Poisson equation in the nanopore region, 
+To know the behavior of the long-range electrics of Poisson equation in the living cells, 
 the five-atom water model TIP5P is used (the Sec.3 below). You can skip Sec.1 and Sec.2.
 
 The charge inversion and DNA transport phenomena are studied for living cells, and the 
