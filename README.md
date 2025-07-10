@@ -120,8 +120,8 @@ the parameter file paramAPGa.h and the configuration file PORV21_config.start3.
 
 * The five-atom TIP5P water model using the bounded Poisson equation is utilized, @nanoWatPa.f03 
 (11,000 lines), with paramWatP.h and PORW31_config.start3. In every time step it calculates
-the Coulomb forces of HH-O-LL, L being the dummy charge sites. It runs about 10 hours for t= 500
-by 6 cores/3.0 GHz. 
+the Coulomb forces of HH-O-LL, L being the dummy charge sites, on top of the time-consuming Poisson equation.
+It runs about 10 hours for t= 500 by 6 cores/3.0 GHz. 
 
 
 Anyone may read, copy and rewrite these simulation codes under 
