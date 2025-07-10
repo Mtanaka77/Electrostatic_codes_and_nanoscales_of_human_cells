@@ -1,8 +1,8 @@
 ## Molecular electrostatic dynamics for living human cells ##
 
-To know the behavior of the long-range electrics (Poisson equation) in the living cells, 
-the five-atom water model of TIP5P is used in the Sec.3 below. You can rewrite the code in
-your choice, and may skip Sec.1 and Sec.2.
+To understand the behavior of the long-range electrics (Poisson equation) in the living cells, 
+the five-atom water model of TIP5P is utilized in Sec.3 below. You can rewrite the code 
+as you may wish, and skip Sec.1 and Sec.2.
 
 The charge inversion and DNA transport phenomena are studied for living cells, and the 
 molecular electrostatic dynamics is simulated (Refs. 1-5, 10).
@@ -103,8 +103,8 @@ The water molecules are important by using the five-water water model @nanoWatPa
 
 The Coulomb forces are initiallized for water and hydrate (Ref. 9, "vitroid").
 In this directory, the short-range and long-range Coulomb forces are used for a large system
-in periodic p3m_perform routines with high accuracy in Part [2], and the non-periodic boundary 
-conditions are utilized in Part [3]. 
+in periodic p3m_perform routines with high accuracy in Sec.(2), and the non-periodic boundary 
+conditions are utilized in Sec.(3). 
 
 [1] Periodic system, the prototype
 
