@@ -1,7 +1,7 @@
 # Praefix-String......................: PORW21
 # Non-neutral Pl (if =1)..............:            1
 # Maximum cpu time for run,.1430 Min..:   60.0000000000000000
-# Physikalische Endzeit...............:  500.1000000000000000
+# Physikalische Endzeit...............:  400.1000000000000000
 # Diskretisierungs-Schritt....0.01....:    0.0100000000000000
 # Write interval for time,    iwrt1...:   12.5000000000000000 
 # Write interval for restart, iwrt2,..:  200.0000000000000000 
