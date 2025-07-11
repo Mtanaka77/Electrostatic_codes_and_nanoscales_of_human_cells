@@ -1,39 +1,36 @@
-!************************************************** 2025/07/03 ***
+!************************************************** 2025/07/01 ***
 !*                                                               *
-!*   ## Molecular ElectroStatic Dynamics for Living Cells ##     *
-!*     The electric field to move DNA along the pore is applied. *
-!*     Short-range Coulomb and LJ forces, and electrostatic      *
-!*     long-range forces by the Poisson equation are executed.   *
-!*     The five-atom TIP5P water model is made, @nanoWatPa.f03.  * 
+!*   ## Molecular Dynamics for ElectroStatic Living Cells ##     *
+!*     @nanoporWatPa.f03 - Short-range Coulomb and LJ forces     *
+!*     and long-range Poisson forces for electrostatic forces    *
 !*                                                               *
 !*   Author: Motohiko Tanaka, Ph.D.                              *
 !*           Nature and Science Applications, Nagoya 464, Japan. *
 !*   This code is permitted by GNU General Public License v3.0.  *
 !*                                                               *
-!*     The short-range Coulomb and LJ forces and the long-range  *
-!*   electrostatic effects of the Poisson equation are treated   *
+!*     The short-range Coulomb forces and the long-range         *
+!*   electrostatic effects by the Poisson equation are treated   *
 !*   in this simulation code.                                    *
 !*                                                               *
-!*     Molecular dynamics simulation of nanoscale pores in 3D    *
-!*   electrostatic effects by the TIP3P code is updated in 2025. *
+!*     This molecular dynamics simulation of nanoscale pores     *
+!*   in 3D electrostatic effects was updated in April 2025.      *
 !*   The initial configuration of water and hydrate is made by   *
-!*   Dr.M.Matsumoto, https://github.com/vitroid.                 *  
+!*   TIP4 model in Dr.M.Matsumoto, https://github.com/vitroid.   *  
 !*                                                               *
 !*   References:                                                 *
 !*   1) Y.Rabin and M.Tanaka, DNA in nanopores: Counterion cond- * 
 !*    ensation and..., Phys.Rev.Letters, vol.94, 148103 (2005).  *
-!*   2) M.Tanaka, https://github.com/Mtanaka77/                  *
-!*    Molecular_dynamics_for_electrostatic_living_human_cells    *
+!*   2) M. Tanaka, https://github.com/Mtanaka77/                 *
+!*    Electrostatic_molecular_dynamics_of_living_human_cells     *
 !*                                                               *
 !*---------------------------------------------------------------*
 !*  >> Note: isize must be chosen such that the sub-box size     *
 !*            Lx/isize > ag(counter) +ag(water)                  *
-!*    ch() charge, am() mass, ag() raduis                        *
-!*    Restriction: p_max = 3                                     *
 !*                                                               *
-!*    a) Upper and lower cells, and middle nanopore region       *
-!*    b) Constant electric field ez1<0, for DNA (-e)*ez1>0       *
-!*    c) Molecular dynamics, dt=0.01, a run about t=500,         *
+!*     ch(1),  am(1),  ag(1)                                     *
+!*     charge  mass    radius                                    *
+!*                                                               *
+!*   Restriction:  p_max = 3                                     *
 !*                                                               *
 !*     x----x-----x-----x    sub-boxes can be used if            *
 !*     |    |   q |     |     1) L_s > rcut_pme (avoid mishit)   *
@@ -49,12 +46,13 @@
 !*     mass........ m= 1.67 10^-24 g, mass of hydrogen           *
 !*     time........ t= 0.01 ps= 10^-14 s                         *
 !*     charge...... 4.8 10^-10 esu= 1.60 10^-19 C                *
+!*          with (1/2)M*(a/tau)**2= kT                           *
 !*                                                               *
 !*  Equation of motion:                                          *
 !*                                                               *
-!*      dv        Gamma*q'q grad r                               *
-!*   m ---- = Sum --------- ------ - fgm*(2*r(i)-r(i+1)-r(i-1))  *
-!*      dt           r^2      r                                  *
+!*      dv    Gamma*q'q grad r                                   *
+!*   m ---- = --------- ------ - fgm*(2*r(i)-r(i+1)-r(i-1))      *
+!*      dt       r^2      r                                      *
 !*                                                               *
 !*               epsLJ       sigma       sigma                   *
 !*          + 48*----- grad[(-----)^12- (-----)^6] + q*E(i,j,k)  *
@@ -62,49 +60,54 @@
 !*                                                               *
 !*  Poisson equation:                                            *
 !*   div(eps(i,j,k) [grad pot(i,j,k)]) = - 4*pi*Gamma*rho(i,j,k) *
-!*   Gamma= Bjerrum/(epsLJ*aLJ*kT), Bjerrum= 7 for T= 300 K      *
+!*                                                               *
+!*   Gamma = Bjerrum/(a*kT) = e**2/(epsLJ*aLJ*kT)                *
+!*     The electrostatic coupling constant, Bjerrum=7 at T=300 K *
 !*                                                               *
 !*****************************************************************
 !*  Main program and subroutines:                                *
 !*   Periodic (x,y) and bounded (z) boundaries                   *
 !*                                                               *
-!*   Program nanopore: MPI setup -> /Run_MD/ preparation         *
+!*   Program nanopore  MPI setup -> setups /Run_MD/ -> /moldyn/  *
 !*    param_WatPa.h (parameter), PORW31_config.start3 (config)   *     
 !*                                                               *
-!*   /moldyn/     Time cycles, Coulomb and ES fields, L.670-     *
-!*   /realteil/   Coulomb ans LJ forces, L.1660, 2270-           *
-!*   /sprmul/     Spring forces, L.1665, 3350-                   * 
-!*   /reflect_endpl/ Particles boundary, L.1890, 3760-           *
+!*   /moldyn/     Time cycles, Coulomb and ES fields, L.675-     *
+!*   /realteil/   Coulomb ans LJ forces, L.1665, 2270-           *
+!*   /sprmul/     Spring forces, L.1670, 3350-                   * 
+!*   /reflect_endpl/ Particles boundary, L.1895, 3770-           *
 !*                                                               *
-!*   /init/       Initial setup from /RUN_MD/, L.430,4420-       *
-!*                For the short DNA, an order AGCT is assumed.   *
+!*   /init/       Setups from /RUN_MD/, L.430,4430-              *
 !*   /poissn_eq/  Poisson solver, L.1730, 6710-                  *
-!*   /escof3/     Large-scale electrostatics, L.6780,6830-       *
-!*     /bound_s/    for it >= 1, L.6780,7060                     * 
-!*   /cresmd/-/avmult/  Conjugate residual method, L.6790,7820-  *
-!*   Graphics    /gopen/ (Adobe-2.0 postscript)                  *
+!*   /escof3/     Large-scale electrostatic forces, L.6780,6840- *
+!*     /bound_s/    for it > 1, L.6780,7060                      * 
+!*   /cresmd/-/avmult/  Conjugate residual method, L.6790,7810-  *
+!*    Graphics    /gopen/ (Adobe-2.0 postscript)                 *
 !*                                                               *
 !*****************************************************************
-!*  Set for a free format of Fortan f90 or f03, convert f77 to,  *
-!*    :%s/^c/!/  change 'c' to ALL columns to '!'                *
+!*                                                               *
+!*  To get a free format of Fortan f90 or f03, convert f77       *
+!*  format into:                                                 *
+!*    :%s/^c/!/  change 'c' of ALL column one to '!'             *
 !*    :%s/^C/!/                                                  *
-!*    tr 'A-Z' 'a-z' <@nanoWatP.f >@nanoWatP.f03                 *
+!*    tr 'A-Z' 'a-z' <@nanopor.f >@nanopor.f03"                  *
 !*                                                               *
 !*  For subroutines, write "use, intrinsic :: iso_c_binding",    *
 !*  "implicit none" is recommended for minimizing typoerrors.    *
 !*                                                               *
-!*  Compilation by Linux, and an execution by mpiexec:           *
-!*  % mpif90 -mcmodel=medium -fpic -O2 -o a.out @nanopWatPa.f03  *
+!*  Compilation by Linux:                                        *
+!*  % mpif90 -mcmodel=medium -fpic -o a.out @nanoporWatP.f03 \   *
 !*    -I/opt/fftw3/include -L/opt/fftw3/lib -lfftw3 &> log       *
+!*                                                               *
+!*  Check the configuration file and execute by:                 *
 !*  % mpiexec -n 6 a.out &                                       *
 !*                                                               *
 !*  First version.  2004/10/25                                   *
 !*  Second version; 2006/12/18 (Complete F90)                    *
-!*  Third version;  2025/07/03 (Fortran 2003, TIP5P model)       *
+!*  This version;   2025/07/03 (Fortran 2003)                    *
 !*                                                               *
 !*****************************************************************
 !
-      program nanoWatPa
+      program nanopore
       use, intrinsic :: iso_c_binding 
 !
       include    'mpif.h'
@@ -179,7 +182,7 @@
       call mpi_finalize (ierror)
 !*
       stop
-      end program nanoWatPa
+      end program nanopore
 !
 !
 !--------------------------------------------------------------------
@@ -1171,9 +1174,9 @@
 !     ww2  = 34.d0 /wwat   ! Cl, 1.75 Ang, Cl- 1.81 Ang
 !
       vth = sqrt(epsLJ)
-      vmax0= vth/sqrt(am(1))         !<-- mass of PO_4
+      vmax0= vth/sqrt(am(2))         !<-- mass of PO_4,already am/wwat
       vmax1= vth/sqrt(38.d0/wwat)    !<-- mass of K(+)
-      vmax2= vth/sqrt(wwat)          !<-- water
+      vmax2= vth/sqrt(18.d0/wwat)    !<-- water
 !
 !
       dt0= dt
@@ -1191,8 +1194,6 @@
         istep= 0  !<-- do for the Poisson solver
 !
 !* Solvent - water
-!     vmax1= 4.d0*vth/sqrt(38.d0)  !<- mass of K(+)
-!     vmax2= 4.d0*vth/sqrt(wwat)
         do j= 1,np
         vx(j)= dgaus2(vmax0)
         vy(j)= dgaus2(vmax0)
@@ -4055,8 +4056,8 @@
       read(08,'(a40,f20.0)') text1,dtwr2    ! Write out for iwrt2 
       read(08,'(a40,f20.0)') text1,dtwr3    ! Write out for iwrt3 
 !
-      read(08,'(a40,f20.0)') text1,Rpore    ! Radius of a nanopore  7.5 Ang
-      read(08,'(a40,f20.0)') text1,Hpore    ! Height of a nanopore 55.0 Ang
+      read(08,'(a40,f20.0)') text1,Rpore    ! Radius of a nanopore  5.4 Ang
+      read(08,'(a40,f20.0)') text1,Hpore    ! Height of a nanopore 56.0 Ang
       read(08,'(a40,f20.0)') text1,diel2    ! Dielectric constant of membrane diel2=2
 !
       read(08,'(a40,i12)') text1,n_p        ! Zahl der Polymere 0,1 or 2
@@ -4970,14 +4971,12 @@
         write(11,*) '    np= n_p*n_lp (READ_CONF)'
         close(11)
       end if
-!
-! --------------------------------------------------------
-!*  PO_4 and sugar ring, mod(i,2) <- 1,2, 3,4,... 
-! --------------------------------------------------------
-!
+!*
       q_PE= 0.d0
 !
       do i= 1,np
+!   PO_4 and sugar ring, mod(i,2) <- 1,2, 3,4,... 
+!
       if(mod(i,2).eq.1) then   
         ch(i)= -1.d0                 ! PO_4
         if(ifbase.eq.2) ch(i)= 0.d0  !  neutral chain 
@@ -6203,11 +6202,8 @@
 !*  Velocity for i= np+1,npqr  *
 !*******************************
 !
-!   vmax0= vth/sqrt(am(1))  !<-- mass of PO_4
-!   vmax1= vth/sqrt(38.d0)  !<-- mass of K(+)
-!   vmax2= vth/sqrt(wwat)
       vmax1= vth/sqrt(38.d0/wwat)  !<-- mass
-      vmax2= vth/sqrt(wwat)
+      vmax2= vth/sqrt(18.d0/wwat)
 !
       do j= np+1,nCLp
       vx(j)= 0 !dgaus2(vmax1)
@@ -6541,18 +6537,18 @@
       integer(C_INT) i,ix,iy,iz,k,ILN
       real(C_float)  aiv,xsc(101),fvx(101),fvy(101),fvz(101), &
                      fmax1,fmax2,fmax3,fmin1,fmin2,fmin3
-      real(C_DOUBLE) vmax1,vmax2
+      real(C_DOUBLE) vmax0,vmax2
 !
 !*******************************
 !*  Ions only.                 *
 !*******************************
 !
-      vmax1= 10.d0*vth/sqrt(38.d0)  !<- mass of K(+)
-      vmax2= 10.d0*vth/sqrt(wwat)   !<- water
+      vmax0= 10.d0*vth/sqrt(218.d0/wwat)  !<- mass of K(+)
+      vmax2= 10.d0*vth/sqrt( 18.d0/wwat)   !<- water
 !     vmax2=  6.d0*vth/sqrt(wwat)   !<- water
 !
 !* (1) Coulomb particles.
-      aiv= 50./vmax1
+      aiv= 50./vmax0
 !
       do k= 1,101
       xsc(k)= (k -51)/aiv
