@@ -2,7 +2,7 @@
 
 To understand the behavior of the long-range electrics (Poisson equation) in the living cells, 
 the five-atom water model of TIP5P is utilized in Sec.3 below. You can rewrite the code 
-as you may wish, and skip Sec.1 and Sec.2.
+as you may wish, and skip general electrics in Sec.1 and Sec.2.
 
 The charge inversion and DNA transport phenomena are studied for living cells, and the 
 molecular electrostatic dynamics is simulated (Refs. 1-5, Ref. 10).
