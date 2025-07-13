@@ -433,7 +433,7 @@
 !                *******                  ****  do not alter.
         read(12) kstart0,it,np,nq,nCLp,nr,npqr
         read(12) ifrgrod,ifrodco,ifbase
-!                %%%%%%% %%%%%%% %%%%%%
+! 
         read(12) t8,xg,yg,zg,vxs,vys,vzs,ch,am,ag,ep
         read(12) vxc,vyc,vzc
 !
@@ -1077,13 +1077,19 @@
 !
 !* For ions.
 !
-!   ww1  = 38.d0  ! K
-!   ww2  = 34.d0  ! Cl
+!     if(mod(i,2).eq.1) then   
+!       ch(i)= -1.d0                 ! PO_4
+!       am(i)=  94.d0/wwat
+!       ch(i)= 0.d0                  ! Sugar ring
+!       am(i)= 218.d0/wwat
+!       ww1  = 38.d0/wwat  ! K,  2.27 Ang, K(+) 2.98 Ang
+!       ww2  = 34.d0/wwat  ! Cl
 !
       vth = sqrt(epsLJ)
-      vmax0= vth/sqrt(am(2))  !<-- mass of PO_4
-      vmax1= vth/sqrt(38.d0/wwat)  !<-- mass of K(+)
-      vmax2= vth/sqrt(18.d0/wwat)   !<-- water
+!     vmax0= vth/sqrt(218.d0/wwat)   !<-- mass of sugar,am(2),218./wwat
+      vmax0= vth/sqrt( 94.d0/wwat)   !<-- mass of PO_4,am(1)
+      vmax1= vth/sqrt( 38.d0/wwat)   !<-- mass of K(+)
+      vmax2= vth/sqrt( 18.d0/wwat)   !<-- water
 !
       if(kstart.eq.0) then
 !
@@ -2718,9 +2724,12 @@
 !-----------------------------------------
 !* Particle box is smaller than the field box.
 !* grids i= 0, ..., (mx-1)
+!        ix= int(isize* (xg(i)-xmin)/xleng +1.5001)
+!        if(ix.le.1 .or. ix.ge.isize ) go to 210
 !
       ddx = 0.5d0* xleng/isize
       ddy = 0.5d0* yleng/isize
+      ddz = 0.5d0* zleng/isizeZ
 !
       do i= 1,npqr
       Hpore2 = 0.5d0*Hpore           ! also modify /init/
@@ -2729,13 +2738,13 @@
 ! 
       if(abs(zg(i)).gt.Hpore2) then  ! Outside region
 !
-        xmax3 =  xmax -ddx -ag(i)
-        ymax3 =  ymax -ddy -ag(i)
-        zmax3 =  zmax -0.5d0* zleng/isizeZ
+        xmax3 =  xmax -ddx !-ag(i)
+        ymax3 =  ymax -ddy !-ag(i)
+        zmax3 =  zmax -ddz
 !
-        xmin3 =  xmin +ddx +ag(i)
-        ymin3 =  ymin +ddy +ag(i)
-        zmin3 =  zmin +0.5d0* zleng/isizeZ
+        xmin3 =  xmin +ddx !+ag(i)
+        ymin3 =  ymin +ddy !+ag(i)
+        zmin3 =  zmin +ddz
 !
 !* X,Y sides are closed
 !
@@ -4928,8 +4937,11 @@
 !*******************************
 !*  Ions only.                 *
 !*******************************
+!     am(1)= 94.d0/wwat  ! PO_4
+!     ww1  = 38.d0/wwat  ! K,  2.27 Ang, K(+) 2.98 Ang
 !
-      vmax1= 10.d0*vth/sqrt(38.d0/wwat)  !<- mass of K(+)
+!     vmax1= 10.d0*vth/sqrt(38.d0/wwat)  !<- mass of K(+)
+      vmax1=  6.d0*vth/sqrt(18.d0/wwat)  !<- water
       vmax2=  6.d0*vth/sqrt(18.d0/wwat)  !<- water
 !
 !* (1) Coulomb particles.
