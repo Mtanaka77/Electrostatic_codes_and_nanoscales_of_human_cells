@@ -1,8 +1,10 @@
-!************************************************** 2025/07/01 ***
+!************************************************** 2025/07/11 ***
 !*                                                               *
 !*   ## Molecular Dynamics for ElectroStatic Living Cells ##     *
-!*     @nanoporWatPa.f03 - Short-range Coulomb and LJ forces     *
-!*     and long-range Poisson forces for electrostatic forces    *
+!*                                                               *
+!*     @nanoWatPa.f03 - Short-range Coulomb and LJ forces, and   *
+!*     long-range Poisson forces for electrostatic potentials.   *
+!*     Constant electric force across the pore region.           *
 !*                                                               *
 !*   Author: Motohiko Tanaka, Ph.D.                              *
 !*           Nature and Science Applications, Nagoya 464, Japan. *
@@ -43,26 +45,23 @@
 !*                                                               *
 !*  System units:                                                *
 !*     length...... a= 1.0 Ang= 1.0 10^-8 cm                     *
-!*     mass........ m= 1.67 10^-24 g, mass of hydrogen           *
+!*     mass........ m= 18*1.67 10^-24 g, mass of water molecule  *
 !*     time........ t= 0.01 ps= 10^-14 s                         *
 !*     charge...... 4.8 10^-10 esu= 1.60 10^-19 C                *
 !*          with (1/2)M*(a/tau)**2= kT                           *
 !*                                                               *
 !*  Equation of motion:                                          *
-!*                                                               *
-!*      dv    Gamma*q'q grad r                                   *
-!*   m ---- = --------- ------ - fgm*(2*r(i)-r(i+1)-r(i-1))      *
-!*      dt       r^2      r                                      *
+!*      dv        Gamma*q'q grad r                               *
+!*   m ---- = Sum --------- ------ - fgm*(2*r(i)-r(i+1)-r(i-1))  *
+!*      dt           r^2      r                                  *
 !*                                                               *
 !*               epsLJ       sigma       sigma                   *
 !*          + 48*----- grad[(-----)^12- (-----)^6] + q*E(i,j,k)  *
-!*                kT         r_ij        r_ij                    *
+!*                 kT         r_ij        r_ij                   *
 !*                                                               *
 !*  Poisson equation:                                            *
 !*   div(eps(i,j,k) [grad pot(i,j,k)]) = - 4*pi*Gamma*rho(i,j,k) *
-!*                                                               *
 !*   Gamma = Bjerrum/(a*kT) = e**2/(epsLJ*aLJ*kT)                *
-!*     The electrostatic coupling constant, Bjerrum=7 at T=300 K *
 !*                                                               *
 !*****************************************************************
 !*  Main program and subroutines:                                *
@@ -74,36 +73,32 @@
 !*   /moldyn/     Time cycles, Coulomb and ES fields, L.675-     *
 !*   /realteil/   Coulomb ans LJ forces, L.1665, 2270-           *
 !*   /sprmul/     Spring forces, L.1670, 3350-                   * 
-!*   /reflect_endpl/ Particles boundary, L.1895, 3770-           *
+!*   /reflect_endpl/ Particles boundary, L.1895, 3760-           *
 !*                                                               *
 !*   /init/       Setups from /RUN_MD/, L.430,4430-              *
-!*   /poissn_eq/  Poisson solver, L.1730, 6710-                  *
+!*   /poissn_eq/  Poisson solver, L.1730,6710-                   *
 !*   /escof3/     Large-scale electrostatic forces, L.6780,6840- *
 !*     /bound_s/    for it > 1, L.6780,7060                      * 
 !*   /cresmd/-/avmult/  Conjugate residual method, L.6790,7810-  *
 !*    Graphics    /gopen/ (Adobe-2.0 postscript)                 *
-!*                                                               *
 !*****************************************************************
 !*                                                               *
-!*  To get a free format of Fortan f90 or f03, convert f77       *
-!*  format into:                                                 *
+!*  To get a free format of Fortan f90 or f03, convert f77 by    *
 !*    :%s/^c/!/  change 'c' of ALL column one to '!'             *
 !*    :%s/^C/!/                                                  *
-!*    tr 'A-Z' 'a-z' <@nanopor.f >@nanopor.f03"                  *
+!*    tr 'A-Z' 'a-z' <@nanopor.f >@nanopor.f03, outside command  *
 !*                                                               *
 !*  For subroutines, write "use, intrinsic :: iso_c_binding",    *
 !*  "implicit none" is recommended for minimizing typoerrors.    *
 !*                                                               *
-!*  Compilation by Linux:                                        *
+!*  Compilation by Linux, execution:                             *
 !*  % mpif90 -mcmodel=medium -fpic -o a.out @nanoporWatP.f03 \   *
 !*    -I/opt/fftw3/include -L/opt/fftw3/lib -lfftw3 &> log       *
-!*                                                               *
-!*  Check the configuration file and execute by:                 *
 !*  % mpiexec -n 6 a.out &                                       *
 !*                                                               *
 !*  First version.  2004/10/25                                   *
 !*  Second version; 2006/12/18 (Complete F90)                    *
-!*  This version;   2025/07/03 (Fortran 2003)                    *
+!*  Third version;  2025/07/03 (Fortran 2003, TIP5P model)       *
 !*                                                               *
 !*****************************************************************
 !
@@ -255,7 +250,7 @@
       common/headr2/ t,t00,xp_leng
 !
       integer(C_INT) it,is
-      real(C_DOUBLE) pi,dt,dth,axi,Gamma,rbmax,vth,tmax
+      real(C_DOUBLE) pi,dt,dth,axi,Gamma,rbmax,vth,tmax,tmax7
       real(C_float) phi,tht,dtwr1,dtwr2,dtwr3
       common/parm1/ it,is
       common/parm2/ pi,dt,dth,axi,Gamma,rbmax,vth,tmax
@@ -541,14 +536,15 @@
 !
         read(12) it,np,nq,nCLp,nr,npqr,npqr3,npqr5
         read(12) ifrgrod,ifrodco,ifbase
-!                %%%%%%% %%%%%%% %%%%%%
-        read(12) t8,xg,yg,zg,ch,am,amm,ag,ep
+!                            ++++++++
+        read(12) t8,xg,yg,zg,vx,vy,vz,ch,am,amm,ag,ep
         read(12) xa,ya,za
 !
         read(12) A11,A12,A13,A21,A22,A23,A31,A32,A33
         read(12) e0,e1,e2,e3,xr,yr,zr,Im,Lgx,Lgy,Lgz
 !
-        read(12) pi,dt,Gamma,rbmax,vth,tmax  !<- L.2160 IF
+!                    + tmax is for write(12) only, is dummy here
+        read(12) pi,dt,Gamma,rbmax,vth,tmax7 
         read(12) t,phi,tht,dtwr1,dtwr2,dtwr3,is
         read(12) ekin,ppot,ekn2,etot,z_pe,vzpe,vzco,vzct, &
                  vdtm,vpor,time,ecr,elj,espr
@@ -695,7 +691,7 @@
         write(12) it,np,nq,nCLp,nr,npqr,npqr3,npqr5
         write(12) ifrgrod,ifrodco,ifbase
 !
-        write(12) t8,xg,yg,zg,ch,am,amm,ag,ep
+        write(12) t8,xg,yg,zg,vx,vy,vz,ch,am,amm,ag,ep
         write(12) xa,ya,za
 !
         write(12) A11,A12,A13,A21,A22,A23,A31,A32,A33
@@ -1195,15 +1191,15 @@
 !
 !* Solvent - water
         do j= 1,np
-        vx(j)= dgaus2(vmax0)
-        vy(j)= dgaus2(vmax0)
-        vz(j)= dgaus2(vmax0)
+        vx(j)= 0 !dgaus2(vmax0) ooo
+        vy(j)= 0 !dgaus2(vmax0)
+        vz(j)= 0 !dgaus2(vmax0)
         end do
 !
         do j= np+1,nCLp
-        vx(j)= dgaus2(vmax1)
-        vy(j)= dgaus2(vmax1)
-        vz(j)= dgaus2(vmax1)
+        vx(j)= 0 !dgaus2(vmax1) ooo
+        vy(j)= 0 !dgaus2(vmax1)
+        vz(j)= 0 !dgaus2(vmax1)
         end do
 !
         do j= nCLp+1,npqr
@@ -2198,7 +2194,7 @@
         write(12) it,np,nq,nCLp,nr,npqr,npqr3,npqr5
         write(12) ifrgrod,ifrodco,ifbase
 !
-        write(12) t8,xg,yg,zg,ch,am,amm,ag,ep
+        write(12) t8,xg,yg,zg,vx,vy,vz,ch,am,amm,ag,ep
         write(12) xa,ya,za
 !
         write(12) A11,A12,A13,A21,A22,A23,A31,A32,A33
@@ -6543,9 +6539,11 @@
 !*  Ions only.                 *
 !*******************************
 !
-      vmax0= 10.d0*vth/sqrt(218.d0/wwat)  !<- mass of K(+)
-      vmax2= 10.d0*vth/sqrt( 18.d0/wwat)   !<- water
-!     vmax2=  6.d0*vth/sqrt(wwat)   !<- water
+!       if(ifbase.eq.2) ch(i)= 0.d0  !  neutral chain 
+!       am(i)=  94.d0/wwat
+!     vmax0= 10.d0*vth/sqrt(218.d0/wwat)  !<- mass of sugar ring
+      vmax0= 10.d0*vth/sqrt( 94.d0/wwat)  !<- mass of PO4  NEW 7/12 22:00
+      vmax2= 10.d0*vth/sqrt( 18.d0/wwat)  !<- water
 !
 !* (1) Coulomb particles.
       aiv= 50./vmax0
