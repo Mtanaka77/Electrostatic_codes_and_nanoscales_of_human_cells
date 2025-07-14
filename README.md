@@ -97,7 +97,8 @@ The simulation code is named @nanoAPGa.f03 (ca 9,500 lines with graphics), and t
 A run of 15 minutes by the 6 cores/3.0 GHz machine is executed for t= 500 with the time step dt=0.01 (x 10^-14 s), while for 10 hours in the TIP5P simulation code. 
 This file porw21.773a.pdf for the small potential gap V_top-V_bot= 1.5 kT with the dielectric constant eps=3 in the pore region shows four plots of potentials, particles of DNA and ions, those of all particles (every 5 water molecules), and the velocity distributions. One can see that the DNA chain moves toward the positive z direction into the cell volume. Moreover, the low dielectric constant eps(\r) in the pore makes the DNA blob more concentrated because counterions easily find negatively-charged DNA, which accelerates it upward to the cell region.
 
-The water molecules are important by using the five-water water model @nanoWatQa.f03 because they are accelerated to the z-direction by electric potentials, shown here in porw32.773a.pdf. 
+The water molecules are important by using the five-water water model @nanoWatQa.f03 because they are accelerated to the z-direction by electric potentials, shown here in porw32.773a.pdf. The DNA blobs are expelled to the the positive z-direction, and water shows positive
+and negative velocity distributions in the plots.
 
 ### (4) Coulomb-P3M (periodic) or Coulomb-Poisson (non periodic) simulations ###
 
@@ -121,9 +122,9 @@ the configure file CIMV13_config.START3 (ca. 5,100 lines)
 the parameter file paramAPGa.h and the configuration file PORV21_config.start3.
 
 * The five-atom TIP5P water model using the bounded Poisson equation is utilized, @nanoWatQa.f03 
-(11,000 lines), with paramWatP.h and PORW31_config.start3. In every time step it calculates
+(11,000 lines), with paramWatP.h and PORW32_config.start3. In every time step it calculates
 the Coulomb forces of HH-O-LL, L being the dummy charge sites, on top of the time-consuming Poisson equation.
-It runs about 10 hours for t= 500 by 6 cores/3.0 GHz. 
+It runs about 7 hours for t= 400 by 6 cores/3.0 GHz. 
 
 
 Anyone may read, copy and rewrite these simulation codes under 
