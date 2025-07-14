@@ -1,10 +1,10 @@
-!************************************************** 2025/07/11 ***
+!************************************************** 2025/07/13 ***
 !*                                                               *
 !*   ## Molecular Dynamics for ElectroStatic Living Cells ##     *
 !*                                                               *
 !*     @nanoWatPa.f03 - Short-range Coulomb and LJ forces, and   *
 !*     long-range Poisson forces for electrostatic potentials.   *
-!*     Constant electric force across the pore region.           *
+!*     Constant electric field is applied in the z-direction.    *
 !*                                                               *
 !*   Author: Motohiko Tanaka, Ph.D.                              *
 !*           Nature and Science Applications, Nagoya 464, Japan. *
@@ -1170,8 +1170,8 @@
 !     ww2  = 34.d0 /wwat   ! Cl, 1.75 Ang, Cl- 1.81 Ang
 !
       vth = sqrt(epsLJ)
-      vmax0= vth/sqrt( 96.d0/wwat)   !<-- mass of PO_4, am(1)/wwat
 !     vmax0= vth/sqrt(216.d0/wwat)   !<-- mass of sugar,am(2)
+      vmax0= vth/sqrt( 96.d0/wwat)   !<-- mass of PO_4, am(1)/wwat
       vmax1= vth/sqrt( 38.d0/wwat)   !<-- mass of K(+)
       vmax2= vth/sqrt( 18.d0/wwat)   !<-- water
 !
@@ -6203,7 +6203,7 @@
       vmax2= vth/sqrt(18.d0/wwat)
 !
       do j= np+1,nCLp
-      vx(j)= 0 !dgaus2(vmax1) later in L:1100
+      vx(j)= 0 !dgaus2(vmax1) later at L.1100
       vy(j)= 0 
       vz(j)= 0
       end do
@@ -6543,8 +6543,8 @@
 !       if(ifbase.eq.2) ch(i)= 0.d0  !  neutral chain 
 !       am(i)=  94.d0/wwat
 !     vmax0= 10.d0*vth/sqrt(218.d0/wwat)  !<- mass of sugar ring
-      vmax0= 10.d0*vth/sqrt( 18.d0/wwat)  !<- 
 !     vmax0= 10.d0*vth/sqrt( 38.d0/wwat)  !<- mass of K
+      vmax0= 10.d0*vth/sqrt( 18.d0/wwat)  !<- 
       vmax2= 10.d0*vth/sqrt( 18.d0/wwat)  !<- water
 !
 !* (1) Coulomb particles.
