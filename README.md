@@ -7,8 +7,8 @@ to skip general electrics in Sec.1 and Sec.2.
 
 The charge inversion and DNA transport phenomena are studied for living cells, and the 
 molecular electrostatic dynamics is simulated (Refs. 1-5, Ref. 10).
-We first mention the electrostatic code to execute molecular dynamics, 
-and the charge inversion and finally the DNA transport are simulated.
+First, the easy electrostatic code is mentined to execute molecular dynamics, and  
+the charge inversion and finally the DNA transport are shown in this order.
 The former deals with the periodic boundaries, while the latter treats the non-periodic 
 boundaries with short-range and long-range electrostatic interactions in living cells. 
 
