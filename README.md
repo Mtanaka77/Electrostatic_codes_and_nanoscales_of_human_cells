@@ -1,8 +1,8 @@
 ## Molecular dynamics of DNA for living human cells ##
 
-The main thema of this directorty is to know the behavior of the long-range electrics 
-(Poisson equation) for the living cells. The five-atom water model of TIP5P is utilized 
-in Sec.3 and Sec.4 in all summaries. To the main topic of the directory, you can copy 
+The thema of this directory is to know the DNA transport about the short-range Coulomb forces and 
+the long-range electrics (Poisson equation). The five-atom TIP5P water model is utilized 
+in Sec.3, and all summaries in Sec.4. To the main topic of the directory, you can copy 
 and rewrite the code to skip general electrics in Sec.1 and Sec.2.
 
 The charge inversion and DNA transport phenomena are studied for living cells, and the 
