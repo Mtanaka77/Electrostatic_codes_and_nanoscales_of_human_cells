@@ -1,4 +1,4 @@
-## Molecular electrostatic dynamics for living human cells ##
+## Molecular dynamics of DNA for living human cells ##
 
 The main thema of this directorty is to know the behavior of the long-range electrics 
 (Poisson equation) for the living cells. The five-atom water model of TIP5P is utilized 
