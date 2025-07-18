@@ -127,9 +127,8 @@ the Coulomb forces of HH-O-LL, L being the dummy charge sites, on top of the tim
 It runs about 7 hours for t= 400 by 6 cores/3.0 GHz. 
 
 
-Anyone may read, copy and rewrite these simulation codes under 
-GNU General Public License v3.0, by keeping intact the first top 55 lines in Sec.[2] 
-and 100 lines in Sec.[3] of the codes.
+Anyone may copy and rewrite these simulation codes under GNU General Public License v3.0, by 
+keeping intact the first top 55 lines in [2] and 100 lines in [3] of the codes above.
 
 
 ## References ##
