@@ -1,4 +1,4 @@
-## Molecular dynamics of DNA for living human cells ##
+## Molecular dynamics of DNA tranport for living cells ##
 
 The thema of this directory is the DNA transport interactions about the short-range Coulomb forces and 
 the long-range electrics (Poisson equation). The five-atom TIP5P water model is utilized 
