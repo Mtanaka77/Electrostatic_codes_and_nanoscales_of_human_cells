@@ -3,7 +3,7 @@
 The thema of this directory is the DNA transport interactions about the short-range Coulomb forces and 
 the long-range electrics (Poisson equation). The five-atom TIP5P water model is utilized fot transport  
 in Sec.3, and various simulation codes in Sec.4. To the main topic of the DNA transport, you may copy/rewrite 
-the code under GPL-v3.0 skipping general electrics in Sec.1 and Sec.2.
+the code under GNU GPL-v3.0 skipping general electrics in Sec.1 and Sec.2.
 
 The charge inversion and DNA transport phenomena are studied for living cells, and the 
 molecular electrostatic dynamics is simulated (Refs. 1-5, Ref. 10).
