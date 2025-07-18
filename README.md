@@ -104,8 +104,8 @@ The water molecules are important by using the five-water water model @nanoWatQa
 
 The Coulomb forces are initiallized for water and hydrate (Ref. 9, "vitroid").
 In this directory, the short-range and long-range Coulomb forces are used for a large system
-in periodic p3m_perform routines with high accuracy in Sec.2, and the non-periodic boundary 
-conditions are utilized in Sec.3 (Ref. 10). 
+in periodic p3m_perform routines with high accuracy in [2] (Ref. 1), and the non-periodic boundary 
+conditions are utilized in [3] (Ref. 10). 
 
 [1] Periodic system, the prototype
 
