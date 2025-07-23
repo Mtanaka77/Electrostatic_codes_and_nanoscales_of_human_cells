@@ -65,7 +65,7 @@ shows a rather stationary macroion. The first peak of counterions at the top-lef
 panels exists very close to the macroion's surface at R= Rmac to (Rmac+5 Ang) of 
 cimv13_78.pdf - only the 20 Angstrom regime from the macroion is plotted. 
 
-### (2A) Short-range and long-range interactions ###
+### (2.A) Short-range and long-range interactions ###
 
 The Coulomb force by the positive charge $ Z_{p}*e_unit $ and negative charge $ Z_{n}*e_unit $
 is written $ -\nabla(Z_{p}*Z_{n}*e_unit^2/ r) $ in an infinite system (Ref. 6).
@@ -100,7 +100,8 @@ There are many input items to run the simulation; they are the nanopore sizes of
 A run of 15 minutes by the 6 cores/3.0 GHz machine is executed for t= 500 with the time step dt=0.01 (x 10^-14 s), while for 10 hours in the TIP5P simulation code. 
 This file porw21.773a.pdf for the small potential gap V_top-V_bot= 1.0 kT with the dielectric constant eps=3 in the pore region shows four plots of potentials, particles of DNA and ions, those of all particles (every 5 water molecules), and the velocity distributions. One can see that the DNA chain moves toward the positive z direction into the cell volume. Moreover, the low dielectric constant eps(\r) in the pore makes the DNA blob more concentrated because counterions easily find negatively-charged DNA, which accelerates it upward to the cell region.
 
-On the contrary, the water molecules are important by using the five-atom water model @nanoWatQa.f03 because they are accelerated to the z-direction by electric potentials, shown here in porw32.773a.pdf. The DNA blobs are expelled to the the positive z-direction, while water molecules show both the positive and negative velocity distributions on top of the central distribution.
+On the contrary, the water molecules are important by using the five-atom water model @nanoWatQa.f03.
+It is because they are accelerated to the z-direction by electric potentials, shown here in porw32.773a.pdf. The DNA blobs are expelled to the the positive z-direction, while water molecules show both the positive and negative velocity distributions on top of the central distribution.
 
 ### (4) Coulomb-P3M (periodic) or Coulomb-Poisson (non periodic) simulations ###
 
