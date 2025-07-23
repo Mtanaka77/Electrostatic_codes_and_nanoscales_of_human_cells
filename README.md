@@ -120,7 +120,7 @@ the configure file CIMV13_config.START3 (ca. 5,100 lines)
 
 [3] The non-periodic and periodic/bounded systems, the transport of DNA molecule
 
-* @nanoAPGa.f03 (ca. 9,500 lines with graphics), with 
+* For the test only, @nanoAPGa.f03 (ca. 9,500 lines with graphics), with 
 the parameter file paramAPGa.h and the configuration file PORV21_config.start3.
 
 * The five-atom TIP5P water model using the bounded Poisson equation is utilized, @nanoWatQa.f03 
