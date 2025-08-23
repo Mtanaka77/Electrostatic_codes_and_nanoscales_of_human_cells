@@ -102,7 +102,7 @@ On the contrary, the water molecules are important by using the five-atom water 
 It is shown that they are accelerated to the z-direction by electric potentials, shown here in porw32.773a.pdf. 
 The DNA blobs are expelled to the the positive z-direction, whereas water molecules show both the positive and negative velocity distributions on top of the central one.
 
-### (4) Coulomb-P3M (periodic) or Coulomb-Poisson (non periodic) simulations ###
+### (4) Coulomb-P3M (periodic) or Coulomb-Poisson (non periodic) simulation ###
 
 The Coulomb forces are initiallized for water and hydrate (Ref. 9, "vitroid").
 In this directory, the short-range and long-range Coulomb forces are used for a large system
