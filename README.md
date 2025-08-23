@@ -1,4 +1,4 @@
-## Molecular dynamics of DNA transport for living cells ##
+## Molecular dynamics simulation of DNA transport for living cells ##
 
 The DNA transport interactions about the short-range Coulomb forces and the long-range electrics (Poisson equation) is made by 5-atom water model TIP5P in Sec.3, and various simulation codes in Sec.4.
 The codes are ready for copy/rewriting under GNU GPL-v3.0, where general introduction in Sec.1 and the charge inversion in Sec.2 are to be skipped.
